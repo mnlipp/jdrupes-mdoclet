@@ -23,11 +23,15 @@ wrapper {
 }
 
 allprojects {
-	// Makes Eclipse-groovy hanle *.gradle file properly
-    apply plugin:'groovy' 
-
+	
     group = 'org.jdrupes'
     version = '0.1.0'    
+	
+	// Makes Eclipse-groovy handle *.gradle file properly
+    apply plugin:'groovy' 
+	
+	archivesBaseName = rootProject.name + "-${project.name}"
+
 }
 
 subprojects {
