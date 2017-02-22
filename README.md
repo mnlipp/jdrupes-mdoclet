@@ -1,6 +1,9 @@
 MDoclet
 =======
 
+[![Build Status](https://travis-ci.org/mnlipp/org.jdrupes.mdoclet.svg?branch=master)](https://travis-ci.org/mnlipp/org.jdrupes.mdoclet)
+[![Release](https://jitpack.io/v/mnlipp/org.jdrupes.mdoclet.svg)](https://jitpack.io/mnlipp/org.jdrupes.mdoclet)
+
 A Doclet that allows the use of Markdown in JavaDoc and
 provides an extended taglet interface. It uses a configurable Markdown processor
 ([flexmark-java](https://github.com/vsch/flexmark-java) by default). 
