@@ -1,0 +1,66 @@
+/*
+ * JDrupes MDoclet
+ * Copyright (C) 2017  Michael N. Lipp
+ * 
+ * This program is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation; either version 3 of the License, or 
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ * for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along 
+ * with this program; if not, see <http://www.gnu.org/licenses/>.
+ */
+
+apply plugin: 'java'
+
+sourceCompatibility = '1.8'
+
+archivesBaseName = rootProject.name + "-${project.name}"
+
+dependencies {
+	compile libs.markdown
+    compileOnly libs.jdkTools
+
+    testCompile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
+}
+
+// Configure sensible layout
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+		resources {
+			srcDir 'resources'
+		}
+    }
+}
+
+javadoc {
+	dependsOn classes
+	
+//	if (javax.tools.ToolProvider.getSystemDocumentationTool()
+//        .isSupportedOption("--allow-script-in-comments")) {
+//        options.addBooleanOption("-allow-script-in-comments", true)
+//    }
+
+	title = "JDrupes MDoclet"
+		
+	options.docletpath = (sourceSets.main.output + sourceSets.main.compileClasspath) as List
+	options.doclet = "org.jdrupes.mdoclet.MDoclet"
+
+	// Without sourcepath and subpackages, @links in overview aren't rendered as hrefs 
+	options.addStringOption("sourcepath", "src")	
+	options.addStringOption("subpackages", "org.jdrupes.mdoclet")
+	
+	options.addStringOption("overview", "overview.md")
+	options.addBooleanOption("disable-auto-highlight", true)
+	options.links("http://docs.oracle.com/javase/8/docs/api/")
+	options.stylesheetFile(file("stylesheet.css"))
+	
+}
