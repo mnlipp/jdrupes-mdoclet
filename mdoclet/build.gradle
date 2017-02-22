@@ -70,8 +70,8 @@ publishing {
 	
 	publications {
 		mavenJava(MavenPublication) {
-			from components.java
 			artifactId = "${rootProject.name}-doclet"
+			from components.java
 		}
 	}
 }
