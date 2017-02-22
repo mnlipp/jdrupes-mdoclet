@@ -39,6 +39,8 @@ sourceSets {
     }
 }
 
+archivesBaseName = "${rootProject.name}-doclet"
+
 javadoc {
 	dependsOn classes
 	
