@@ -186,7 +186,7 @@ extension of [Abnaxos'](https://github.com/Abnaxos)
 great [pegdown-doclet](https://github.com/Abnaxos/pegdown-doclet).
 Aside from making the Markdown processor configurable, the PlantUML
 functionality has been factored out in a 
-[project of its own](https://github.com/mnlipp/org.jdrupes.taglets). 
+[project of its own](https://github.com/mnlipp/jdrupes-taglets). 
 
 This Doclet is released under the
 [GPL 3.0](http://www.gnu.org/licenses/gpl-3.0-standalone.html).

@@ -1,8 +1,8 @@
 MDoclet
 =======
 
-[![Build Status](https://travis-ci.org/mnlipp/org.jdrupes.mdoclet.svg?branch=master)](https://travis-ci.org/mnlipp/org.jdrupes.mdoclet)
-[![Release](https://jitpack.io/v/mnlipp/org.jdrupes.mdoclet.svg)](https://jitpack.io/#mnlipp/org.jdrupes.mdoclet)
+[![Build Status](https://travis-ci.org/mnlipp/jdrupes-mdoclet.svg?branch=master)](https://travis-ci.org/mnlipp/jdrupes-mdoclet)
+[![Release](https://jitpack.io/v/mnlipp/jdrupes-mdoclet.svg)](https://jitpack.io/#mnlipp/jdrupes-mdoclet)
 [![Download](https://api.bintray.com/packages/mnlipp/org.jdrupes/mdoclet-doclet/images/download.svg) ](https://bintray.com/mnlipp/org.jdrupes/mdoclet-doclet/_latestVersion)
 
 A Doclet that allows the use of Markdown in JavaDoc. It uses a configurable 
@@ -22,7 +22,7 @@ name suggests, pegdown-doclet is closely tied to
 [pegdown](https://github.com/sirthias/pegdown), which is now
 deprecated. pegdown-doclet's [PlanUML](http://plantuml.com/) 
 integration has been factored out in the independent project 
-[org.jdrupes.taglets](https://github.com/mnlipp/org.jdrupes.taglets).
+[org.jdrupes.taglets](https://github.com/mnlipp/jdrupes-taglets).
 
 This doclet is released under the
 [GPL 3.0](http://www.gnu.org/licenses/gpl-3.0-standalone.html).
