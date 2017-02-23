@@ -63,7 +63,7 @@ javadoc {
 	options.addStringOption("sourcepath", "src")	
 	options.addStringOption("subpackages", "org.jdrupes.mdoclet")
 
-	destinationDir = file("../../org.jdrupes.mdoclet.gh-pages/javadoc/")
+	destinationDir = file("../../jdrupes-mdoclet.gh-pages/javadoc/")
 	
 	options.addStringOption("overview", "overview.md")
 	options.addBooleanOption("disable-auto-highlight", true)
