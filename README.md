@@ -3,6 +3,7 @@ MDoclet
 
 [![Build Status](https://travis-ci.org/mnlipp/org.jdrupes.mdoclet.svg?branch=master)](https://travis-ci.org/mnlipp/org.jdrupes.mdoclet)
 [![Release](https://jitpack.io/v/mnlipp/org.jdrupes.mdoclet.svg)](https://jitpack.io/#mnlipp/org.jdrupes.mdoclet)
+[![Download](https://api.bintray.com/packages/mnlipp/org.jdrupes/mdoclet-doclet/images/download.svg) ](https://bintray.com/mnlipp/org.jdrupes/mdoclet-doclet/_latestVersion)
 
 A Doclet that allows the use of Markdown in JavaDoc. It uses a configurable 
 Markdown processor
