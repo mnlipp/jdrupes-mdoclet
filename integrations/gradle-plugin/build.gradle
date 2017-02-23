@@ -1,3 +1,5 @@
+apply plugin: 'maven-publish'
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
@@ -9,8 +11,26 @@ sourceSets {
 		groovy {
 			srcDir 'src'
 		}
-		groovy {
+		resources {
 			srcDir 'resources'
+		}
+	}
+}
+
+processResources {
+	//noinspection UnnecessaryQualifiedReference
+	filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+			"org.jdrupes.mdoclet-version": project(':mdoclet').version
+	]
+}
+
+
+publishing {
+	
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = project(':mdoclet').name + "-" + project.name
+			from components.java
 		}
 	}
 }
