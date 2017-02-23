@@ -36,6 +36,10 @@ allprojects {
 
 subprojects {
 
+	if (project == project(':integrations')) {
+		return;
+	}
+	
     repositories {
         jcenter()
         mavenCentral()
@@ -44,7 +48,6 @@ subprojects {
     ext {
         libs = [
                 markdown: [group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.15.3'],
-                plantuml: [group:'net.sourceforge.plantuml', name:'plantuml', version:'8032'],
                 jdkTools: files(org.gradle.internal.jvm.Jvm.current().toolsJar),
         ]
         docletProject = project(':mdoclet')
