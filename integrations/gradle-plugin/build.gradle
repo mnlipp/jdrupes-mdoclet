@@ -43,6 +43,7 @@ bintray {
 	user = project.properties['bintrayUser'] ?: "nouser"
 	key = project.properties['bintrayApiKey'] ?: "nokey"
 	publications = ['mavenJava']
+	publish = true
 	pkg {
 		repo = project.group
 		name = project(':mdoclet').name + "-" + project.name
