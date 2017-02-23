@@ -16,6 +16,10 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
+plugins {
+	id "com.jfrog.bintray" version "1.7.3"
+}
+
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
@@ -79,3 +83,16 @@ publishing {
 		}
 	}
 }
+
+bintray {
+	user = project.properties['bintrayUser'] ?: "nouser"
+	key = project.properties['bintrayApiKey'] ?: "nokey"
+	publications = ['mavenJava']
+	pkg {
+		repo = project.group
+		name = "${project.name}-doclet"
+		version {
+			 name = project.version
+		}
+	}
+ }

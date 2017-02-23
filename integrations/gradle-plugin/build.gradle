@@ -1,3 +1,7 @@
+plugins {
+	id "com.jfrog.bintray" version "1.7.3"
+}
+
 apply plugin: 'maven-publish'
 
 dependencies {
@@ -34,3 +38,16 @@ publishing {
 		}
 	}
 }
+
+bintray {
+	user = project.properties['bintrayUser'] ?: "nouser"
+	key = project.properties['bintrayApiKey'] ?: "nokey"
+	publications = ['mavenJava']
+	pkg {
+		repo = project.group
+		name = project(':mdoclet').name + "-" + project.name
+		version {
+			 name = project.version
+		}
+	}
+ }
