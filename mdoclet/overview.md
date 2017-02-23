@@ -1,3 +1,6 @@
+MDoclet
+=======
+
 A Doclet that enables Markdown in JavaDoc comments. It converts all JavaDoc
 documentation to HTML using a configurable Markdown processor
 ([flexmark-java](https://github.com/vsch/flexmark-java) by default)

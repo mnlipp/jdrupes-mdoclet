@@ -58,12 +58,16 @@ javadoc {
 	// Without sourcepath and subpackages, @links in overview aren't rendered as hrefs 
 	options.addStringOption("sourcepath", "src")	
 	options.addStringOption("subpackages", "org.jdrupes.mdoclet")
+
+	destinationDir = file("../../org.jdrupes.mdoclet.gh-pages/javadoc/")
 	
 	options.addStringOption("overview", "overview.md")
 	options.addBooleanOption("disable-auto-highlight", true)
+	options.addBooleanOption("linksource", true)
 	options.links("http://docs.oracle.com/javase/8/docs/api/")
 	options.stylesheetFile(file("stylesheet.css"))
-	
+	options.addStringOption("bottom", file("misc/javadoc.bottom.txt").text)
+
 }
 
 publishing {

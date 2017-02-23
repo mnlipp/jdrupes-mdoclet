@@ -11,7 +11,8 @@ It's a simple preprocessor to the standard Doclet: It processes all JavaDoc
 comments in the documentation tree and then forwards the result to the 
 standard Doclet.
 
-See the javadoc package description for details. 
+See the [javadoc package description](https://mnlipp.github.io/org.jdrupes.mdoclet/javadoc/)
+for details. 
 
 This project is an architectural redesign of 
 [Abnaxos'](https://github.com/Abnaxos) 
