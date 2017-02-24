@@ -2,7 +2,9 @@ plugins {
 	id "com.jfrog.bintray" version "1.7.3"
 }
 
+apply plugin: 'signing'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 dependencies {
     compile gradleApi()
@@ -28,18 +30,80 @@ processResources {
 	]
 }
 
-task sourceJar(type: Jar) {
+task sourcesJar(type: Jar) {
 	from sourceSets.main.allJava
 	classifier "sources"
 }
   
+task javadocJar(type: Jar) {
+	from (project.rootDir) {
+		include 'README.md'
+	}
+	classifier "javadoc"
+}
+
+signing {
+	sign configurations.archives
+}
+
 publishing {
 	
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId = project(':mdoclet').name + "-" + project.name
 			from components.java
-			artifact sourceJar
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+ 
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+ 
+			pom.project {
+				
+				name project.name
+				packaging 'pom'
+				description project.description
+				url 'https://github.com/mnlipp/jdrupes-mdoclet'
+ 
+				scm {
+					url 'scm:git@github.com:mnlipp/jdrupes-mdoclet.git'
+					connection 'scm:git@github.com:mnlipp/jdrupes-mdoclet.git'
+					developerConnection 'git@github.com:mnlipp/jdrupes-mdoclet.git'
+				}
+ 
+				licenses {
+					license {
+						name 'GPL 3.0'
+						url 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+						distribution 'repo'
+					}
+				}
+ 
+				developers {
+					developer {
+						id 'mnlipp'
+						name 'Michael N. Lipp'
+					}
+				}
+			}
+			
+			artifacts {
+				archives jar
+				archives sourcesJar
+				archives javadocJar
+			}
 		}
 	}
 }
