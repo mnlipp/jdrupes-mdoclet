@@ -95,8 +95,8 @@ public class Options {
      * @see com.sun.javadoc.Doclet#validOptions(String[][], com.sun.javadoc.DocErrorReporter)
      */
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
-        options = new Options().load(options, errorReporter);
-        if ( options != null ) {
+        String[][] forwardedOptions = new Options().load(options, errorReporter);
+        if ( forwardedOptions != null ) {
             return Standard.validOptions(options, errorReporter);
         }
         else {

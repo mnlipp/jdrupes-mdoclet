@@ -2,6 +2,7 @@ MDoclet
 =======
 
 [![Build Status](https://travis-ci.org/mnlipp/jdrupes-mdoclet.svg?branch=master)](https://travis-ci.org/mnlipp/jdrupes-mdoclet)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/36484e621eb243d793df9bccfbb502e3)](https://www.codacy.com/app/mnlipp/jdrupes-mdoclet?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mnlipp/jdrupes-mdoclet&amp;utm_campaign=Badge_Grade)
 [![Release](https://jitpack.io/v/mnlipp/jdrupes-mdoclet.svg)](https://jitpack.io/#mnlipp/jdrupes-mdoclet)
 [![Download](https://api.bintray.com/packages/mnlipp/org.jdrupes/mdoclet-doclet/images/download.svg) ](https://bintray.com/mnlipp/org.jdrupes/mdoclet-doclet/_latestVersion)
 

@@ -106,8 +106,8 @@ public class FlexmarkProcessor implements MarkdownProcessor {
 	final private static String OPT_CLEAR_EXTENSIONS = "-clear-extensions";
 	final private static String OPT_EXTENSION = "-extension";
 	
-	Parser parser;
-	HtmlRenderer renderer;
+	private Parser parser;
+	private HtmlRenderer renderer;
 	
 	@Override
 	public int isSupportedOption(String option) {
@@ -119,8 +119,9 @@ public class FlexmarkProcessor implements MarkdownProcessor {
 		case OPT_PROFILE:
 		case OPT_EXTENSION:
 			return 1;
+		default:
+			return -1;
 		}
-		return -1;
 	}
 
 
@@ -168,9 +169,9 @@ public class FlexmarkProcessor implements MarkdownProcessor {
         			(HtmlRenderer.FENCED_CODE_NO_LANGUAGE_CLASS, "nohighlight");
         		continue;
 
+        	default:
+            	throw new IllegalArgumentException("Unknown option: " + opt[0]);
         	}
-        	
-        	throw new IllegalArgumentException("Unknown option: " + opt[0]);
         }
         
         List<Extension> extObjs = new ArrayList<>();
@@ -193,7 +194,7 @@ public class FlexmarkProcessor implements MarkdownProcessor {
 
 	private void setFromProfile(MutableDataSet fmOpts, String profileName) {
 		for (ParserEmulationProfile p: ParserEmulationProfile.values()) {
-			if (p.toString().toLowerCase().equals(profileName)) {
+			if (p.toString().equalsIgnoreCase(profileName)) {
 				fmOpts.setFrom(p);
 				return;
 			}
