@@ -73,6 +73,7 @@ uploadArchives {
 			pom.project {
 				
 				name project.name
+				artifactId project.archivesBaseName
 				packaging 'pom'
 				description project.description
 				url 'https://github.com/mnlipp/jdrupes-mdoclet'

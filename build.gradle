@@ -33,7 +33,7 @@ allprojects {
 	// Makes Eclipse-groovy handle *.gradle file properly
     apply plugin:'groovy' 
 	
-	archivesBaseName = rootProject.name + "-${project.name}"
+	archivesBaseName = "mdoclet-${project.name}"
 
 }
 
