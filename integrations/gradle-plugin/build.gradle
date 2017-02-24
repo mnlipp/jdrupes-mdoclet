@@ -28,13 +28,18 @@ processResources {
 	]
 }
 
-
+task sourceJar(type: Jar) {
+	from sourceSets.main.allJava
+	classifier "sources"
+}
+  
 publishing {
 	
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId = project(':mdoclet').name + "-" + project.name
 			from components.java
+			artifact sourceJar
 		}
 	}
 }

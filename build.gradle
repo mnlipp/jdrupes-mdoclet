@@ -52,6 +52,6 @@ subprojects {
         ]
         docletProject = project(':mdoclet')
  	}
-	 
+
 }
 

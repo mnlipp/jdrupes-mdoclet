@@ -74,12 +74,18 @@ javadoc {
 
 }
 
+task sourceJar(type: Jar) {
+	from sourceSets.main.allJava
+	classifier "sources"
+}
+  
 publishing {
 	
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId = "${project.name}-doclet"
 			from components.java
+			artifact sourceJar
 		}
 	}
 }
