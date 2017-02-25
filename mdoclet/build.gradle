@@ -90,6 +90,8 @@ signing {
 	sign configurations.archives
 }
 
+// MavenPublishing (new), incomplete, works only for local. 
+
 publishing {
 	
 	publications {
@@ -101,6 +103,8 @@ publishing {
 		}
 	}
 }
+
+// MavenPublishing (original), still needed for remote 
 
 uploadArchives {
 	repositories {
@@ -144,12 +148,12 @@ uploadArchives {
 			}
 
 			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: sonatypeUsername ?: "nouser", 
-					password: sonatypePassword ?: "nopass")
+				authentication(userName: project.properties['sonatypeUsername'] ?: "nouser", 
+					password: project.properties['sonatypePassword'] ?: "nopass")
 			}
 			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-				authentication(userName: sonatypeUsername ?: "nouser",
-					password: sonatypePassword ?: "nopass")
+				authentication(userName: project.properties['sonatypeUsername'] ?: "nouser", 
+					password: project.properties['sonatypePassword'] ?: "nopass")
 			}
 
 		}

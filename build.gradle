@@ -29,12 +29,12 @@ allprojects {
 	version = '0.1.1'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
-		
+
 	// Makes Eclipse-groovy handle *.gradle file properly
     apply plugin:'groovy' 
-	
-	archivesBaseName = "mdoclet-${project.name}"
 
+	// (Known thanks to applying groovy plugin)	
+	archivesBaseName = "mdoclet-${project.name}"
 }
 
 subprojects {
