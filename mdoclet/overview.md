@@ -122,7 +122,9 @@ A prebuilt version can be downloaded from ...
 
 ### Gradle
 
-You can simply configure the doclet in the javadoc class.
+You can simply configure the doclet in the javadoc task with the
+`doclet` and `docletpath` options as shown in the 
+[DSL Reference](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html).
 
 As a convenience, there is a plugin available:
 
@@ -144,9 +146,9 @@ apply plugin: 'org.jdrupes.mdoclet'
 ```
 
 The latest version available on maven is shown in the badge on the 
-[project page](https://github.com/mnlipp/jdrupes-mdoclet). Of course,
-you can also use jitpack.io (again, see badge), especially if you
-want the head version.
+[project page](https://github.com/mnlipp/jdrupes-mdoclet). Note that
+you cannot use snapshot versions of the plugin, even though they
+can be obtained from jitpack.
 
 Using the plugin is only worth the effort if you have several subprojects,
 configure the dependency in the root project and apply the plugin selectively
