@@ -145,7 +145,7 @@ repositories {
 apply plugin: 'org.jdrupes.mdoclet'
 ```
 
-The latest version available on maven is shown in the badge on the 
+The latest version available on maven central is shown in the badge on the 
 [project page](https://github.com/mnlipp/jdrupes-mdoclet). Note that
 you cannot use snapshot versions of the plugin, even though they
 can be obtained from jitpack.
