@@ -4,7 +4,7 @@ MDoclet
 [![Build Status](https://travis-ci.org/mnlipp/jdrupes-mdoclet.svg?branch=master)](https://travis-ci.org/mnlipp/jdrupes-mdoclet)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/36484e621eb243d793df9bccfbb502e3)](https://www.codacy.com/app/mnlipp/jdrupes-mdoclet?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mnlipp/jdrupes-mdoclet&amp;utm_campaign=Badge_Grade)
 [![Release](https://jitpack.io/v/mnlipp/jdrupes-mdoclet.svg)](https://jitpack.io/#mnlipp/jdrupes-mdoclet)
-[![Download](https://api.bintray.com/packages/mnlipp/org.jdrupes/mdoclet-doclet/images/download.svg) ](https://bintray.com/mnlipp/org.jdrupes/mdoclet-doclet/_latestVersion)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jdrupes/mdoclet-doclet/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jdrupes/mdoclet-doclet)
 
 A Doclet that allows the use of Markdown in JavaDoc. It uses a configurable 
 Markdown processor
@@ -13,7 +13,7 @@ It's a simple preprocessor to the standard Doclet: It processes all JavaDoc
 comments in the documentation tree and then forwards the result to the 
 standard Doclet.
 
-See the [javadoc package description](https://mnlipp.github.io/org.jdrupes.mdoclet/javadoc/)
+See the [javadoc package description](https://mnlipp.github.io/jdrupes-mdoclet/javadoc/)
 for details. 
 
 This project is an architectural redesign of 

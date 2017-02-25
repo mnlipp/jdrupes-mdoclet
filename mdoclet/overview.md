@@ -129,19 +129,22 @@ As a convenience, there is a plugin available:
 ```gradle
 buildscript {
     repositories {
-        jcenter() // For finding the plugin 
+        mavenCentral() // For finding the plugin 
     }
     dependencies {
-        classpath 'org.jdrupes:mdoclet-gradle-plugin:_<version>_'
+        classpath 'org.jdrupes:mdoclet-gradle-plugin:<version>'
     }
 }
  
 repositories {
-    jcenter() // For finding the doclet at compile time
+    mavenCentral() // For finding the doclet at compile time
 }
  
 apply plugin: 'org.jdrupes.mdoclet'
 ```
+
+The latest version available is shown in the badge on the 
+[project page](https://github.com/mnlipp/jdrupes-mdoclet).
 
 Using the plugin is only worth the effort if you have several subprojects,
 configure the dependency in the root project and apply the plugin selectively
