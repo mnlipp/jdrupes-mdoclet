@@ -143,8 +143,10 @@ repositories {
 apply plugin: 'org.jdrupes.mdoclet'
 ```
 
-The latest version available is shown in the badge on the 
-[project page](https://github.com/mnlipp/jdrupes-mdoclet).
+The latest version available on maven is shown in the badge on the 
+[project page](https://github.com/mnlipp/jdrupes-mdoclet). Of course,
+you can also use jitpack.io (again, see badge), especially if you
+want the head version.
 
 Using the plugin is only worth the effort if you have several subprojects,
 configure the dependency in the root project and apply the plugin selectively
