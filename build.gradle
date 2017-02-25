@@ -26,7 +26,7 @@ allprojects {
 	
     group = 'org.jdrupes'
     // version = '0.2.0-SNAPSHOT'
-	version = '0.1.1'
+	version = '0.1.2'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 
