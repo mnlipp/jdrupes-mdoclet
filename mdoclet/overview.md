@@ -134,7 +134,7 @@ buildscript {
         mavenCentral() // For finding the plugin 
     }
     dependencies {
-        classpath 'org.jdrupes:mdoclet-gradle-plugin:<version>'
+        classpath 'org.jdrupes.mdoclet:gradle-plugin:<version>'
     }
 }
  

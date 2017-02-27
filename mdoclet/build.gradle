@@ -34,7 +34,7 @@ dependencies {
     testCompile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
 }
 
-archivesBaseName = "mdoclet-doclet"
+archivesBaseName = "doclet"
 
 // Configure sensible layout
 sourceSets {
@@ -99,7 +99,7 @@ publishing {
 	
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = "${project.name}-doclet"
+			artifactId = archivesBaseName
 			from components.java
 			artifact sourcesJar
 			artifact javadocJar
@@ -169,10 +169,13 @@ bintray {
 	publications = ['mavenJava']
 	publish = true
 	pkg {
-		repo = project.group
-		name = "${project.name}-doclet"
+		repo = "org.jdrupes"
+		name = "mdoclet"
 		version {
 			 name = project.version
+			 gpg {
+				 sign = true
+			 }
 		}
 	}
  }

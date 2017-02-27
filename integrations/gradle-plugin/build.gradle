@@ -55,7 +55,7 @@ publishing {
 	
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = project(':mdoclet').name + "-" + project.name
+			artifactId = project.archivesBaseName
 			from components.java
 			artifact sourcesJar
 			artifact javadocJar
@@ -124,8 +124,8 @@ bintray {
 	publications = ['mavenJava']
 	publish = true
 	pkg {
-		repo = project.group
-		name = project(':mdoclet').name + "-" + project.name
+		repo = "org.jdrupes"
+		name = "mdoclet"
 		version {
 			 name = project.version
 		}

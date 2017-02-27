@@ -33,7 +33,7 @@ class MDocletPlugin implements Plugin<Project> {
         def mdocletVersion = new InputStreamReader(MDocletPlugin.class.getResourceAsStream('version.txt')).withReader { reader ->
             reader.text.trim()
         }
-        project.dependencies.add(CONFIGURATION_NAME, "org.jdrupes:mdoclet-doclet:$mdocletVersion")
+        project.dependencies.add(CONFIGURATION_NAME, "org.jdrupes.mdoclet:doclet:$mdocletVersion")
 
         // after the user buildscript is evaluated ...
         project.gradle.projectsEvaluated {

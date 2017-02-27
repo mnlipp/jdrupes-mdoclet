@@ -24,8 +24,8 @@ wrapper {
 
 allprojects {
 	
-    group = 'org.jdrupes'
-	version = '1.0.1-SNAPSHOT'
+    group = 'org.jdrupes.mdoclet'
+	version = '1.0.1'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 
@@ -33,7 +33,7 @@ allprojects {
     apply plugin:'groovy' 
 
 	// (Known thanks to applying groovy plugin)	
-	archivesBaseName = "mdoclet-${project.name}"
+	archivesBaseName = project.name
 }
 
 subprojects {
