@@ -35,11 +35,12 @@ import com.vladsch.flexmark.util.options.MutableDataHolder;
 public class TopAnchorLinkExtension implements HtmlRenderer.HtmlRendererExtension {
 
 	/**
-	 * Called with all options. Currently this extension has no options and
+	 * Called with all options. Currently this extension supports no options and
 	 * does nothing.
 	 */
 	@Override
 	public void rendererOptions(MutableDataHolder options) {
+		// Currently no options supported.
 	}
 
 	/**
