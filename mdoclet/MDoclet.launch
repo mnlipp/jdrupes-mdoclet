@@ -14,6 +14,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.sun.tools.javadoc.Main"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-doclet org.jdrupes.mdoclet.MDoclet -disable-auto-highlight -stylesheetfile stylesheet.css -overview overview.md -d ../../org.jdrupes.mdoclet.gh-pages/javadoc/  -sourcepath src/ -subpackages org.jdrupes.mdoclet"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-doclet org.jdrupes.mdoclet.MDoclet -disable-auto-highlight -stylesheetfile stylesheet.css -overview overview.md -d ../../jdrupes-mdoclet.gh-pages/javadoc/  -sourcepath src/ -subpackages org.jdrupes.mdoclet"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="mdoclet"/>
 </launchConfiguration>
