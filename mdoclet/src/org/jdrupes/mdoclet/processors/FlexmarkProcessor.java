@@ -24,13 +24,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.jdrupes.mdoclet.MarkdownProcessor;
+import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
 
 import com.vladsch.flexmark.Extension;
 import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension;
+import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.definition.DefinitionExtension;
 import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -61,10 +64,13 @@ import com.vladsch.flexmark.util.options.MutableDataSet;
  * `-clear-extensions`
  * :   Clears the list of extensions. The following extensions are predefined:
  *       - [Abbreviation](https://github.com/vsch/flexmark-java/wiki/Extensions#abbreviation)
+ *       - [AnchorLink](https://github.com/vsch/flexmark-java/wiki/Extensions#anchorlink)
  *       - [Definition](https://github.com/vsch/flexmark-java/wiki/Extensions#definition-lists) 
  *         (Definition Lists)[^DefLists]
  *       - [Footnote](https://github.com/vsch/flexmark-java/wiki/Extensions#footnotes)
  *       - [Tables](https://github.com/vsch/flexmark-java/wiki/Extensions#tables)
+ *       - [Table of Content](https://github.com/vsch/flexmark-java/wiki/Extensions#table-of-contents-1)
+ *       - {@link TopAnchorLinkExtension TopAnchorLink} (provided by MDoclet)
  * 
  * `-extension <name>`
  * :   Adds the flexmark extension with the given name to the list of extensions.
@@ -130,12 +136,17 @@ public class FlexmarkProcessor implements MarkdownProcessor {
         MutableDataSet flexmarkOpts = new MutableDataSet();
         Set<Class<? extends Extension>> extensions = new HashSet<>();
         extensions.add(AbbreviationExtension.class);
+        extensions.add(AnchorLinkExtension.class);
         extensions.add(DefinitionExtension.class);
         extensions.add(FootnoteExtension.class);
         extensions.add(TablesExtension.class);
         extensions.add(TypographicExtension.class);
+        extensions.add(TocExtension.class);
         extensions.add(WikiLinkExtension.class);
-
+        extensions.add(TopAnchorLinkExtension.class);
+        
+        flexmarkOpts.set(HtmlRenderer.GENERATE_HEADER_ID, true);
+        
         for (String[] opt: options) {
         	switch (opt[0]) {
         	case OPT_PROFILE:
