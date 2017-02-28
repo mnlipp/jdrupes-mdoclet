@@ -1,9 +1,12 @@
+A Doclet that enables Markdown in JavaDoc comments. 
+
 MDoclet
 =======
 
-A Doclet that enables Markdown in JavaDoc comments. It converts all JavaDoc
+MDoclet converts all JavaDoc
 documentation to HTML using a configurable Markdown processor
-([flexmark-java](https://github.com/vsch/flexmark-java) by default)
+(<a target="_blank" href="https://github.com/vsch/flexmark-java">flexmark-java</a>
+by default).
 
 It's a simple preprocessor to the standard Doclet: It processes all JavaDoc 
 comments in the documentation tree and then forwards the result to the 
@@ -80,8 +83,8 @@ Syntax Highlighting
 -------------------
 
 MDoclet integrates
-[highlight.js](http://softwaremaniacs.org/soft/highlight/en/) to enable syntax
-highlighting for fenced blocks.
+<a target="_blank" href="http://softwaremaniacs.org/soft/highlight/en/">highlight.js</a>
+to enable syntax highlighting for fenced blocks.
 
 
 Invoking
@@ -124,7 +127,7 @@ A prebuilt version can be downloaded from ...
 
 You can simply configure the doclet in the javadoc task with the
 `doclet` and `docletpath` options as shown in the 
-[DSL Reference](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html).
+<a target="_blank" href="https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html">DSL Reference</a>.
 
 As a convenience, there is a plugin available:
 
@@ -146,8 +149,8 @@ apply plugin: 'org.jdrupes.mdoclet'
 ```
 
 The latest version available on maven central is shown in the badge on the 
-[project page](https://github.com/mnlipp/jdrupes-mdoclet). Note that
-you cannot use snapshot versions of the plugin, even though they
+<a target="_blank" href="https://github.com/mnlipp/jdrupes-mdoclet">project page</a>.
+Note that you cannot use snapshot versions of the plugin, even though they
 can be obtained from jitpack.
 
 Using the plugin is only worth the effort if you have several subprojects,
@@ -189,13 +192,13 @@ Notes
 -----
 
 This project is an architectural redesign and
-extension of [Abnaxos'](https://github.com/Abnaxos) 
-great [pegdown-doclet](https://github.com/Abnaxos/pegdown-doclet).
+extension of <a target="_blank" href="https://github.com/Abnaxos">Abnaxos'</a> 
+great <a target="_blank" href="https://github.com/Abnaxos/pegdown-doclet">pegdown-doclet</a>.
 Aside from making the Markdown processor configurable, the PlantUML
 functionality has been factored out in a 
-[project of its own](https://github.com/mnlipp/jdrupes-taglets). 
+<a target="_blank" href="https://github.com/mnlipp/jdrupes-taglets">project of its own</a>. 
 
 This Doclet is released under the
-[GPL 3.0](http://www.gnu.org/licenses/gpl-3.0-standalone.html).
+<a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0-standalone.html">GPL 3.0</a>.
 
-@see "flexmark-java <https://github.com/vsch/flexmark-java>"
+@see <a target="_blank" href="https://github.com/vsch/flexmark-java">flexmark-java</a>
