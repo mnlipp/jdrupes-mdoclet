@@ -1,3 +1,4 @@
 org.jdrupes.mdoclet
 org.jdrupes.mdoclet.processors
+org.jdrupes.mdoclet.processors.flexmark
 org.jdrupes.mdoclet.renderers
