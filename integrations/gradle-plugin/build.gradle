@@ -56,7 +56,7 @@ if (project.hasProperty('signing.keyId')) {
 pluginBundle {
 	website = 'https://github.com/mnlipp/jdrupes-mdoclet'
 	vcsUrl = 'git@github.com:mnlipp/jdrupes-mdoclet.git'
-	description = 'A javadoc doclet that handles Markdown comments'
+	description = 'A plugin for configuring MDoclet (a doclet for Markdown javadoc comments)'
 	tags = ['javadoc', 'doclet', 'markdown']
   
 	plugins {
