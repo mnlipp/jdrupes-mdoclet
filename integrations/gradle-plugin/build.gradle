@@ -1,10 +1,12 @@
 plugins {
 	id "com.jfrog.bintray" version "1.7.3"
+	id "com.gradle.plugin-publish" version "0.9.7"
 }
 
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
+apply plugin: "com.gradle.plugin-publish"
 
 dependencies {
     compile gradleApi()
@@ -49,6 +51,22 @@ if (project.hasProperty('signing.keyId')) {
 	}
 }
 
+// Publish to gradle
+
+pluginBundle {
+	website = 'https://github.com/mnlipp/jdrupes-mdoclet'
+	vcsUrl = 'git@github.com:mnlipp/jdrupes-mdoclet.git'
+	description = 'A javadoc doclet that handles Markdown comments'
+	tags = ['javadoc', 'doclet', 'markdown']
+  
+	plugins {
+		mdocletPlugin {
+			id = 'org.jdrupes.mdoclet'
+			displayName = 'MDoclet configuration plugin'
+		}
+	}
+}
+  
 // MavenPublishing (new), incomplete, works only for local. 
 
 publishing {
