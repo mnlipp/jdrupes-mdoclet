@@ -50,6 +50,7 @@ sourceSets {
 
 javadoc {
 	dependsOn classes
+	inputs.file "overview.md"
 
 //	if (javax.tools.ToolProvider.getSystemDocumentationTool()
 //        .isSupportedOption("--allow-script-in-comments")) {
