@@ -128,34 +128,25 @@ You can simply configure the doclet in the javadoc task with the
 `doclet` and `docletpath` options as shown in the 
 [DSL Reference](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html).
 
-As a convenience, there is a plugin available:
+As a convenience, there is a plugin available that configures all your
+javadoc task(s) to use MDoclet. The build script snippets can be found on the 
+[Gradle Plugins Site](https://plugins.gradle.org/plugin/org.jdrupes.mdoclet).
+
+Note that the plugin adds a dependency to the artifact providing MDoclet
+to the configurations. It does not include the MDoclet jar itself. 
+Therefore, you have to make sure that your repositories include 
+maven central, so that the MDoclet artifact can be downloaded.
 
 ```gradle
-buildscript {
-    repositories {
-        mavenCentral() // For finding the plugin 
-    }
-    dependencies {
-        classpath 'org.jdrupes:mdoclet-gradle-plugin:<version>'
-    }
-}
- 
 repositories {
     mavenCentral() // For finding the doclet at compile time
 }
- 
-apply plugin: 'org.jdrupes.mdoclet'
 ```
 
 The latest version available on maven central is shown in the badge on the 
 [project page](https://github.com/mnlipp/jdrupes-mdoclet). Note that
-you cannot use snapshot versions of the plugin, even though they
-can be obtained from jitpack.
+you cannot use snapshot versions of the plugin.
 
-Using the plugin is only worth the effort if you have several subprojects,
-configure the dependency in the root project and apply the plugin selectively
-in the individual projects.
- 
 
 Selecting a Markdown processor
 ------------------------------
