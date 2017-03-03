@@ -178,7 +178,10 @@ public class Options {
                 return false;
             }
             setOverviewFile(new File(opt[1]));
-            optionsIter.remove();
+            // Don't remove the option. It must be passed to the standard doclet
+            // if you want the overview to be generated even if there is only one
+            // package to be documented. As we set the root doc comment, the file
+            // will eventually not be processed by the standard doclet.
             return true;
             
         // Our own options
