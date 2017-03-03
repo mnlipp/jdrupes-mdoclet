@@ -25,7 +25,7 @@ wrapper {
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'
-	version = '1.0.3-SNAPSHOT'
+	version = '1.0.3'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 
