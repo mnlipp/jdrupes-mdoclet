@@ -186,214 +186,217 @@
 <span class="sourceLineNo">178</span>                return false;<a name="line.178"></a>
 <span class="sourceLineNo">179</span>            }<a name="line.179"></a>
 <span class="sourceLineNo">180</span>            setOverviewFile(new File(opt[1]));<a name="line.180"></a>
-<span class="sourceLineNo">181</span>            optionsIter.remove();<a name="line.181"></a>
-<span class="sourceLineNo">182</span>            return true;<a name="line.182"></a>
-<span class="sourceLineNo">183</span>            <a name="line.183"></a>
-<span class="sourceLineNo">184</span>        // Our own options<a name="line.184"></a>
-<span class="sourceLineNo">185</span>        case OPT_MARKDOWN_PROCESSOR:<a name="line.185"></a>
-<span class="sourceLineNo">186</span>                if (processorUsed) {<a name="line.186"></a>
-<span class="sourceLineNo">187</span>                        errorReporter.printError("Markdown processor cannot be changed"<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                                        + " after setting its options");<a name="line.188"></a>
-<span class="sourceLineNo">189</span>                        return false;<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                }<a name="line.190"></a>
-<span class="sourceLineNo">191</span>                MarkdownProcessor p = createProcessor(opt, errorReporter);<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                if (p == null) {<a name="line.192"></a>
-<span class="sourceLineNo">193</span>                        return false;<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                }<a name="line.194"></a>
-<span class="sourceLineNo">195</span>                processor = p;<a name="line.195"></a>
-<span class="sourceLineNo">196</span>                return true;<a name="line.196"></a>
-<span class="sourceLineNo">197</span>            <a name="line.197"></a>
-<span class="sourceLineNo">198</span>        case OPT_DISABLE_HIGHLIGHT:<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                highlightEnabled = false;<a name="line.199"></a>
-<span class="sourceLineNo">200</span>                optionsIter.remove();<a name="line.200"></a>
-<span class="sourceLineNo">201</span>                return true;<a name="line.201"></a>
-<span class="sourceLineNo">202</span>                <a name="line.202"></a>
-<span class="sourceLineNo">203</span>        case OPT_DISABLE_AUTO_HIGHLIGHT:<a name="line.203"></a>
-<span class="sourceLineNo">204</span>                if (processor.isSupportedOption<a name="line.204"></a>
-<span class="sourceLineNo">205</span>                                (MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) == -1) {<a name="line.205"></a>
-<span class="sourceLineNo">206</span>                        return false;<a name="line.206"></a>
-<span class="sourceLineNo">207</span>                }<a name="line.207"></a>
-<span class="sourceLineNo">208</span>                processorOptions.add(new String[] <a name="line.208"></a>
-<span class="sourceLineNo">209</span>                                { MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT });<a name="line.209"></a>
-<span class="sourceLineNo">210</span>                optionsIter.remove();<a name="line.210"></a>
-<span class="sourceLineNo">211</span>                return true;<a name="line.211"></a>
-<span class="sourceLineNo">212</span>                <a name="line.212"></a>
-<span class="sourceLineNo">213</span>        case OPT_HIGHLIGHT_STYLE:<a name="line.213"></a>
-<span class="sourceLineNo">214</span>                if ( highlightStyle != null ) {<a name="line.214"></a>
-<span class="sourceLineNo">215</span>                        errorReporter.printError("Only one " + OPT_HIGHLIGHT_STYLE <a name="line.215"></a>
-<span class="sourceLineNo">216</span>                                        + " option allowed");<a name="line.216"></a>
-<span class="sourceLineNo">217</span>                        return false;<a name="line.217"></a>
-<span class="sourceLineNo">218</span>                }<a name="line.218"></a>
-<span class="sourceLineNo">219</span>                highlightStyle = opt[1];<a name="line.219"></a>
-<span class="sourceLineNo">220</span>                optionsIter.remove();<a name="line.220"></a>
-<span class="sourceLineNo">221</span><a name="line.221"></a>
-<span class="sourceLineNo">222</span>        default:<a name="line.222"></a>
-<span class="sourceLineNo">223</span>                break;<a name="line.223"></a>
-<span class="sourceLineNo">224</span>        }<a name="line.224"></a>
-<span class="sourceLineNo">225</span><a name="line.225"></a>
-<span class="sourceLineNo">226</span>        if (opt[0].startsWith("-M")) {<a name="line.226"></a>
-<span class="sourceLineNo">227</span>                // Processor (type) may not be changed after providing options for it<a name="line.227"></a>
-<span class="sourceLineNo">228</span>                processorUsed = true;<a name="line.228"></a>
-<span class="sourceLineNo">229</span>                String[] pOpt = unpackOption(opt[0].substring(2));<a name="line.229"></a>
-<span class="sourceLineNo">230</span>                if (processor.isSupportedOption(pOpt[0]) == -1) {<a name="line.230"></a>
-<span class="sourceLineNo">231</span>                        return false;<a name="line.231"></a>
-<span class="sourceLineNo">232</span>                }<a name="line.232"></a>
-<span class="sourceLineNo">233</span>                processorOptions.add(pOpt);<a name="line.233"></a>
-<span class="sourceLineNo">234</span>                optionsIter.remove();<a name="line.234"></a>
-<span class="sourceLineNo">235</span>                return true;<a name="line.235"></a>
-<span class="sourceLineNo">236</span>        }<a name="line.236"></a>
-<span class="sourceLineNo">237</span>        <a name="line.237"></a>
-<span class="sourceLineNo">238</span>        return true;<a name="line.238"></a>
-<span class="sourceLineNo">239</span>    }<a name="line.239"></a>
-<span class="sourceLineNo">240</span><a name="line.240"></a>
-<span class="sourceLineNo">241</span>    private static String[] unpackOption(String option) {<a name="line.241"></a>
-<span class="sourceLineNo">242</span>        List&lt;String&gt; opts = new ArrayList&lt;&gt;();<a name="line.242"></a>
-<span class="sourceLineNo">243</span>        String[] eSplit = option.split("=", 2);<a name="line.243"></a>
-<span class="sourceLineNo">244</span>        opts.add(eSplit[0]);<a name="line.244"></a>
-<span class="sourceLineNo">245</span>        if (eSplit.length &gt; 1) {<a name="line.245"></a>
-<span class="sourceLineNo">246</span>                String[] cSplit = eSplit[1].split("(?&lt;!\\\\),");<a name="line.246"></a>
-<span class="sourceLineNo">247</span>                Arrays.stream(cSplit).map(s -&gt; s.replace("\\,", ","))<a name="line.247"></a>
-<span class="sourceLineNo">248</span>                                .forEach(s -&gt; opts.add(s));<a name="line.248"></a>
-<span class="sourceLineNo">249</span>        }<a name="line.249"></a>
-<span class="sourceLineNo">250</span>        return opts.toArray(new String[opts.size()]);<a name="line.250"></a>
-<span class="sourceLineNo">251</span>    }<a name="line.251"></a>
-<span class="sourceLineNo">252</span>    <a name="line.252"></a>
-<span class="sourceLineNo">253</span>        private MarkdownProcessor createProcessor(String[] opt, DocErrorReporter errorReporter) {<a name="line.253"></a>
-<span class="sourceLineNo">254</span>                try {<a name="line.254"></a>
-<span class="sourceLineNo">255</span>                        @SuppressWarnings("unchecked")<a name="line.255"></a>
-<span class="sourceLineNo">256</span>                        Class&lt;MarkdownProcessor&gt; mpc = (Class&lt;MarkdownProcessor&gt;) <a name="line.256"></a>
-<span class="sourceLineNo">257</span>                                        getClass().getClassLoader().loadClass(opt[1]);<a name="line.257"></a>
-<span class="sourceLineNo">258</span>                        return (MarkdownProcessor)mpc.newInstance(); <a name="line.258"></a>
-<span class="sourceLineNo">259</span>                } catch (ClassNotFoundException | InstantiationException<a name="line.259"></a>
-<span class="sourceLineNo">260</span>                                | IllegalAccessException | ClassCastException e) {<a name="line.260"></a>
-<span class="sourceLineNo">261</span>                        errorReporter.printError("Markdown processor \"" + opt[1] <a name="line.261"></a>
-<span class="sourceLineNo">262</span>                                        + "\" cannot be loaded (" + e.getMessage()<a name="line.262"></a>
-<span class="sourceLineNo">263</span>                                        + "), check name and docletpath");<a name="line.263"></a>
-<span class="sourceLineNo">264</span>                        return null;<a name="line.264"></a>
-<span class="sourceLineNo">265</span>                }<a name="line.265"></a>
-<span class="sourceLineNo">266</span>        }<a name="line.266"></a>
-<span class="sourceLineNo">267</span><a name="line.267"></a>
-<span class="sourceLineNo">268</span>    /**<a name="line.268"></a>
-<span class="sourceLineNo">269</span>     * Returns the processor selected by the options.<a name="line.269"></a>
-<span class="sourceLineNo">270</span>     * <a name="line.270"></a>
-<span class="sourceLineNo">271</span>     * @return the processor<a name="line.271"></a>
-<span class="sourceLineNo">272</span>     */<a name="line.272"></a>
-<span class="sourceLineNo">273</span>    public MarkdownProcessor getProcessor() {<a name="line.273"></a>
-<span class="sourceLineNo">274</span>        return processor;<a name="line.274"></a>
-<span class="sourceLineNo">275</span>    }<a name="line.275"></a>
-<span class="sourceLineNo">276</span><a name="line.276"></a>
-<span class="sourceLineNo">277</span>    /**<a name="line.277"></a>
-<span class="sourceLineNo">278</span>     * Returns the markdown processor options filtered out in<a name="line.278"></a>
-<span class="sourceLineNo">279</span>     * {@link #load(String[][], DocErrorReporter)}.<a name="line.279"></a>
-<span class="sourceLineNo">280</span>     * <a name="line.280"></a>
-<span class="sourceLineNo">281</span>     * @return the options<a name="line.281"></a>
-<span class="sourceLineNo">282</span>     */<a name="line.282"></a>
-<span class="sourceLineNo">283</span>    public String[][] getProcessorOptions() {<a name="line.283"></a>
-<span class="sourceLineNo">284</span>        return processorOptions.toArray(new String[processorOptions.size()][]);<a name="line.284"></a>
-<span class="sourceLineNo">285</span>    }<a name="line.285"></a>
-<span class="sourceLineNo">286</span><a name="line.286"></a>
-<span class="sourceLineNo">287</span>    /**<a name="line.287"></a>
-<span class="sourceLineNo">288</span>     * Returns the names of the tags that have been seen in the `-tag` options<a name="line.288"></a>
-<span class="sourceLineNo">289</span>     * with an "`M`" flag.<a name="line.289"></a>
-<span class="sourceLineNo">290</span>     * <a name="line.290"></a>
-<span class="sourceLineNo">291</span>     * @return the tags<a name="line.291"></a>
-<span class="sourceLineNo">292</span>     */<a name="line.292"></a>
-<span class="sourceLineNo">293</span>    public String[] getMarkedDownTags() {<a name="line.293"></a>
-<span class="sourceLineNo">294</span>        return markedDownTags.toArray(new String[markedDownTags.size()]);<a name="line.294"></a>
-<span class="sourceLineNo">295</span>    }<a name="line.295"></a>
-<span class="sourceLineNo">296</span>    <a name="line.296"></a>
-<span class="sourceLineNo">297</span>    /**<a name="line.297"></a>
-<span class="sourceLineNo">298</span>     * Gets the overview file.<a name="line.298"></a>
-<span class="sourceLineNo">299</span>     *<a name="line.299"></a>
-<span class="sourceLineNo">300</span>     * @return The overview file.<a name="line.300"></a>
-<span class="sourceLineNo">301</span>     */<a name="line.301"></a>
-<span class="sourceLineNo">302</span>    public File getOverviewFile() {<a name="line.302"></a>
-<span class="sourceLineNo">303</span>        return overviewFile;<a name="line.303"></a>
-<span class="sourceLineNo">304</span>    }<a name="line.304"></a>
-<span class="sourceLineNo">305</span><a name="line.305"></a>
-<span class="sourceLineNo">306</span>    /**<a name="line.306"></a>
-<span class="sourceLineNo">307</span>     * Sets the overview file.<a name="line.307"></a>
-<span class="sourceLineNo">308</span>     *<a name="line.308"></a>
-<span class="sourceLineNo">309</span>     * @param overviewFile The overview file.<a name="line.309"></a>
-<span class="sourceLineNo">310</span>     */<a name="line.310"></a>
-<span class="sourceLineNo">311</span>    public void setOverviewFile(File overviewFile) {<a name="line.311"></a>
-<span class="sourceLineNo">312</span>        this.overviewFile = overviewFile;<a name="line.312"></a>
-<span class="sourceLineNo">313</span>    }<a name="line.313"></a>
-<span class="sourceLineNo">314</span><a name="line.314"></a>
-<span class="sourceLineNo">315</span>    /**<a name="line.315"></a>
-<span class="sourceLineNo">316</span>     * Gets the source encoding.<a name="line.316"></a>
-<span class="sourceLineNo">317</span>     *<a name="line.317"></a>
-<span class="sourceLineNo">318</span>     * @return The source encoding.<a name="line.318"></a>
-<span class="sourceLineNo">319</span>     */<a name="line.319"></a>
-<span class="sourceLineNo">320</span>    public Charset getEncoding() {<a name="line.320"></a>
-<span class="sourceLineNo">321</span>        return encoding != null ? encoding : Charset.defaultCharset();<a name="line.321"></a>
-<span class="sourceLineNo">322</span>    }<a name="line.322"></a>
-<span class="sourceLineNo">323</span><a name="line.323"></a>
-<span class="sourceLineNo">324</span>    /**<a name="line.324"></a>
-<span class="sourceLineNo">325</span>     * Sets the source encoding.<a name="line.325"></a>
-<span class="sourceLineNo">326</span>     *<a name="line.326"></a>
-<span class="sourceLineNo">327</span>     * @param encoding The source encoding.<a name="line.327"></a>
-<span class="sourceLineNo">328</span>     */<a name="line.328"></a>
-<span class="sourceLineNo">329</span>    public void setEncoding(Charset encoding) {<a name="line.329"></a>
-<span class="sourceLineNo">330</span>        this.encoding = encoding;<a name="line.330"></a>
-<span class="sourceLineNo">331</span>    }<a name="line.331"></a>
-<span class="sourceLineNo">332</span><a name="line.332"></a>
-<span class="sourceLineNo">333</span>    /**<a name="line.333"></a>
-<span class="sourceLineNo">334</span>     * Gets the destination directory.<a name="line.334"></a>
-<span class="sourceLineNo">335</span>     *<a name="line.335"></a>
-<span class="sourceLineNo">336</span>     * @return The destination directory.<a name="line.336"></a>
-<span class="sourceLineNo">337</span>     */<a name="line.337"></a>
-<span class="sourceLineNo">338</span>    public File getDestinationDir() {<a name="line.338"></a>
-<span class="sourceLineNo">339</span>        if ( destinationDir == null ) {<a name="line.339"></a>
-<span class="sourceLineNo">340</span>            destinationDir = new File(System.getProperty("user.dir"));<a name="line.340"></a>
-<span class="sourceLineNo">341</span>        }<a name="line.341"></a>
-<span class="sourceLineNo">342</span>        return destinationDir;<a name="line.342"></a>
-<span class="sourceLineNo">343</span>    }<a name="line.343"></a>
-<span class="sourceLineNo">344</span><a name="line.344"></a>
-<span class="sourceLineNo">345</span>    /**<a name="line.345"></a>
-<span class="sourceLineNo">346</span>     * Sets the destination directory.<a name="line.346"></a>
-<span class="sourceLineNo">347</span>     *<a name="line.347"></a>
-<span class="sourceLineNo">348</span>     * @param destinationDir    The destination directory<a name="line.348"></a>
-<span class="sourceLineNo">349</span>     */<a name="line.349"></a>
-<span class="sourceLineNo">350</span>    public void setDestinationDir(File destinationDir) {<a name="line.350"></a>
-<span class="sourceLineNo">351</span>        this.destinationDir = destinationDir;<a name="line.351"></a>
-<span class="sourceLineNo">352</span>    }<a name="line.352"></a>
-<span class="sourceLineNo">353</span><a name="line.353"></a>
-<span class="sourceLineNo">354</span>    /**<a name="line.354"></a>
-<span class="sourceLineNo">355</span>     * Gets the CSS stylesheet file.<a name="line.355"></a>
-<span class="sourceLineNo">356</span>     *<a name="line.356"></a>
-<span class="sourceLineNo">357</span>     * @return The stylesheet file.<a name="line.357"></a>
-<span class="sourceLineNo">358</span>     */<a name="line.358"></a>
-<span class="sourceLineNo">359</span>    public File getStylesheetFile() {<a name="line.359"></a>
-<span class="sourceLineNo">360</span>        return stylesheetFile;<a name="line.360"></a>
-<span class="sourceLineNo">361</span>    }<a name="line.361"></a>
-<span class="sourceLineNo">362</span><a name="line.362"></a>
-<span class="sourceLineNo">363</span>    /**<a name="line.363"></a>
-<span class="sourceLineNo">364</span>     * Sets the CSS stylesheet file.<a name="line.364"></a>
-<span class="sourceLineNo">365</span>     *<a name="line.365"></a>
-<span class="sourceLineNo">366</span>     * @param stylesheetFile The stylesheet file.<a name="line.366"></a>
-<span class="sourceLineNo">367</span>     */<a name="line.367"></a>
-<span class="sourceLineNo">368</span>    public void setStylesheetFile(File stylesheetFile) {<a name="line.368"></a>
-<span class="sourceLineNo">369</span>        this.stylesheetFile = stylesheetFile;<a name="line.369"></a>
-<span class="sourceLineNo">370</span>    }<a name="line.370"></a>
-<span class="sourceLineNo">371</span><a name="line.371"></a>
-<span class="sourceLineNo">372</span>    public boolean isHighlightEnabled() {<a name="line.372"></a>
-<span class="sourceLineNo">373</span>        return highlightEnabled;<a name="line.373"></a>
-<span class="sourceLineNo">374</span>    }<a name="line.374"></a>
-<span class="sourceLineNo">375</span><a name="line.375"></a>
-<span class="sourceLineNo">376</span>    public void setHighlightEnabled(boolean highlightEnabled) {<a name="line.376"></a>
-<span class="sourceLineNo">377</span>        this.highlightEnabled = highlightEnabled;<a name="line.377"></a>
-<span class="sourceLineNo">378</span>    }<a name="line.378"></a>
-<span class="sourceLineNo">379</span><a name="line.379"></a>
-<span class="sourceLineNo">380</span>    public String getHighlightStyle() {<a name="line.380"></a>
-<span class="sourceLineNo">381</span>        return highlightStyle != null ? highlightStyle : "default";<a name="line.381"></a>
-<span class="sourceLineNo">382</span>    }<a name="line.382"></a>
-<span class="sourceLineNo">383</span><a name="line.383"></a>
-<span class="sourceLineNo">384</span>    public void setHighlightStyle(String highlightStyle) {<a name="line.384"></a>
-<span class="sourceLineNo">385</span>        this.highlightStyle = highlightStyle;<a name="line.385"></a>
-<span class="sourceLineNo">386</span>    }<a name="line.386"></a>
-<span class="sourceLineNo">387</span><a name="line.387"></a>
-<span class="sourceLineNo">388</span>}<a name="line.388"></a>
+<span class="sourceLineNo">181</span>            // Don't remove the option. It must be passed to the standard doclet<a name="line.181"></a>
+<span class="sourceLineNo">182</span>            // if you want the overview to be generated even if there is only one<a name="line.182"></a>
+<span class="sourceLineNo">183</span>            // package to be documented. As we set the root doc comment, the file<a name="line.183"></a>
+<span class="sourceLineNo">184</span>            // will not be processed by the standard doclet.<a name="line.184"></a>
+<span class="sourceLineNo">185</span>            return true;<a name="line.185"></a>
+<span class="sourceLineNo">186</span>            <a name="line.186"></a>
+<span class="sourceLineNo">187</span>        // Our own options<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        case OPT_MARKDOWN_PROCESSOR:<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                if (processorUsed) {<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                        errorReporter.printError("Markdown processor cannot be changed"<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                                        + " after setting its options");<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                        return false;<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                MarkdownProcessor p = createProcessor(opt, errorReporter);<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                if (p == null) {<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                        return false;<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                }<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                processor = p;<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                return true;<a name="line.199"></a>
+<span class="sourceLineNo">200</span>            <a name="line.200"></a>
+<span class="sourceLineNo">201</span>        case OPT_DISABLE_HIGHLIGHT:<a name="line.201"></a>
+<span class="sourceLineNo">202</span>                highlightEnabled = false;<a name="line.202"></a>
+<span class="sourceLineNo">203</span>                optionsIter.remove();<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                return true;<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                <a name="line.205"></a>
+<span class="sourceLineNo">206</span>        case OPT_DISABLE_AUTO_HIGHLIGHT:<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                if (processor.isSupportedOption<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                                (MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) == -1) {<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                        return false;<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                }<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                processorOptions.add(new String[] <a name="line.211"></a>
+<span class="sourceLineNo">212</span>                                { MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT });<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                optionsIter.remove();<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                return true;<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                <a name="line.215"></a>
+<span class="sourceLineNo">216</span>        case OPT_HIGHLIGHT_STYLE:<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                if ( highlightStyle != null ) {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                        errorReporter.printError("Only one " + OPT_HIGHLIGHT_STYLE <a name="line.218"></a>
+<span class="sourceLineNo">219</span>                                        + " option allowed");<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                        return false;<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                }<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                highlightStyle = opt[1];<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                optionsIter.remove();<a name="line.223"></a>
+<span class="sourceLineNo">224</span><a name="line.224"></a>
+<span class="sourceLineNo">225</span>        default:<a name="line.225"></a>
+<span class="sourceLineNo">226</span>                break;<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        }<a name="line.227"></a>
+<span class="sourceLineNo">228</span><a name="line.228"></a>
+<span class="sourceLineNo">229</span>        if (opt[0].startsWith("-M")) {<a name="line.229"></a>
+<span class="sourceLineNo">230</span>                // Processor (type) may not be changed after providing options for it<a name="line.230"></a>
+<span class="sourceLineNo">231</span>                processorUsed = true;<a name="line.231"></a>
+<span class="sourceLineNo">232</span>                String[] pOpt = unpackOption(opt[0].substring(2));<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                if (processor.isSupportedOption(pOpt[0]) == -1) {<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                        return false;<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                }<a name="line.235"></a>
+<span class="sourceLineNo">236</span>                processorOptions.add(pOpt);<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                optionsIter.remove();<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                return true;<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        }<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        <a name="line.240"></a>
+<span class="sourceLineNo">241</span>        return true;<a name="line.241"></a>
+<span class="sourceLineNo">242</span>    }<a name="line.242"></a>
+<span class="sourceLineNo">243</span><a name="line.243"></a>
+<span class="sourceLineNo">244</span>    private static String[] unpackOption(String option) {<a name="line.244"></a>
+<span class="sourceLineNo">245</span>        List&lt;String&gt; opts = new ArrayList&lt;&gt;();<a name="line.245"></a>
+<span class="sourceLineNo">246</span>        String[] eSplit = option.split("=", 2);<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        opts.add(eSplit[0]);<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        if (eSplit.length &gt; 1) {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                String[] cSplit = eSplit[1].split("(?&lt;!\\\\),");<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                Arrays.stream(cSplit).map(s -&gt; s.replace("\\,", ","))<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                                .forEach(s -&gt; opts.add(s));<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        }<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        return opts.toArray(new String[opts.size()]);<a name="line.253"></a>
+<span class="sourceLineNo">254</span>    }<a name="line.254"></a>
+<span class="sourceLineNo">255</span>    <a name="line.255"></a>
+<span class="sourceLineNo">256</span>        private MarkdownProcessor createProcessor(String[] opt, DocErrorReporter errorReporter) {<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                try {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                        @SuppressWarnings("unchecked")<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                        Class&lt;MarkdownProcessor&gt; mpc = (Class&lt;MarkdownProcessor&gt;) <a name="line.259"></a>
+<span class="sourceLineNo">260</span>                                        getClass().getClassLoader().loadClass(opt[1]);<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                        return (MarkdownProcessor)mpc.newInstance(); <a name="line.261"></a>
+<span class="sourceLineNo">262</span>                } catch (ClassNotFoundException | InstantiationException<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                                | IllegalAccessException | ClassCastException e) {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>                        errorReporter.printError("Markdown processor \"" + opt[1] <a name="line.264"></a>
+<span class="sourceLineNo">265</span>                                        + "\" cannot be loaded (" + e.getMessage()<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                                        + "), check name and docletpath");<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                        return null;<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                }<a name="line.268"></a>
+<span class="sourceLineNo">269</span>        }<a name="line.269"></a>
+<span class="sourceLineNo">270</span><a name="line.270"></a>
+<span class="sourceLineNo">271</span>    /**<a name="line.271"></a>
+<span class="sourceLineNo">272</span>     * Returns the processor selected by the options.<a name="line.272"></a>
+<span class="sourceLineNo">273</span>     * <a name="line.273"></a>
+<span class="sourceLineNo">274</span>     * @return the processor<a name="line.274"></a>
+<span class="sourceLineNo">275</span>     */<a name="line.275"></a>
+<span class="sourceLineNo">276</span>    public MarkdownProcessor getProcessor() {<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        return processor;<a name="line.277"></a>
+<span class="sourceLineNo">278</span>    }<a name="line.278"></a>
+<span class="sourceLineNo">279</span><a name="line.279"></a>
+<span class="sourceLineNo">280</span>    /**<a name="line.280"></a>
+<span class="sourceLineNo">281</span>     * Returns the markdown processor options filtered out in<a name="line.281"></a>
+<span class="sourceLineNo">282</span>     * {@link #load(String[][], DocErrorReporter)}.<a name="line.282"></a>
+<span class="sourceLineNo">283</span>     * <a name="line.283"></a>
+<span class="sourceLineNo">284</span>     * @return the options<a name="line.284"></a>
+<span class="sourceLineNo">285</span>     */<a name="line.285"></a>
+<span class="sourceLineNo">286</span>    public String[][] getProcessorOptions() {<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        return processorOptions.toArray(new String[processorOptions.size()][]);<a name="line.287"></a>
+<span class="sourceLineNo">288</span>    }<a name="line.288"></a>
+<span class="sourceLineNo">289</span><a name="line.289"></a>
+<span class="sourceLineNo">290</span>    /**<a name="line.290"></a>
+<span class="sourceLineNo">291</span>     * Returns the names of the tags that have been seen in the `-tag` options<a name="line.291"></a>
+<span class="sourceLineNo">292</span>     * with an "`M`" flag.<a name="line.292"></a>
+<span class="sourceLineNo">293</span>     * <a name="line.293"></a>
+<span class="sourceLineNo">294</span>     * @return the tags<a name="line.294"></a>
+<span class="sourceLineNo">295</span>     */<a name="line.295"></a>
+<span class="sourceLineNo">296</span>    public String[] getMarkedDownTags() {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>        return markedDownTags.toArray(new String[markedDownTags.size()]);<a name="line.297"></a>
+<span class="sourceLineNo">298</span>    }<a name="line.298"></a>
+<span class="sourceLineNo">299</span>    <a name="line.299"></a>
+<span class="sourceLineNo">300</span>    /**<a name="line.300"></a>
+<span class="sourceLineNo">301</span>     * Gets the overview file.<a name="line.301"></a>
+<span class="sourceLineNo">302</span>     *<a name="line.302"></a>
+<span class="sourceLineNo">303</span>     * @return The overview file.<a name="line.303"></a>
+<span class="sourceLineNo">304</span>     */<a name="line.304"></a>
+<span class="sourceLineNo">305</span>    public File getOverviewFile() {<a name="line.305"></a>
+<span class="sourceLineNo">306</span>        return overviewFile;<a name="line.306"></a>
+<span class="sourceLineNo">307</span>    }<a name="line.307"></a>
+<span class="sourceLineNo">308</span><a name="line.308"></a>
+<span class="sourceLineNo">309</span>    /**<a name="line.309"></a>
+<span class="sourceLineNo">310</span>     * Sets the overview file.<a name="line.310"></a>
+<span class="sourceLineNo">311</span>     *<a name="line.311"></a>
+<span class="sourceLineNo">312</span>     * @param overviewFile The overview file.<a name="line.312"></a>
+<span class="sourceLineNo">313</span>     */<a name="line.313"></a>
+<span class="sourceLineNo">314</span>    public void setOverviewFile(File overviewFile) {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>        this.overviewFile = overviewFile;<a name="line.315"></a>
+<span class="sourceLineNo">316</span>    }<a name="line.316"></a>
+<span class="sourceLineNo">317</span><a name="line.317"></a>
+<span class="sourceLineNo">318</span>    /**<a name="line.318"></a>
+<span class="sourceLineNo">319</span>     * Gets the source encoding.<a name="line.319"></a>
+<span class="sourceLineNo">320</span>     *<a name="line.320"></a>
+<span class="sourceLineNo">321</span>     * @return The source encoding.<a name="line.321"></a>
+<span class="sourceLineNo">322</span>     */<a name="line.322"></a>
+<span class="sourceLineNo">323</span>    public Charset getEncoding() {<a name="line.323"></a>
+<span class="sourceLineNo">324</span>        return encoding != null ? encoding : Charset.defaultCharset();<a name="line.324"></a>
+<span class="sourceLineNo">325</span>    }<a name="line.325"></a>
+<span class="sourceLineNo">326</span><a name="line.326"></a>
+<span class="sourceLineNo">327</span>    /**<a name="line.327"></a>
+<span class="sourceLineNo">328</span>     * Sets the source encoding.<a name="line.328"></a>
+<span class="sourceLineNo">329</span>     *<a name="line.329"></a>
+<span class="sourceLineNo">330</span>     * @param encoding The source encoding.<a name="line.330"></a>
+<span class="sourceLineNo">331</span>     */<a name="line.331"></a>
+<span class="sourceLineNo">332</span>    public void setEncoding(Charset encoding) {<a name="line.332"></a>
+<span class="sourceLineNo">333</span>        this.encoding = encoding;<a name="line.333"></a>
+<span class="sourceLineNo">334</span>    }<a name="line.334"></a>
+<span class="sourceLineNo">335</span><a name="line.335"></a>
+<span class="sourceLineNo">336</span>    /**<a name="line.336"></a>
+<span class="sourceLineNo">337</span>     * Gets the destination directory.<a name="line.337"></a>
+<span class="sourceLineNo">338</span>     *<a name="line.338"></a>
+<span class="sourceLineNo">339</span>     * @return The destination directory.<a name="line.339"></a>
+<span class="sourceLineNo">340</span>     */<a name="line.340"></a>
+<span class="sourceLineNo">341</span>    public File getDestinationDir() {<a name="line.341"></a>
+<span class="sourceLineNo">342</span>        if ( destinationDir == null ) {<a name="line.342"></a>
+<span class="sourceLineNo">343</span>            destinationDir = new File(System.getProperty("user.dir"));<a name="line.343"></a>
+<span class="sourceLineNo">344</span>        }<a name="line.344"></a>
+<span class="sourceLineNo">345</span>        return destinationDir;<a name="line.345"></a>
+<span class="sourceLineNo">346</span>    }<a name="line.346"></a>
+<span class="sourceLineNo">347</span><a name="line.347"></a>
+<span class="sourceLineNo">348</span>    /**<a name="line.348"></a>
+<span class="sourceLineNo">349</span>     * Sets the destination directory.<a name="line.349"></a>
+<span class="sourceLineNo">350</span>     *<a name="line.350"></a>
+<span class="sourceLineNo">351</span>     * @param destinationDir    The destination directory<a name="line.351"></a>
+<span class="sourceLineNo">352</span>     */<a name="line.352"></a>
+<span class="sourceLineNo">353</span>    public void setDestinationDir(File destinationDir) {<a name="line.353"></a>
+<span class="sourceLineNo">354</span>        this.destinationDir = destinationDir;<a name="line.354"></a>
+<span class="sourceLineNo">355</span>    }<a name="line.355"></a>
+<span class="sourceLineNo">356</span><a name="line.356"></a>
+<span class="sourceLineNo">357</span>    /**<a name="line.357"></a>
+<span class="sourceLineNo">358</span>     * Gets the CSS stylesheet file.<a name="line.358"></a>
+<span class="sourceLineNo">359</span>     *<a name="line.359"></a>
+<span class="sourceLineNo">360</span>     * @return The stylesheet file.<a name="line.360"></a>
+<span class="sourceLineNo">361</span>     */<a name="line.361"></a>
+<span class="sourceLineNo">362</span>    public File getStylesheetFile() {<a name="line.362"></a>
+<span class="sourceLineNo">363</span>        return stylesheetFile;<a name="line.363"></a>
+<span class="sourceLineNo">364</span>    }<a name="line.364"></a>
+<span class="sourceLineNo">365</span><a name="line.365"></a>
+<span class="sourceLineNo">366</span>    /**<a name="line.366"></a>
+<span class="sourceLineNo">367</span>     * Sets the CSS stylesheet file.<a name="line.367"></a>
+<span class="sourceLineNo">368</span>     *<a name="line.368"></a>
+<span class="sourceLineNo">369</span>     * @param stylesheetFile The stylesheet file.<a name="line.369"></a>
+<span class="sourceLineNo">370</span>     */<a name="line.370"></a>
+<span class="sourceLineNo">371</span>    public void setStylesheetFile(File stylesheetFile) {<a name="line.371"></a>
+<span class="sourceLineNo">372</span>        this.stylesheetFile = stylesheetFile;<a name="line.372"></a>
+<span class="sourceLineNo">373</span>    }<a name="line.373"></a>
+<span class="sourceLineNo">374</span><a name="line.374"></a>
+<span class="sourceLineNo">375</span>    public boolean isHighlightEnabled() {<a name="line.375"></a>
+<span class="sourceLineNo">376</span>        return highlightEnabled;<a name="line.376"></a>
+<span class="sourceLineNo">377</span>    }<a name="line.377"></a>
+<span class="sourceLineNo">378</span><a name="line.378"></a>
+<span class="sourceLineNo">379</span>    public void setHighlightEnabled(boolean highlightEnabled) {<a name="line.379"></a>
+<span class="sourceLineNo">380</span>        this.highlightEnabled = highlightEnabled;<a name="line.380"></a>
+<span class="sourceLineNo">381</span>    }<a name="line.381"></a>
+<span class="sourceLineNo">382</span><a name="line.382"></a>
+<span class="sourceLineNo">383</span>    public String getHighlightStyle() {<a name="line.383"></a>
+<span class="sourceLineNo">384</span>        return highlightStyle != null ? highlightStyle : "default";<a name="line.384"></a>
+<span class="sourceLineNo">385</span>    }<a name="line.385"></a>
+<span class="sourceLineNo">386</span><a name="line.386"></a>
+<span class="sourceLineNo">387</span>    public void setHighlightStyle(String highlightStyle) {<a name="line.387"></a>
+<span class="sourceLineNo">388</span>        this.highlightStyle = highlightStyle;<a name="line.388"></a>
+<span class="sourceLineNo">389</span>    }<a name="line.389"></a>
+<span class="sourceLineNo">390</span><a name="line.390"></a>
+<span class="sourceLineNo">391</span>}<a name="line.391"></a>
 
 
 
