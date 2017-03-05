@@ -28,3 +28,19 @@ integration has been factored out in the independent project
 This doclet is released under the
 [GPL 3.0](http://www.gnu.org/licenses/gpl-3.0-standalone.html).
 
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["setDomains", ["*.jdrupes.org","*.github.com/mnlipp/jdrupes","*.mnlipp.github.io","*.mnlipp.github.com"]]);
+  _paq.push(["trackPageView"]);
+  _paq.push(["enableLinkTracking"]);
+  (function() {
+    var u="//piwik.mnl.de/";
+    _paq.push(["setTrackerUrl", u+"piwik.php"]);
+    _paq.push(["setSiteId", "10"]);
+    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0];
+    g.type="text/javascript"; g.async=true; g.defer=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//piwik.mnl.de/piwik.php?idsite=10" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
