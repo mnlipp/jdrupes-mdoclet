@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet.renderers;
 
-import static org.jdrupes.mdoclet.renderers.TagRendering.*;
+import com.sun.javadoc.Tag;
 
 import org.jdrupes.mdoclet.MDoclet;
 
-import com.sun.javadoc.Tag;
+import static org.jdrupes.mdoclet.renderers.TagRendering.*;
 
 
 /**
@@ -34,7 +35,8 @@ public class SimpleTagRenderer implements TagRenderer<Tag> {
 
     @Override
     public void render(Tag tag, StringBuilder target, MDoclet doclet) {
-        target.append(tag.name()).append(" ").append(simplifySingleParagraph(doclet.toHtml(tag.text())));
+        target.append(tag.name()).append(" ").append(
+        		simplifySingleParagraph(doclet.toHtml(tag.text())));
     }
 
 }

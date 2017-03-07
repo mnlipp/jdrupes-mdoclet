@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
-package org.jdrupes.mdoclet;
 
-import java.util.Arrays;
+package org.jdrupes.mdoclet;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.PackageDoc;
@@ -27,6 +26,7 @@ import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.SourcePosition;
 import com.sun.javadoc.Tag;
 
+import java.util.Arrays;
 
 /**
  * A wrapper for the {@link RootDoc}. It forwards all calls to the original root document

@@ -16,16 +16,17 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet.renderers;
 
-import static org.jdrupes.mdoclet.renderers.TagRendering.simplifySingleParagraph;
+import com.sun.javadoc.SeeTag;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jdrupes.mdoclet.MDoclet;
 
-import com.sun.javadoc.SeeTag;
+import static org.jdrupes.mdoclet.renderers.TagRendering.simplifySingleParagraph;
 
 
 /**

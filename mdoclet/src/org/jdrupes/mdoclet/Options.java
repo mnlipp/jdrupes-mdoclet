@@ -16,7 +16,11 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet;
+
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.tools.doclets.standard.Standard;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -32,9 +36,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jdrupes.mdoclet.processors.FlexmarkProcessor;
-
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.tools.doclets.standard.Standard;
 
 /**
  * Processes and stores the command line options.
@@ -66,6 +67,12 @@ public class Options {
     private static boolean processorUsed = false;
     private static List<String[]> processorOptions = new ArrayList<>();
 
+    /**
+     * Returns the length of the given option.
+     * 
+     * @param option the option
+     * @return the length
+     */
     public static int optionLength(String option) {
     	
     	if (option.startsWith("-M") || option.startsWith("-T")) {
@@ -77,8 +84,8 @@ public class Options {
 		case OPT_DISABLE_HIGHLIGHT:
 			return 2;
 		case OPT_DISABLE_AUTO_HIGHLIGHT:
-			return processor.isSupportedOption
-					(MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) + 1;
+			return processor.isSupportedOption(
+					MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) + 1;
 		default:
 			return Standard.optionLength(option);
 		}
@@ -98,8 +105,7 @@ public class Options {
         String[][] forwardedOptions = new Options().load(options, errorReporter);
         if ( forwardedOptions != null ) {
             return Standard.validOptions(options, errorReporter);
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -134,8 +140,7 @@ public class Options {
         case OPT_ENCODING:
             try {
                 encoding = Charset.forName(opt[1]);
-            }
-            catch ( IllegalCharsetNameException e ) {
+            } catch ( IllegalCharsetNameException e ) {
                 errorReporter.printError("Illegal charset: " + opt[1]);
                 return false;
             }
@@ -191,11 +196,11 @@ public class Options {
         				+ " after setting its options");
         		return false;
         	}
-        	MarkdownProcessor p = createProcessor(opt, errorReporter);
-        	if (p == null) {
+        	MarkdownProcessor proc = createProcessor(opt, errorReporter);
+        	if (proc == null) {
         		return false;
         	}
-        	processor = p;
+        	processor = proc;
         	return true;
             
         case OPT_DISABLE_HIGHLIGHT:
@@ -204,8 +209,8 @@ public class Options {
           	return true;
           	
         case OPT_DISABLE_AUTO_HIGHLIGHT:
-        	if (processor.isSupportedOption
-        			(MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) == -1) {
+        	if (processor.isSupportedOption(
+        			MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) == -1) {
         		return false;
         	}
         	processorOptions.add(new String[] 
@@ -221,6 +226,7 @@ public class Options {
         	}
         	highlightStyle = opt[1];
         	optionsIter.remove();
+        	break;
 
         default:
         	break;
@@ -229,11 +235,11 @@ public class Options {
         if (opt[0].startsWith("-M")) {
         	// Processor (type) may not be changed after providing options for it
         	processorUsed = true;
-        	String[] pOpt = unpackOption(opt[0].substring(2));
-        	if (processor.isSupportedOption(pOpt[0]) == -1) {
+        	String[] procOpt = unpackOption(opt[0].substring(2));
+        	if (processor.isSupportedOption(procOpt[0]) == -1) {
         		return false;
         	}
-        	processorOptions.add(pOpt);
+        	processorOptions.add(procOpt);
         	optionsIter.remove();
         	return true;
         }
@@ -243,11 +249,11 @@ public class Options {
 
     private static String[] unpackOption(String option) {
     	List<String> opts = new ArrayList<>();
-    	String[] eSplit = option.split("=", 2);
-    	opts.add(eSplit[0]);
-    	if (eSplit.length > 1) {
-    		String[] cSplit = eSplit[1].split("(?<!\\\\),");
-    		Arrays.stream(cSplit).map(s -> s.replace("\\,", ","))
+    	String[] eqSplit = option.split("=", 2);
+    	opts.add(eqSplit[0]);
+    	if (eqSplit.length > 1) {
+    		String[] valSplit = eqSplit[1].split("(?<!\\\\),");
+    		Arrays.stream(valSplit).map(s -> s.replace("\\,", ","))
     				.forEach(s -> opts.add(s));
     	}
     	return opts.toArray(new String[opts.size()]);

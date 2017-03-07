@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet.renderers;
 
-import static org.jdrupes.mdoclet.renderers.TagRendering.*;
+import com.sun.javadoc.ThrowsTag;
 
 import org.jdrupes.mdoclet.MDoclet;
 
-import com.sun.javadoc.ThrowsTag;
+import static org.jdrupes.mdoclet.renderers.TagRendering.*;
 
 
 /**

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet;
 
 import javax.tools.OptionChecker;
@@ -36,10 +37,10 @@ public interface MarkdownProcessor extends OptionChecker {
 	 * implemented by configuring the processors HTML renderer in some way.
 	 *  
 	 * @param options an array of options; each entry consists of an array that has
-	 * the option name as first entry and any parameters for that option as subsequent
-	 * entries
+	 *     the option name as first entry and any parameters for that option as 
+	 *     subsequent entries
 	 */
-	void start (String[][] options);
+	void start(String[][] options);
 	
 	/**
 	 * Converts the given markdown test to HTML.

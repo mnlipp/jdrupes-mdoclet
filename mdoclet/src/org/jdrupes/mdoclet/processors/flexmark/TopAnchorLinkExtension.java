@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet.processors.flexmark;
 
 import com.vladsch.flexmark.Extension;
@@ -22,8 +23,8 @@ import com.vladsch.flexmark.ast.Link;
 import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.html.AttributeProvider;
 import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.html.IndependentAttributeProviderFactory;
 import com.vladsch.flexmark.html.HtmlRenderer.Builder;
+import com.vladsch.flexmark.html.IndependentAttributeProviderFactory;
 import com.vladsch.flexmark.html.renderer.AttributablePart;
 import com.vladsch.flexmark.html.renderer.NodeRendererContext;
 import com.vladsch.flexmark.util.html.Attributes;
@@ -58,7 +59,8 @@ public class TopAnchorLinkExtension implements HtmlRenderer.HtmlRendererExtensio
 					@Override
 					public void setAttributes(Node node, AttributablePart part, 
 							Attributes attributes) {
-						if (node instanceof Link && part == AttributablePart.LINK) {
+						if (node instanceof Link 
+								&& part == AttributablePart.LINK) {
 				            attributes.replaceValue("target", "_top");
 				        }
 					}

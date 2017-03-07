@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet.renderers;
-
-import static org.jdrupes.mdoclet.renderers.TagRendering.*;
-
-import org.jdrupes.mdoclet.MDoclet;
 
 import com.sun.javadoc.ParamTag;
 
+import org.jdrupes.mdoclet.MDoclet;
+
+import static org.jdrupes.mdoclet.renderers.TagRendering.*;
 
 /**
  * Renderer for `@param` tags.
@@ -42,8 +42,7 @@ public class ParamTagRenderer implements TagRenderer<ParamTag> {
     private static String renderParameterName(ParamTag tag) {
         if (!tag.isTypeParameter()) {
             return tag.parameterName();
-        }
-        else {
+        } else {
             return '<' + tag.parameterName() + '>';
         }
     }

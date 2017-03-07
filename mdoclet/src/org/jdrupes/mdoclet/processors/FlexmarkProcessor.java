@@ -15,16 +15,8 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet.processors;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.jdrupes.mdoclet.MarkdownProcessor;
-import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
 
 import com.vladsch.flexmark.Extension;
 import com.vladsch.flexmark.ast.Node;
@@ -40,6 +32,15 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.options.MutableDataSet;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jdrupes.mdoclet.MarkdownProcessor;
+import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
 
 /**
  * This class provides an adapter for the 
@@ -86,7 +87,7 @@ import com.vladsch.flexmark.util.options.MutableDataSet;
  *     Here are the changes made for this documentation:
  *     ```css
  *     /* [MOD] {@literal *}/
- *     /* .contentContainer .description dl dd, {@literal *}/ .contentContainer .details dl dt, .serializedFormContainer dl dt {
+ *     /* .contentContainer .description dl dd, {@literal *}/ .contentContainer .details dl dt, ...
  *         font-size:12px;
  *         font-weight:bold;
  *         margin:10px 0 0 0;
@@ -98,7 +99,7 @@ import com.vladsch.flexmark.util.options.MutableDataSet;
  *     }
  *     
  *     /* [MOD] {@literal *}/
- *     /* .contentContainer .description dl dd, {@literal *}/ .contentContainer .details dl dd, .serializedFormContainer dl dd {
+ *     /* .contentContainer .description dl dd, {@literal *}/ .contentContainer .details dl dd, ...
  *         margin:5px 0 10px 0px;
  *         font-size:14px;
  *         font-family:'DejaVu Sans Mono',monospace;
@@ -108,9 +109,9 @@ import com.vladsch.flexmark.util.options.MutableDataSet;
  */
 public class FlexmarkProcessor implements MarkdownProcessor {
 
-	final private static String OPT_PROFILE = "-parser-profile";
-	final private static String OPT_CLEAR_EXTENSIONS = "-clear-extensions";
-	final private static String OPT_EXTENSION = "-extension";
+	private static final String OPT_PROFILE = "-parser-profile";
+	private static final String OPT_CLEAR_EXTENSIONS = "-clear-extensions";
+	private static final String OPT_EXTENSION = "-extension";
 	
 	private Parser parser;
 	private HtmlRenderer renderer;
@@ -133,7 +134,6 @@ public class FlexmarkProcessor implements MarkdownProcessor {
 
 	@Override
 	public void start(String[][] options) {
-        MutableDataSet flexmarkOpts = new MutableDataSet();
         Set<Class<? extends Extension>> extensions = new HashSet<>();
         extensions.add(AbbreviationExtension.class);
         extensions.add(AnchorLinkExtension.class);
@@ -145,6 +145,7 @@ public class FlexmarkProcessor implements MarkdownProcessor {
         extensions.add(WikiLinkExtension.class);
         extensions.add(TopAnchorLinkExtension.class);
         
+        MutableDataSet flexmarkOpts = new MutableDataSet();
         flexmarkOpts.set(HtmlRenderer.GENERATE_HEADER_ID, true);
         
         for (String[] opt: options) {
@@ -170,14 +171,14 @@ public class FlexmarkProcessor implements MarkdownProcessor {
         			extensions.add(cls);
         			continue;
         		} catch (ClassNotFoundException | ClassCastException e) {
-        			throw new IllegalArgumentException
-        				("Cannot find extension " + opt[1]
+        			throw new IllegalArgumentException(
+        				"Cannot find extension " + opt[1]
         					+ " (check spelling and classpath).");
         		}
         	
         	case INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT:
-        		flexmarkOpts.set
-        			(HtmlRenderer.FENCED_CODE_NO_LANGUAGE_CLASS, "nohighlight");
+        		flexmarkOpts.set(
+        			HtmlRenderer.FENCED_CODE_NO_LANGUAGE_CLASS, "nohighlight");
         		continue;
 
         	default:
@@ -192,8 +193,8 @@ public class FlexmarkProcessor implements MarkdownProcessor {
 			} catch (IllegalAccessException | IllegalArgumentException 
 					| InvocationTargetException | NoSuchMethodException 
 					| SecurityException e) {
-				throw new IllegalArgumentException("Cannot create extension of type "
-						+ cls + ".");
+				throw new IllegalArgumentException(
+					"Cannot create extension of type " + cls + ".");
 			}
         }
         if (!extObjs.isEmpty()) {

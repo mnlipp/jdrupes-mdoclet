@@ -15,7 +15,12 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet.renderers;
+
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Tag;
+import com.sun.tools.doclets.Taglet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,10 +28,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jdrupes.mdoclet.MDoclet;
-
-import com.sun.javadoc.Doc;
-import com.sun.javadoc.Tag;
-import com.sun.tools.doclets.Taglet;
 
 
 /**

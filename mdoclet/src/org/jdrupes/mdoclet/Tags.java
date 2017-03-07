@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jdrupes.mdoclet;
 
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public final class Tags {
     private static final Pattern SUBST_RE = Pattern.compile("\\{@\\}");
 
     private static Map<String, String> KINDS = new HashMap<>();
+    
     {	
     	KINDS.put("@exception", "@throws");
     	KINDS.put("@link", "@see");
@@ -124,8 +126,7 @@ public final class Tags {
             String tag;
             if ( index < tags.size() ) {
                 tag = tags.get(index++);
-            }
-            else {
+            } else {
                 tag = "{@}";
             }
             matcher.appendReplacement(result, Matcher.quoteReplacement(tag));
