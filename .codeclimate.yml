@@ -34,4 +34,4 @@ ratings:
   - "**.rb"
 exclude_paths:
   - "mdoclet/resources/"
-
+  - "mdoclet/stylesheet.css"
