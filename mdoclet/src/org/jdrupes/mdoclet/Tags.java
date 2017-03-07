@@ -41,7 +41,7 @@ public final class Tags {
 
     private static Map<String, String> KINDS = new HashMap<>();
     
-    {	
+    static {	
     	KINDS.put("@exception", "@throws");
     	KINDS.put("@link", "@see");
     	KINDS.put("@linkplain", "@see");
