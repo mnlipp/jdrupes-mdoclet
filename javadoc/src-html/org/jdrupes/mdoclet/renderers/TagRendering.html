@@ -24,40 +24,41 @@
 <span class="sourceLineNo">016</span> * You should have received a copy of the GNU General Public License along <a name="line.16"></a>
 <span class="sourceLineNo">017</span> * with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.<a name="line.17"></a>
 <span class="sourceLineNo">018</span> */<a name="line.18"></a>
-<span class="sourceLineNo">019</span>package org.jdrupes.mdoclet.renderers;<a name="line.19"></a>
-<span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>/**<a name="line.21"></a>
-<span class="sourceLineNo">022</span> * Utilities for tag rendering.<a name="line.22"></a>
-<span class="sourceLineNo">023</span> */<a name="line.23"></a>
-<span class="sourceLineNo">024</span>public final class TagRendering {<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>    private TagRendering() {<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    }<a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>    /**<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     * Removes the `&lt;p&gt;` tag if the given HTML contains only one paragraph.<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     *<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     * **Note:** This implementation may be a bit simplistic: If the HTML starts with a<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     * `&lt;p&gt;` tag, it will be removed. If it ends with `&lt;/p&gt;`, this one will be removed,<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     * too. In 99% of the cases, this *exactly* what we wanted. It some special cases,<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * the result may be invalid HTML -- it should never break things, however, because<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * HTML is designed to handle "forgotten" tags gracefully.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     *<a name="line.37"></a>
-<span class="sourceLineNo">038</span>     * @return The HTML without leading `&lt;p&gt;` or trailing `&lt;/p&gt;`.<a name="line.38"></a>
-<span class="sourceLineNo">039</span>     */<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    public static String simplifySingleParagraph(String html) {<a name="line.40"></a>
-<span class="sourceLineNo">041</span>        html = html.trim();<a name="line.41"></a>
-<span class="sourceLineNo">042</span>        String upper = html.toUpperCase();<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        if ( upper.startsWith("&lt;P&gt;") ) {<a name="line.43"></a>
-<span class="sourceLineNo">044</span>            html = html.substring(3);<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        }<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        if ( upper.endsWith("&lt;/P&gt;") ) {<a name="line.46"></a>
-<span class="sourceLineNo">047</span>            html = html.substring(0, html.length() - 4);<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        }<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        return html;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>    }<a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51"></a>
-<span class="sourceLineNo">052</span>}<a name="line.52"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span>package org.jdrupes.mdoclet.renderers;<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span>/**<a name="line.22"></a>
+<span class="sourceLineNo">023</span> * Utilities for tag rendering.<a name="line.23"></a>
+<span class="sourceLineNo">024</span> */<a name="line.24"></a>
+<span class="sourceLineNo">025</span>public final class TagRendering {<a name="line.25"></a>
+<span class="sourceLineNo">026</span><a name="line.26"></a>
+<span class="sourceLineNo">027</span>    private TagRendering() {<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    }<a name="line.28"></a>
+<span class="sourceLineNo">029</span><a name="line.29"></a>
+<span class="sourceLineNo">030</span>    /**<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * Removes the `&lt;p&gt;` tag if the given HTML contains only one paragraph.<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     *<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     * **Note:** This implementation may be a bit simplistic: If the HTML starts with a<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * `&lt;p&gt;` tag, it will be removed. If it ends with `&lt;/p&gt;`, this one will be removed,<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * too. In 99% of the cases, this *exactly* what we wanted. It some special cases,<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * the result may be invalid HTML -- it should never break things, however, because<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     * HTML is designed to handle "forgotten" tags gracefully.<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     *<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     * @return The HTML without leading `&lt;p&gt;` or trailing `&lt;/p&gt;`.<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     */<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    public static String simplifySingleParagraph(String html) {<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        html = html.trim();<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        String upper = html.toUpperCase();<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        if ( upper.startsWith("&lt;P&gt;") ) {<a name="line.44"></a>
+<span class="sourceLineNo">045</span>            html = html.substring(3);<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        }<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        if ( upper.endsWith("&lt;/P&gt;") ) {<a name="line.47"></a>
+<span class="sourceLineNo">048</span>            html = html.substring(0, html.length() - 4);<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        }<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        return html;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    }<a name="line.51"></a>
+<span class="sourceLineNo">052</span><a name="line.52"></a>
+<span class="sourceLineNo">053</span>}<a name="line.53"></a>
 
 
 
