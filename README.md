@@ -31,6 +31,6 @@ This doclet is released under the
 
 
 <!-- Piwik Image Tracker-->
-<img src="https://piwik.mnl.de/piwik.php?idsite=10&rec=1" style="border:0" alt="" />
+<img src="https://piwik.mnl.de/piwik.php?idsite=10&rec=1&url=https%3A%2F%2Fgithub.com%2Fmnlipp%2Fjdrupes-mdoclet" style="border:0" alt="" />
 <!-- End Piwik -->
 
