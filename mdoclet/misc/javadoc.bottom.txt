@@ -1,7 +1,8 @@
 <div>
     <!-- Optional footer data -->
-    <p id=githubfooter style="padding: 5px 6px; visibility: hidden">Hosted on GitHub Pages &mdash; <a href="https://github.com/site/terms">Terms</a>
-&mdash; <a href="https://github.com/site/privacy">Privacy</a></p>
+    <p id=githubfooter style="padding: 5px 6px; visibility: hidden">Hosted on GitHub Pages &mdash; 
+    <a href="https://github.com/site/terms" target="_top">Terms</a>
+    &mdash; <a href="https://github.com/site/privacy" target="_top">Privacy</a></p>
     <script type="text/javascript">
     if (location.hostname.indexOf("github") !== -1) {
         document.getElementById("githubfooter").style.visibility="visible";
