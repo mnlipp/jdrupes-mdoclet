@@ -1,1 +1,13 @@
-<!-- Optional footer data -->
+<div>
+    <!-- Optional footer data -->
+    <p id=githubfooter style="padding: 5px 6px; visibility: hidden">Hosted on GitHub Pages &mdash; <a href="https://github.com/site/terms">Terms</a>
+&mdash; <a href="https://github.com/site/privacy">Privacy</a></p>
+    <script type="text/javascript">
+    if (location.hostname.indexOf("github") !== -1) {
+        document.getElementById("githubfooter").style.visibility="visible";
+    }
+    </script>
+    <noscript>
+        <div>JavaScript is disabled on your browser, terms and privacy links may not be shown correctly.</div>
+    </noscript>
+</div>
