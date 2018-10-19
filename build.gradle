@@ -38,8 +38,7 @@ allprojects {
 
 subprojects {
 
-	apply plugin: 'eclipse' 
-	tasks.eclipse.dependsOn(cleanEclipse)
+	apply from: "${project.rootDir}/gradle/eclipse.gradle"
 	 
 	if (project == project(':integrations')) {
 		return;
