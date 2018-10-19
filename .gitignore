@@ -2,6 +2,8 @@
 build/
 target/
 run/
-
-# exclude build settings
 local.properties
+/bin/
+**/.classpath
+**/.project
+**/org.eclipse.jdt.core.prefs

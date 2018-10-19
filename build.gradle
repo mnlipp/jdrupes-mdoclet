@@ -38,6 +38,9 @@ allprojects {
 
 subprojects {
 
+	apply plugin: 'eclipse' 
+	tasks.eclipse.dependsOn(cleanEclipse)
+	 
 	if (project == project(':integrations')) {
 		return;
 	}
@@ -57,3 +60,5 @@ subprojects {
 
 }
 
+apply plugin: 'eclipse'
+tasks.eclipse.dependsOn(cleanEclipse)
