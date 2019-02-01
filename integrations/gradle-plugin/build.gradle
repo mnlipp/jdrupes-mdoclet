@@ -71,6 +71,25 @@ pluginBundle {
 
 publishing {
 	
+    repositories {
+        maven {
+            name "snapshot"
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+            credentials {
+                username project.properties['sonatypeUsername'] ?: "nouser"
+                password project.properties['sonatypePassword'] ?: "nopass"
+            }
+        }
+        maven {
+            name "release"
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username project.properties['sonatypeUsername'] ?: "nouser"
+                password project.properties['sonatypePassword'] ?: "nopass"
+            }
+        }
+    }
+    
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId = project.archivesBaseName
@@ -81,59 +100,37 @@ publishing {
 	}
 }
 
-// MavenPublishing (original), still needed for remote 
+// Additional configuration of publishing
+apply plugin: ConfigurePublishing
 
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
- 
-			pom.project {
-				
-				name project.name
-				artifactId project.archivesBaseName
-				packaging 'pom'
-				description project.description
-				url 'https://github.com/mnlipp/jdrupes-mdoclet'
- 
-				scm {
-					url 'scm:git@github.com:mnlipp/jdrupes-mdoclet.git'
-					connection 'scm:git@github.com:mnlipp/jdrupes-mdoclet.git'
-					developerConnection 'git@github.com:mnlipp/jdrupes-mdoclet.git'
-				}
- 
-				licenses {
-					license {
-						name 'GPL 3.0'
-						url 'https://www.gnu.org/licenses/gpl-3.0.en.html'
-						distribution 'repo'
-					}
-				}
- 
-				developers {
-					developer {
-						id 'mnlipp'
-						name 'Michael N. Lipp'
-					}
-				}
-			}
-			
-			artifacts {
-				archives jar
-				archives sourcesJar
-				archives javadocJar
-			}
-			
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: project.properties['sonatypeUsername'] ?: "nouser", 
-					password: project.properties['sonatypePassword'] ?: "nopass")
-			}
-			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-				authentication(userName: project.properties['sonatypeUsername'] ?: "nouser", 
-					password: project.properties['sonatypePassword'] ?: "nopass")
-			} 
-		}
-	}
+configurePublishing {
+    withPomXml {
+        asNode().with {
+            appendNode('url', 'https://github.com/mnlipp/jdrupes-mdoclet')
+            appendNode('scm').with {
+                appendNode('url', 'scm:git@github.com:mnlipp/jdrupes-mdoclet.git')
+                appendNode('connection', 'scm:git@github.com:mnlipp/jdrupes-mdoclet.git')
+                appendNode('developerConnection', 'git@github.com:mnlipp/jdrupes-mdoclet.git')
+            }
+            appendNode('licenses').with {
+                appendNode('license').with {
+                    appendNode('name', 'GPL 3.0')
+                    appendNode('url', 'https://www.gnu.org/licenses/gpl-3.0.en.html')
+                    appendNode('distribution', 'repo')
+                }
+            }
+            appendNode('developers').with {
+                appendNode('developer').with {
+                    appendNode('id', 'mnlipp')
+                    appendNode('name', 'Michael N. Lipp')
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 bintray {
