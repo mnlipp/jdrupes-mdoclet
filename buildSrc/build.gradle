@@ -1,0 +1,36 @@
+dependencies {
+	compile gradleApi()
+	compile localGroovy()
+}
+
+// Configure sensible layout
+sourceSets {
+	main {
+		groovy {
+			srcDir 'src'
+		}
+		resources {
+			srcDir 'resources'
+		}
+	}
+
+	test {
+		groovy {
+			srcDir 'test'
+		}
+		resources {
+			srcDir 'resources'
+		}
+	}
+}
+
+apply plugin: 'eclipse'
+
+eclipse {
+    project {
+        buildCommand 'bndtools.core.bndbuilder'
+        natures 'org.eclipse.jdt.groovy.core.groovyNature'
+    }
+}
+tasks.eclipse.dependsOn(cleanEclipse)
+
