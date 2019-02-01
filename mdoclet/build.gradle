@@ -23,7 +23,6 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
-apply plugin: 'maven'
 
 sourceCompatibility = '1.8'
 
@@ -85,13 +84,6 @@ task sourcesJar(type: Jar) {
 task javadocJar(type: Jar) {
 	from javadoc.destinationDir
 	classifier "javadoc"
-}
-
-// Allow build without signing information (e.g. travis)
-if (project.hasProperty('signing.keyId')) {
-	signing {
-		sign configurations.archives
-	}
 }
 
 // MavenPublishing (new), incomplete, works only for local. 
@@ -156,15 +148,10 @@ configurePublishing {
     }
 }
 
-signing {
-    sign publishing.publications.mavenJava
-}
-
-
 bintray {
 	user = project.properties['bintrayUser'] ?: "nouser"
 	key = project.properties['bintrayApiKey'] ?: "nokey"
-	publications = ['mavenJava']
+	publications = ['maven']
 	publish = true
 	pkg {
 		repo = "jdrupes"
