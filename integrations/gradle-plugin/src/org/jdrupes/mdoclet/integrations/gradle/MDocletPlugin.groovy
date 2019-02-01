@@ -36,10 +36,10 @@ class MDocletPlugin implements Plugin<Project> {
         project.dependencies.add(CONFIGURATION_NAME, "org.jdrupes.mdoclet:doclet:$mdocletVersion")
 
         // after the user buildscript is evaluated ...
-        project.gradle.projectsEvaluated {
+        project.gradle.afterProject {
 			
             // ... adjust the javadoc tasks
-            project.tasks.withType Javadoc.class, {
+            it.tasks.withType Javadoc.class, {
                 it.options {
                     docletpath = config.files.asType(List)
                     doclet = "org.jdrupes.mdoclet.MDoclet"
