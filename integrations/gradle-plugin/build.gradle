@@ -8,8 +8,8 @@ apply plugin: 'maven-publish'
 apply plugin: "com.gradle.plugin-publish"
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
+    implementation gradleApi()
+    implementation localGroovy()
 }
 
 // Configure sensible layout

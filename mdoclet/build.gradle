@@ -20,17 +20,17 @@ plugins {
 	id "com.jfrog.bintray" version "1.7.3"
 }
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = '1.8'
 
 dependencies {
-	compile libs.markdown
+	api libs.markdown
     compileOnly libs.jdkTools
 
-    testCompile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
+    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
 }
 
 archivesBaseName = "doclet"
