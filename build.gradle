@@ -16,6 +16,11 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
+plugins {
+	id "com.gradle.plugin-publish" version "0.9.7"
+	id "com.jfrog.bintray" version "1.8.4"
+}
+ 
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'

@@ -16,10 +16,6 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id "com.jfrog.bintray" version "1.7.3"
-}
-
 apply plugin: 'java-library'
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
@@ -133,7 +129,7 @@ configurePublishing {
             }
             appendNode('licenses').with {
                 appendNode('license').with {
-                    appendNode('name', 'GPL 3.0')
+                    appendNode('name', 'AGPL 3.0')
                     appendNode('url', 'https://www.gnu.org/licenses/gpl-3.0.en.html')
                     appendNode('distribution', 'repo')
                 }
@@ -148,6 +144,8 @@ configurePublishing {
     }
 }
 
+apply plugin: 'com.jfrog.bintray'
+
 bintray {
 	user = project.properties['bintrayUser'] ?: "nouser"
 	key = project.properties['bintrayApiKey'] ?: "nokey"
@@ -156,11 +154,21 @@ bintray {
 	pkg {
 		repo = "jdrupes"
 		name = "org.jdrupes.mdoclet:doclet"
+        licenses = ['AGPL-V3']
+        vcsUrl = 'https://github.com/mnlipp/jdrupes-mdoclet.git'
+        githubRepo = 'mnlipp/jdrupes-mdoclet'
+        githubReleaseNotesFile = 'README.md'
 		version {
 			 name = project.version
 			 gpg {
 				 sign = true
 			 }
+             mavenCentralSync {
+                sync = true
+                user = project.properties['sonatypeTokenKey'] ?: "nokey"
+                password = project.properties['sonatypeTokenSecret'] ?: "nosecret"
+                close = '1'
+             }
 		}
 	}
- }
+}
