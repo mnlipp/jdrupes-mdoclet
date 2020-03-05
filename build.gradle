@@ -24,7 +24,7 @@ plugins {
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'
-	version = '1.0.8'
+	version = '1.0.9'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 

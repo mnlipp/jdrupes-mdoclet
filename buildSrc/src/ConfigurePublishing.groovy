@@ -29,13 +29,11 @@ class ConfigurePublishing implements Plugin<Project> {
                         pom.withXml {
                             // Generate map of resolved versions
                             Map resolvedVersionMap = [:]
-                            Set<ResolvedArtifact> resolvedArtifacts = project.configurations.compile.getResolvedConfiguration().getResolvedArtifacts()
+                            Set<ResolvedArtifact> resolvedArtifacts = project.configurations.compileClasspath.getResolvedConfiguration().getResolvedArtifacts()
+							resolvedArtifacts.addAll(project.configurations.runtimeClasspath.getResolvedConfiguration().getResolvedArtifacts())
+							resolvedArtifacts.addAll(project.configurations.testCompileClasspath.getResolvedConfiguration().getResolvedArtifacts())
+							resolvedArtifacts.addAll(project.configurations.testRuntimeClasspath.getResolvedConfiguration().getResolvedArtifacts())
                             resolvedArtifacts.each {
-                                ModuleVersionIdentifier mvi = it.getModuleVersion().getId();
-                                resolvedVersionMap.put("${mvi.getGroup()}:${mvi.getName()}", mvi.getVersion())
-                            }
-                            Set<ResolvedArtifact> testResolved = project.configurations.testCompile.getResolvedConfiguration().getResolvedArtifacts()
-                            testResolved.each {
                                 ModuleVersionIdentifier mvi = it.getModuleVersion().getId();
                                 resolvedVersionMap.put("${mvi.getGroup()}:${mvi.getName()}", mvi.getVersion())
                             }
