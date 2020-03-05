@@ -19,7 +19,7 @@
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'
-	version = '1.0.5'
+	version = '1.0.6'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 
