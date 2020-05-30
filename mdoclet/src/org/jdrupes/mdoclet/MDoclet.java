@@ -34,10 +34,8 @@ import com.sun.tools.doclets.standard.Standard;
 import com.sun.tools.javadoc.Main;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -66,8 +64,8 @@ import org.jdrupes.mdoclet.renderers.ThrowsTagRenderer;
  */
 public class MDoclet extends Doclet implements DocErrorReporter {
 
-    public static final String HIGHLIGHT_JS_HTML =
-            "<script type=\"text/javascript\" charset=\"utf-8\" "
+    public static final String HIGHLIGHT_JS_HTML
+        = "<script type=\"text/javascript\" charset=\"utf-8\" "
             + "src=\"" + "{@docRoot}/highlight.pack.js" + "\"></script>\n"
             + "<script type=\"text/javascript\"><!--\n"
             + "var cssId = 'highlightCss';\n"
@@ -85,7 +83,8 @@ public class MDoclet extends Doclet implements DocErrorReporter {
             + "}"
             + "hljs.initHighlightingOnLoad();\n"
             + "//--></script>";
-    private static final Pattern LINE_START = Pattern.compile("^ ", Pattern.MULTILINE);
+    private static final Pattern LINE_START
+        = Pattern.compile("^ ", Pattern.MULTILINE);
 
     private final Map<String, TagRenderer<?>> tagRenderers = new HashMap<>();
 
@@ -113,8 +112,8 @@ public class MDoclet extends Doclet implements DocErrorReporter {
         tagRenderers.put("@param", ParamTagRenderer.INSTANCE);
         tagRenderers.put("@throws", ThrowsTagRenderer.INSTANCE);
         tagRenderers.put("@see", SeeTagRenderer.INSTANCE);
-        for (String tag: options.getMarkedDownTags()) {
-        	tagRenderers.put("@" + tag, SimpleTagRenderer.INSTANCE);
+        for (String tag : options.getMarkedDownTags()) {
+            tagRenderers.put("@" + tag, SimpleTagRenderer.INSTANCE);
         }
     }
 
@@ -150,7 +149,8 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      *
      * @return `true`, if the options are valid.
      */
-    public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
+    public static boolean validOptions(String[][] options,
+            DocErrorReporter errorReporter) {
         return Options.validOptions(options, errorReporter);
     }
 
@@ -166,31 +166,33 @@ public class MDoclet extends Doclet implements DocErrorReporter {
     public static boolean start(RootDoc rootDoc) {
         Options options = new Options();
         String[][] forwardedOptions = options.load(rootDoc.options(), rootDoc);
-        if ( forwardedOptions == null ) {
+        if (forwardedOptions == null) {
             return false;
         }
         MDoclet doclet = new MDoclet(options, rootDoc);
         doclet.process();
-        if ( doclet.isError() ) {
+        if (doclet.isError()) {
             return false;
         }
-        RootDocWrapper rootDocWrapper = new RootDocWrapper(rootDoc, forwardedOptions);
-        if ( options.isHighlightEnabled() ) {
+        RootDocWrapper rootDocWrapper
+            = new RootDocWrapper(rootDoc, forwardedOptions);
+        if (options.isHighlightEnabled()) {
             // find the footer option
             int optIndex = 0;
-            for ( ; optIndex < rootDocWrapper.options().length; optIndex++ ) {
-                if ( rootDocWrapper.options()[optIndex][0].equals("-footer") ) {
+            for (; optIndex < rootDocWrapper.options().length; optIndex++) {
+                if (rootDocWrapper.options()[optIndex][0].equals("-footer")) {
                     rootDocWrapper.options()[optIndex][1] += HIGHLIGHT_JS_HTML;
                     break;
                 }
             }
-            if ( optIndex >= rootDocWrapper.options().length ) {
+            if (optIndex >= rootDocWrapper.options().length) {
                 rootDocWrapper.appendOption("-footer", HIGHLIGHT_JS_HTML);
             }
             if (Standard.optionLength("--allow-script-in-comments") == 1) {
-            	if (rootDocWrapper.findOption("--allow-script-in-comments") == null) {
-            		rootDocWrapper.appendOption("--allow-script-in-comments");
-            	}
+                if (rootDocWrapper
+                    .findOption("--allow-script-in-comments") == null) {
+                    rootDocWrapper.appendOption("--allow-script-in-comments");
+                }
             }
         }
         return Standard.start(rootDocWrapper) && doclet.postProcess();
@@ -245,19 +247,19 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      * {@link #isError()} will return `true` afterwards.
      */
     public void process() {
-    	processor = options.getProcessor();
-    	try {
-    		processor.start(options.getProcessorOptions());
-    	} catch (Throwable e) {
-    		printError(e.getMessage());
-    		return;
-    	}
+        processor = options.getProcessor();
+        try {
+            processor.start(options.getProcessorOptions());
+        } catch (Throwable e) {
+            printError(e.getMessage());
+            return;
+        }
         processOverview();
-        for ( ClassDoc doc : rootDoc.classes() ) {
+        for (ClassDoc doc : rootDoc.classes()) {
             packages.add(doc.containingPackage());
             processClass(doc);
         }
-        for ( PackageDoc doc : packages ) {
+        for (PackageDoc doc : packages) {
             processPackage(doc);
         }
     }
@@ -269,31 +271,29 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      */
     public boolean postProcess() {
         boolean success = true;
-        if ( options.isHighlightEnabled() ) {
-            success &= copyResource("highlight.pack.js", 
-            		"highlight.pack.js", "highlight.js");
-            success &= copyResource("highlight-LICENSE.txt", 
-            		"highlight-LICENSE.txt", "highlight.js license");
-            success &= copyResource("highlight-styles/" + options.getHighlightStyle() + ".css", 
-            		"highlight.css", 
-            		"highlight.js style '" + options.getHighlightStyle() + "'");
+        if (options.isHighlightEnabled()) {
+            success &= copyResource("highlight.pack.js",
+                "highlight.pack.js", "highlight.js");
+            success &= copyResource("highlight-LICENSE.txt",
+                "highlight-LICENSE.txt", "highlight.js license");
+            success &= copyResource(
+                "highlight-styles/" + options.getHighlightStyle() + ".css",
+                "highlight.css",
+                "highlight.js style '" + options.getHighlightStyle() + "'");
         }
         return success;
     }
 
-    private boolean copyResource(String resource, String destination, String description) {
-        try (
-                InputStream in = MDoclet.class.getResourceAsStream(resource);
-                OutputStream out = new FileOutputStream(
-                		new File(options.getDestinationDir(), destination))
-        )
-        {
-        	Files.copy(in, options.getDestinationDir().toPath().resolve(destination),
-        			StandardCopyOption.REPLACE_EXISTING);
+    private boolean copyResource(String resource, String destination,
+            String description) {
+        try (InputStream in = MDoclet.class.getResourceAsStream(resource);) {
+            Files.copy(in,
+                options.getDestinationDir().toPath().resolve(destination),
+                StandardCopyOption.REPLACE_EXISTING);
             return true;
-        }
-        catch ( IOException e ) {
-            printError("Error writing " + description + ": " + e.getLocalizedMessage());
+        } catch (IOException e) {
+            printError("Error writing " + description + ": "
+                + e.getLocalizedMessage());
             return false;
         }
     }
@@ -311,14 +311,16 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      * Process the overview file, if specified.
      */
     protected void processOverview() {
-        if ( options.getOverviewFile() != null ) {
+        if (options.getOverviewFile() != null) {
             try {
-            	rootDoc.setRawCommentText(new String(Files.readAllBytes(
-            			options.getOverviewFile().toPath()), options.getEncoding()));
+                rootDoc.setRawCommentText(new String(Files.readAllBytes(
+                    options.getOverviewFile().toPath()),
+                    options.getEncoding()));
                 defaultProcess(rootDoc, false);
-            } catch ( IOException e ) {
-                printError("Error loading overview from " + options.getOverviewFile() 
-                	+ ": " + e.getLocalizedMessage());
+            } catch (IOException e) {
+                printError(
+                    "Error loading overview from " + options.getOverviewFile()
+                        + ": " + e.getLocalizedMessage());
                 rootDoc.setRawCommentText("");
             }
         }
@@ -331,17 +333,17 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      */
     protected void processClass(ClassDoc doc) {
         defaultProcess(doc, true);
-        for ( MemberDoc member : doc.fields() ) {
+        for (MemberDoc member : doc.fields()) {
             processMember(member);
         }
-        for ( MemberDoc member : doc.constructors() ) {
+        for (MemberDoc member : doc.constructors()) {
             processMember(member);
         }
-        for ( MemberDoc member : doc.methods() ) {
+        for (MemberDoc member : doc.methods()) {
             processMember(member);
         }
-        if ( doc instanceof AnnotationTypeDoc ) {
-            for ( MemberDoc member : ((AnnotationTypeDoc)doc).elements() ) {
+        if (doc instanceof AnnotationTypeDoc) {
+            for (MemberDoc member : ((AnnotationTypeDoc) doc).elements()) {
                 processMember(member);
             }
         }
@@ -363,19 +365,24 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      */
     protected void processPackage(PackageDoc doc) {
         // (#1) Set foundDoc to false if possible.
-        // foundDoc will be set to true when setRawCommentText() is called, if the method
-        // is called again, JavaDoc will issue a warning about multiple sources for the
-        // package documentation. If there actually *are* multiple sources, the warning
-        // has already been issued at this point, we will, however, use it to set the
-        // resulting HTML. So, we're setting it back to false here, to suppress the
+        // foundDoc will be set to true when setRawCommentText() is called, if
+        // the method
+        // is called again, JavaDoc will issue a warning about multiple sources
+        // for the
+        // package documentation. If there actually *are* multiple sources, the
+        // warning
+        // has already been issued at this point, we will, however, use it to
+        // set the
+        // resulting HTML. So, we're setting it back to false here, to suppress
+        // the
         // warning.
         try {
             Field foundDoc = doc.getClass().getDeclaredField("foundDoc");
             foundDoc.setAccessible(true);
             foundDoc.set(doc, false);
-        } catch ( Exception e ) {
-            printWarning(doc.position(), 
-            		"Cannot suppress warning about multiple package sources: " + e);
+        } catch (Exception e) {
+            printWarning(doc.position(),
+                "Cannot suppress warning about multiple package sources: " + e);
         }
         defaultProcess(doc, true);
     }
@@ -391,24 +398,24 @@ public class MDoclet extends Doclet implements DocErrorReporter {
             StringBuilder buf = new StringBuilder();
             buf.append(toHtml(doc.commentText(), fixLeadingSpaces));
             buf.append('\n');
-            for ( Tag tag : doc.tags() ) {
+            for (Tag tag : doc.tags()) {
                 processTag(tag, buf);
                 buf.append('\n');
             }
             doc.setRawCommentText(buf.toString());
-        } catch ( Throwable e ) {
-            if ( doc instanceof RootDoc ) {
+        } catch (Throwable e) {
+            if (doc instanceof RootDoc) {
                 printError(new SourcePosition() {
                     @Override
                     public File file() {
                         return options.getOverviewFile();
                     }
-                    
+
                     @Override
                     public int line() {
                         return 0;
                     }
-                    
+
                     @Override
                     public int column() {
                         return 0;
@@ -428,8 +435,9 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      */
     @SuppressWarnings("unchecked")
     protected void processTag(Tag tag, StringBuilder target) {
-        TagRenderer<Tag> renderer = (TagRenderer<Tag>)tagRenderers.get(tag.kind());
-        if ( renderer == null ) {
+        TagRenderer<Tag> renderer
+            = (TagRenderer<Tag>) tagRenderers.get(tag.kind());
+        if (renderer == null) {
             renderer = TagRenderer.VERBATIM;
         }
         renderer.render(tag, target, this);
@@ -439,9 +447,9 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      * Clears the processor.
      */
     public void clearProcessor() {
-    	processor = null;
+        processor = null;
     }
-    
+
     /**
      * Convert the given markup to HTML according to the {@link Options}.
      *
@@ -464,7 +472,7 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      * @return The resulting HTML.
      */
     public String toHtml(String markup, boolean fixLeadingSpaces) {
-        if ( fixLeadingSpaces ) {
+        if (fixLeadingSpaces) {
             markup = LINE_START.matcher(markup).replaceAll("");
         }
         List<String> tags = new ArrayList<>();
@@ -500,8 +508,7 @@ public class MDoclet extends Doclet implements DocErrorReporter {
 
     @Override
     public void printWarning(SourcePosition pos,
-                             String msg)
-    {
+            String msg) {
         rootDoc.printWarning(pos, msg);
     }
 
@@ -531,13 +538,13 @@ public class MDoclet extends Doclet implements DocErrorReporter {
      * @return A URL prefix for URLs referring to the doc root.
      */
     public String rootUrlPrefix(PackageDoc doc) {
-        if ( doc == null || doc.name().isEmpty() ) {
+        if (doc == null || doc.name().isEmpty()) {
             return "";
         } else {
             StringBuilder buf = new StringBuilder();
             buf.append("../");
-            for ( int i = 0; i < doc.name().length(); i++ ) {
-                if ( doc.name().charAt(i) == '.' ) {
+            for (int i = 0; i < doc.name().length(); i++) {
+                if (doc.name().charAt(i) == '.') {
                     buf.append("../");
                 }
             }
