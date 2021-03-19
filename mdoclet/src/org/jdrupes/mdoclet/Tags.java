@@ -1,19 +1,19 @@
 /*
  * JDrupes MDoclet
  * Copyright 2013 Raffael Herzog
- * Copyright (C) 2017 Michael N. Lipp
+ * Copyright (C) 2017, 2021 Michael N. Lipp
  * 
  * This program is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by 
+ * under the terms of the GNU Affero General Public License as published by 
  * the Free Software Foundation; either version 3 of the License, or 
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but 
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License 
  * for more details.
- * 
- * You should have received a copy of the GNU General Public License along 
+ *
+ * You should have received a copy of the GNU Affero General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -40,12 +40,12 @@ public final class Tags {
     private static final Pattern SUBST_RE = Pattern.compile("\\{@\\}");
 
     private static Map<String, String> KINDS = new HashMap<>();
-    
-    static {	
-    	KINDS.put("@exception", "@throws");
-    	KINDS.put("@link", "@see");
-    	KINDS.put("@linkplain", "@see");
-    	KINDS.put("@serialData", "@serial");
+
+    static {
+        KINDS.put("@exception", "@throws");
+        KINDS.put("@link", "@see");
+        KINDS.put("@linkplain", "@see");
+        KINDS.put("@serialData", "@serial");
     }
 
     private Tags() {
@@ -94,10 +94,11 @@ public final class Tags {
      *
      * @see #insertInlineTags(String, java.util.List)
      */
-    public static String extractInlineTags(String comment, List<String> target) {
+    public static String extractInlineTags(String comment,
+            List<String> target) {
         StringBuffer result = new StringBuffer();
         Matcher matcher = TAG_RE.matcher(comment);
-        while ( matcher.find() ) {
+        while (matcher.find()) {
             target.add(matcher.group());
             matcher.appendReplacement(result, "{@}");
         }
@@ -122,9 +123,9 @@ public final class Tags {
         StringBuffer result = new StringBuffer();
         Matcher matcher = SUBST_RE.matcher(comment);
         int index = 0;
-        while ( matcher.find() ) {
+        while (matcher.find()) {
             String tag;
-            if ( index < tags.size() ) {
+            if (index < tags.size()) {
                 tag = tags.get(index++);
             } else {
                 tag = "{@}";

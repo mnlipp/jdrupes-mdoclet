@@ -1,18 +1,18 @@
 /*
  * JDrupes MDoclet
- * Copyright (C) 2017  Michael N. Lipp
+ * Copyright (C) 2017, 2021  Michael N. Lipp
  * 
  * This program is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by 
+ * under the terms of the GNU Affero General Public License as published by 
  * the Free Software Foundation; either version 3 of the License, or 
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but 
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License 
  * for more details.
- * 
- * You should have received a copy of the GNU General Public License along 
+ *
+ * You should have received a copy of the GNU Affero General Public License along 
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -109,31 +109,30 @@ import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
  */
 public class FlexmarkProcessor implements MarkdownProcessor {
 
-	private static final String OPT_PROFILE = "-parser-profile";
-	private static final String OPT_CLEAR_EXTENSIONS = "-clear-extensions";
-	private static final String OPT_EXTENSION = "-extension";
-	
-	private Parser parser;
-	private HtmlRenderer renderer;
-	
-	@Override
-	public int isSupportedOption(String option) {
-		switch (option) {
-		case OPT_CLEAR_EXTENSIONS:
-		case INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT:
-			return 0;
-			
-		case OPT_PROFILE:
-		case OPT_EXTENSION:
-			return 1;
-		default:
-			return -1;
-		}
-	}
+    private static final String OPT_PROFILE = "-parser-profile";
+    private static final String OPT_CLEAR_EXTENSIONS = "-clear-extensions";
+    private static final String OPT_EXTENSION = "-extension";
 
+    private Parser parser;
+    private HtmlRenderer renderer;
 
-	@Override
-	public void start(String[][] options) {
+    @Override
+    public int isSupportedOption(String option) {
+        switch (option) {
+        case OPT_CLEAR_EXTENSIONS:
+        case INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT:
+            return 0;
+
+        case OPT_PROFILE:
+        case OPT_EXTENSION:
+            return 1;
+        default:
+            return -1;
+        }
+    }
+
+    @Override
+    public void start(String[][] options) {
         Set<Class<? extends Extension>> extensions = new HashSet<>();
         extensions.add(AbbreviationExtension.class);
         extensions.add(AnchorLinkExtension.class);
@@ -144,84 +143,86 @@ public class FlexmarkProcessor implements MarkdownProcessor {
         extensions.add(TocExtension.class);
         extensions.add(WikiLinkExtension.class);
         extensions.add(TopAnchorLinkExtension.class);
-        
+
         MutableDataSet flexmarkOpts = new MutableDataSet();
         flexmarkOpts.set(HtmlRenderer.GENERATE_HEADER_ID, true);
-        
-        for (String[] opt: options) {
-        	switch (opt[0]) {
-        	case OPT_PROFILE:
-        		setFromProfile(flexmarkOpts, opt[1]);
-        		continue;
-        		
-        	case OPT_CLEAR_EXTENSIONS:
-        		extensions.clear();
-        		continue;
-        		
-        	case OPT_EXTENSION:
-        		try {
-        			String clsName = opt[1];
-        			if (!clsName.contains(".")) {
-        				clsName = "com.vladsch.flexmark.ext."
-        					+ opt[1].toLowerCase() + "." + opt[1] + "Extension";
-        			}
-        			@SuppressWarnings("unchecked") 
-        			Class<? extends Extension> cls = (Class<? extends Extension>) 
-        				getClass().getClassLoader().loadClass(clsName);
-        			extensions.add(cls);
-        			continue;
-        		} catch (ClassNotFoundException | ClassCastException e) {
-        			throw new IllegalArgumentException(
-        				"Cannot find extension " + opt[1]
-        					+ " (check spelling and classpath).");
-        		}
-        	
-        	case INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT:
-        		flexmarkOpts.set(
-        			HtmlRenderer.FENCED_CODE_NO_LANGUAGE_CLASS, "nohighlight");
-        		continue;
 
-        	default:
-            	throw new IllegalArgumentException("Unknown option: " + opt[0]);
-        	}
+        for (String[] opt : options) {
+            switch (opt[0]) {
+            case OPT_PROFILE:
+                setFromProfile(flexmarkOpts, opt[1]);
+                continue;
+
+            case OPT_CLEAR_EXTENSIONS:
+                extensions.clear();
+                continue;
+
+            case OPT_EXTENSION:
+                try {
+                    String clsName = opt[1];
+                    if (!clsName.contains(".")) {
+                        clsName = "com.vladsch.flexmark.ext."
+                            + opt[1].toLowerCase() + "." + opt[1] + "Extension";
+                    }
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Extension> cls
+                        = (Class<? extends Extension>) getClass()
+                            .getClassLoader().loadClass(clsName);
+                    extensions.add(cls);
+                    continue;
+                } catch (ClassNotFoundException | ClassCastException e) {
+                    throw new IllegalArgumentException(
+                        "Cannot find extension " + opt[1]
+                            + " (check spelling and classpath).");
+                }
+
+            case INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT:
+                flexmarkOpts.set(
+                    HtmlRenderer.FENCED_CODE_NO_LANGUAGE_CLASS, "nohighlight");
+                continue;
+
+            default:
+                throw new IllegalArgumentException("Unknown option: " + opt[0]);
+            }
         }
-        
+
         List<Extension> extObjs = new ArrayList<>();
-        for (Class<? extends Extension> cls: extensions) {
-        	try {
-				extObjs.add((Extension)cls.getMethod("create").invoke(null));
-			} catch (IllegalAccessException | IllegalArgumentException 
-					| InvocationTargetException | NoSuchMethodException 
-					| SecurityException e) {
-				throw new IllegalArgumentException(
-					"Cannot create extension of type " + cls + ".");
-			}
+        for (Class<? extends Extension> cls : extensions) {
+            try {
+                extObjs.add((Extension) cls.getMethod("create").invoke(null));
+            } catch (IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException
+                    | SecurityException e) {
+                throw new IllegalArgumentException(
+                    "Cannot create extension of type " + cls + ".");
+            }
         }
         if (!extObjs.isEmpty()) {
-        	flexmarkOpts.set(Parser.EXTENSIONS, extObjs);
+            flexmarkOpts.set(Parser.EXTENSIONS, extObjs);
         }
         parser = Parser.builder(flexmarkOpts).build();
         renderer = HtmlRenderer.builder(flexmarkOpts).build();
-	}
+    }
 
-	private void setFromProfile(MutableDataSet fmOpts, String profileName) {
-		for (ParserEmulationProfile p: ParserEmulationProfile.values()) {
-			if (p.toString().equalsIgnoreCase(profileName)) {
-				fmOpts.setFrom(p);
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Unknown profile: " + profileName);
-	}
+    private void setFromProfile(MutableDataSet fmOpts, String profileName) {
+        for (ParserEmulationProfile p : ParserEmulationProfile.values()) {
+            if (p.toString().equalsIgnoreCase(profileName)) {
+                fmOpts.setFrom(p);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Unknown profile: " + profileName);
+    }
 
-
-	/* (non-Javadoc)
-	 * @see org.jdrupes.mdoclet.MarkdownProcessor#toHtml(java.lang.String)
-	 */
-	@Override
-	public String toHtml(String markdown) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jdrupes.mdoclet.MarkdownProcessor#toHtml(java.lang.String)
+     */
+    @Override
+    public String toHtml(String markdown) {
         Node document = parser.parse(markdown);
         return renderer.render(document);
-	}
+    }
 
 }

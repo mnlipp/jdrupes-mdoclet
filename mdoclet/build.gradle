@@ -20,13 +20,22 @@ apply plugin: 'java-library'
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 dependencies {
-	api libs.markdown
-    compileOnly libs.jdkTools
+    api libs.markdown
 
     testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
+}
+
+java {
+    modularity.inferModulePath = true
+}
+
+compileJava {
+    options.compilerArgs << '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED'
+    options.compilerArgs << '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED'
+    options.compilerArgs << '--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED'
 }
 
 archivesBaseName = "doclet"
@@ -37,55 +46,55 @@ sourceSets {
         java {
             srcDir 'src'
         }
-		resources {
-			srcDir 'resources'
-		}
+        resources {
+            srcDir 'resources'
+        }
     }
 }
 
 javadoc {
-	dependsOn classes
-	inputs.file "overview.md"
+    dependsOn classes
+    inputs.file "overview.md"
 
-//	if (javax.tools.ToolProvider.getSystemDocumentationTool()
-//        .isSupportedOption("--allow-script-in-comments")) {
-//        options.addBooleanOption("-allow-script-in-comments", true)
-//    }
+    //	if (javax.tools.ToolProvider.getSystemDocumentationTool()
+    //        .isSupportedOption("--allow-script-in-comments")) {
+    //        options.addBooleanOption("-allow-script-in-comments", true)
+    //    }
 
-	title = "JDrupes MDoclet"
-		
-	options.docletpath = (sourceSets.main.output + sourceSets.main.compileClasspath) as List
-	options.doclet = "org.jdrupes.mdoclet.MDoclet"
+    title = "JDrupes MDoclet"
 
-	// Without sourcepath and subpackages, @links in overview aren't rendered as hrefs 
-	options.addStringOption("sourcepath", "src")	
-	options.addStringOption("subpackages", "org.jdrupes.mdoclet")
+    options.docletpath = (sourceSets.main.output + sourceSets.main.compileClasspath) as List
+    options.doclet = "org.jdrupes.mdoclet.MDoclet"
 
-	destinationDir = file("../../jdrupes-mdoclet.gh-pages/javadoc/")
-	
-	options.addStringOption("overview", "overview.md")
-	options.addBooleanOption("disable-auto-highlight", true)
-	options.addBooleanOption("linksource", true)
-	options.links("http://docs.oracle.com/javase/8/docs/api/")
-	options.stylesheetFile(file("stylesheet.css"))
-	options.addStringOption("bottom", file("misc/javadoc.bottom.txt").text)
+    // Without sourcepath and subpackages, @links in overview aren't rendered as hrefs
+    options.addStringOption("sourcepath", "src")
+    options.addStringOption("subpackages", "org.jdrupes.mdoclet")
+
+    destinationDir = file("../../jdrupes-mdoclet.gh-pages/javadoc/")
+
+    options.addStringOption("overview", "overview.md")
+    options.addBooleanOption("disable-auto-highlight", true)
+    options.addBooleanOption("linksource", true)
+    options.links("http://docs.oracle.com/javase/8/docs/api/")
+    options.stylesheetFile(file("stylesheet.css"))
+    options.addStringOption("bottom", file("misc/javadoc.bottom.txt").text)
 
 }
 
 task sourcesJar(type: Jar) {
-	from sourceSets.main.allJava
-	classifier "sources"
+    from sourceSets.main.allJava
+    classifier "sources"
 }
 
 task javadocJar(type: Jar) {
-	from javadoc.destinationDir
-	classifier "javadoc"
+    from javadoc.destinationDir
+    classifier "javadoc"
 }
 
-// MavenPublishing (new), incomplete, works only for local. 
+// MavenPublishing (new), incomplete, works only for local.
 
 publishing {
-	
+
     repositories {
         maven {
             name "snapshot"
@@ -104,15 +113,15 @@ publishing {
             }
         }
     }
-    
-	publications {
-		mavenJava(MavenPublication) {
-			artifactId = archivesBaseName
-			from components.java
-			artifact sourcesJar
-			artifact javadocJar
-		}
-	}
+
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = archivesBaseName
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
 }
 
 // Additional configuration of publishing
@@ -147,28 +156,54 @@ configurePublishing {
 apply plugin: 'com.jfrog.bintray'
 
 bintray {
-	user = project.properties['bintrayUser'] ?: "nouser"
-	key = project.properties['bintrayApiKey'] ?: "nokey"
-	publications = ['maven']
-	publish = true
-	pkg {
-		repo = "jdrupes"
-		name = "org.jdrupes.mdoclet:doclet"
+    user = project.properties['bintrayUser'] ?: "nouser"
+    key = project.properties['bintrayApiKey'] ?: "nokey"
+    publications = ['maven']
+    publish = true
+    pkg {
+        repo = "jdrupes"
+        name = "org.jdrupes.mdoclet:doclet"
         licenses = ['AGPL-V3']
         vcsUrl = 'https://github.com/mnlipp/jdrupes-mdoclet.git'
         githubRepo = 'mnlipp/jdrupes-mdoclet'
         githubReleaseNotesFile = 'README.md'
-		version {
-			 name = project.version
-			 gpg {
-				 sign = true
-			 }
-             mavenCentralSync {
+        version {
+            name = project.version
+            gpg {
+                sign = true
+            }
+            mavenCentralSync {
                 sync = true
                 user = project.properties['sonatypeTokenKey'] ?: "nokey"
                 password = project.properties['sonatypeTokenSecret'] ?: "nosecret"
                 close = '1'
-             }
-		}
-	}
+            }
+        }
+    }
+}
+
+eclipse {
+    classpath {
+        file {
+            withXml {
+                def classpath = it.asNode()
+                classpath.children().each { entry ->
+                    if (entry.attribute('path').startsWith(
+                        'org.eclipse.jdt.launching.JRE_CONTAINER/')) {
+                        def attrs = entry.appendNode('attributes')
+                        // 
+                        def attr = attrs.appendNode('attribute')
+                        attr.attributes().put('name', 'module')
+                        attr.attributes().put('value', 'true')
+                        attr = attrs.appendNode('attribute')
+                        attr.attributes().put('name', 'add-exports') 
+                        attr.attributes().put('value', 
+                            'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED'
+                            + ':jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED'
+                            + ':jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED')
+                    }
+                }
+            }
+        }
+    }
 }

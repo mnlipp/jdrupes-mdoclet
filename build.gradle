@@ -24,7 +24,7 @@ plugins {
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'
-	version = '1.0.10'
+	version = '2.0.0'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 
@@ -50,8 +50,7 @@ subprojects {
 
     ext {
         libs = [
-                markdown: [group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.15.3'],
-                jdkTools: files(org.gradle.internal.jvm.Jvm.current().toolsJar),
+                markdown: [group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.15.3']
         ]
         docletProject = project(':mdoclet')
  	}
