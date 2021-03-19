@@ -47,8 +47,6 @@ import com.sun.source.util.DocTreeFactory;
 import com.sun.source.util.DocTreePath;
 import com.sun.source.util.DocTrees;
 import com.sun.source.util.TreePath;
-import com.sun.tools.javac.parser.Tokens;
-import com.sun.tools.javac.tree.JCTree;
 
 /**
  * Wraps the {@link DocTrees} passed to the constructor.
@@ -56,15 +54,27 @@ import com.sun.tools.javac.tree.JCTree;
  * The sole purpose of the wrapper is to detect the (hopefully)
  * first access of the parsed AST by an invocation of
  * {@link #getDocCommentTree(TreePath)} which triggers the
- * markdown processind.
+ * markdown processing.
  */
 public class DocTreesWrapper extends DocTrees {
 
+    private final MDoclet doclet;
+    private final MDocletEnvironment environment;
     private final DocTrees docTrees;
 
-    public DocTreesWrapper(DocTrees docTrees) {
+    public DocTreesWrapper(MDoclet doclet, MDocletEnvironment environment,
+            DocTrees docTrees) {
         super();
+        this.doclet = doclet;
+        this.environment = environment;
         this.docTrees = docTrees;
+    }
+
+    private DocCommentTree wrap(DocCommentTree tree) {
+        if (tree == null) {
+            return null;
+        }
+        return new DocCommentTreeWrapper(doclet, environment, tree);
     }
 
     /**
@@ -78,25 +88,14 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * Triggers the markdown processing and then delegates to the 
-     * docTrees passed to the constructor.
+     * Substitutes the original doctree with one processed my the markdown
+     * processor.
      * 
      * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getDocCommentTree(com.sun.source.util.TreePath)
      */
     public DocCommentTree getDocCommentTree(TreePath path) {
-        JCTree.JCCompilationUnit cu
-            = (JCTree.JCCompilationUnit) path.getCompilationUnit();
-        CommentProcessor.processComments(cu.docComments,
-            this::convertMarkdown);
-        return docTrees.getDocCommentTree(path);
-    }
-
-    private Tokens.Comment convertMarkdown(Tokens.Comment mdComment) {
-        String javadoc = mdComment.getText();
-//        String asciidoc = renderer.renderDoc( javadoc );
-//        AsciidocComment result = new AsciidocComment( asciidoc, comment );System.err.println( "" );
-        return new ConvertedComment(mdComment, "CONVERTED: " + javadoc);
+        return wrap(docTrees.getDocCommentTree(path));
     }
 
     /**
@@ -106,7 +105,7 @@ public class DocTreesWrapper extends DocTrees {
      * @see com.sun.source.util.DocTrees#getDocCommentTree(javax.lang.model.element.Element)
      */
     public DocCommentTree getDocCommentTree(Element e) {
-        return docTrees.getDocCommentTree(e);
+        return wrap(docTrees.getDocCommentTree(e));
     }
 
     /**
@@ -116,7 +115,7 @@ public class DocTreesWrapper extends DocTrees {
      * @see com.sun.source.util.DocTrees#getDocCommentTree(javax.tools.FileObject)
      */
     public DocCommentTree getDocCommentTree(FileObject fileObject) {
-        return docTrees.getDocCommentTree(fileObject);
+        return wrap(docTrees.getDocCommentTree(fileObject));
     }
 
     /**
@@ -137,7 +136,7 @@ public class DocTreesWrapper extends DocTrees {
      */
     public DocCommentTree getDocCommentTree(Element e, String relativePath)
             throws IOException {
-        return docTrees.getDocCommentTree(e, relativePath);
+        return wrap(docTrees.getDocCommentTree(e, relativePath));
     }
 
     /**

@@ -38,16 +38,6 @@ import jdk.javadoc.doclet.StandardDoclet;
  * The Doclet implementation. It converts the Markdown from the JavaDoc 
  * comments and tags to HTML.
  * 
- * "Preprocessing" the text in the comments sounds simple. But the
- * {@link StandardDoclet} seems to be designed deliberately in way that
- * does not allow anybody to "plug into it".
- * 
- * This doclet therefore uses the same approach as found
- * in the implementation of the 
- * [asciidoclet](https://github.com/chrisvest/asciidoclet). The
- * AST is modified (in a hackish way, because this is not really
- * implemented with extensibility in mind either).
- * 
  * @see <a href='https://openjdk.java.net/groups/compiler/using-new-doclet.html'>Using the new doclet API</a>
  */
 public class MDoclet implements Doclet {
@@ -122,8 +112,9 @@ public class MDoclet implements Doclet {
 
     @Override
     public boolean run(DocletEnvironment environment) {
-        MDocletEnvironment env = new MDocletEnvironment(environment);
+        MDocletEnvironment env = new MDocletEnvironment(this, environment);
         processor = createProcessor();
+        processor.start(new String[0][0]);
         boolean result = standardDoclet.run(env);
         return result;
     }

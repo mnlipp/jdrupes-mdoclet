@@ -43,11 +43,11 @@ public class MDocletEnvironment extends DocEnvImpl
     DocletEnvironment defaultEnvironment;
     DocTreesWrapper docTrees;
 
-    public MDocletEnvironment(DocletEnvironment environment) {
+    public MDocletEnvironment(MDoclet doclet, DocletEnvironment environment) {
         super(((DocEnvImpl) environment).toolEnv,
             ((DocEnvImpl) environment).etable);
         this.defaultEnvironment = environment;
-        docTrees = new DocTreesWrapper(environment.getDocTrees());
+        docTrees = new DocTreesWrapper(doclet, this, environment.getDocTrees());
     }
 
     /**
