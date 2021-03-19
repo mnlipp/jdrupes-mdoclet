@@ -18,12 +18,16 @@
 
 package org.jdrupes.mdoclet;
 
-import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.lang.model.SourceVersion;
+import javax.tools.Diagnostic;
+
+import org.jdrupes.mdoclet.processors.FlexmarkProcessor;
 
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;
@@ -44,12 +48,15 @@ import jdk.javadoc.doclet.StandardDoclet;
  * AST is modified (in a hackish way, because this is not really
  * implemented with extensibility in mind either).
  * 
- * @see https://openjdk.java.net/groups/compiler/using-new-doclet.html
+ * @see <a href='https://openjdk.java.net/groups/compiler/using-new-doclet.html'>Using the new doclet API</a>
  */
 public class MDoclet implements Doclet {
 
     private StandardDoclet standardDoclet;
     private Reporter reporter;
+
+    private String markdownProcessorName = FlexmarkProcessor.class.getName();
+    private MarkdownProcessor processor;
 
     public MDoclet() {
         standardDoclet = new StandardDoclet();
@@ -70,7 +77,31 @@ public class MDoclet implements Doclet {
     public Set<? extends Option> getSupportedOptions() {
         Set<Option> options
             = new HashSet<>(standardDoclet.getSupportedOptions());
-        Arrays.stream(Options.values()).forEach(options::add);
+        options.add(new MDocletOption("markdown-processor", 1) {
+            @Override
+            public boolean process(String option, List<String> arguments) {
+                markdownProcessorName = arguments.get(0);
+                return true;
+            }
+        });
+        options.add(new MDocletOption("disable-highlight", 0) {
+            @Override
+            public boolean process(String option, List<String> arguments) {
+                return true;
+            }
+        });
+        options.add(new MDocletOption("disable-auto-highlight", 0) {
+            @Override
+            public boolean process(String option, List<String> arguments) {
+                return true;
+            }
+        });
+        options.add(new MDocletOption("highlight-style", 1) {
+            @Override
+            public boolean process(String option, List<String> arguments) {
+                return true;
+            }
+        });
         return options;
     }
 
@@ -92,8 +123,57 @@ public class MDoclet implements Doclet {
     @Override
     public boolean run(DocletEnvironment environment) {
         MDocletEnvironment env = new MDocletEnvironment(environment);
+        processor = createProcessor();
         boolean result = standardDoclet.run(env);
         return result;
+    }
+
+    private MarkdownProcessor createProcessor() {
+        try {
+            @SuppressWarnings("unchecked")
+            Class<MarkdownProcessor> mpc = (Class<MarkdownProcessor>) getClass()
+                .getClassLoader().loadClass(markdownProcessorName);
+            return (MarkdownProcessor) mpc.getDeclaredConstructor()
+                .newInstance();
+        } catch (ClassNotFoundException | InstantiationException
+                | IllegalAccessException | ClassCastException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            reporter.print(Diagnostic.Kind.ERROR,
+                "Markdown processor \"" + markdownProcessorName
+                    + "\" cannot be loaded (" + e.getMessage()
+                    + "), check name and docletpath");
+            return null;
+        }
+    }
+
+    /**
+     * Returns the processor selected by the options.
+     * 
+     * @return the processor
+     */
+    public MarkdownProcessor getProcessor() {
+        return processor;
+    }
+
+    /**
+     * Converts Markdown source to HTML according to the options object. If
+     * `fixLeadingSpaces` is `true`, exactly one leading whitespace character ('\\u0020')
+     * will be removed, if it exists.
+     *
+     * @param markup           The Markdown source.
+     * @param fixLeadingSpaces `true` if leading spaces should be fixed.
+     *
+     * @return The resulting HTML.
+     */
+    public String toHtml(String markup, boolean fixLeadingSpaces) {
+//        if (fixLeadingSpaces) {
+//            markup = LINE_START.matcher(markup).replaceAll("");
+//        }
+//        List<String> tags = new ArrayList<>();
+//        String html = processor.toHtml(Tags.extractInlineTags(markup, tags));
+//        return Tags.insertInlineTags(html, tags);
+        return "";
     }
 
 //    @Override

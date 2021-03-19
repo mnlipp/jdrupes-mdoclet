@@ -21,3 +21,44 @@ package org.jdrupes.mdoclet;
 import java.util.List;
 
 import jdk.javadoc.doclet.Doclet;
+
+/**
+ * Defines the command line options.
+ */
+public abstract class MDocletOption implements Doclet.Option {
+
+    private String name;
+    private int argCount;
+
+    public MDocletOption(String name, int argCount) {
+        super();
+        this.name = name;
+        this.argCount = argCount;
+    }
+
+    @Override
+    public int getArgumentCount() {
+        return argCount;
+    }
+
+    @Override
+    public String getDescription() {
+        return name;
+    }
+
+    @Override
+    public Kind getKind() {
+        return Kind.STANDARD;
+    }
+
+    @Override
+    public List<String> getNames() {
+        return List.of("--" + name);
+    }
+
+    @Override
+    public String getParameters() {
+        return "<>";
+    }
+
+}

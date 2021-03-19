@@ -33,6 +33,10 @@ import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.internal.tool.DocEnvImpl;
 
+/**
+ * Wraps the {@link DocEnvImpl} passed to the doclet for the
+ * sole purpose of inserting a wrapper for the doctrees access.
+ */
 public class MDocletEnvironment extends DocEnvImpl
         implements DocletEnvironment {
 
@@ -47,7 +51,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getSpecifiedElements()
      */
     public Set<? extends Element> getSpecifiedElements() {
@@ -55,7 +61,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getIncludedElements()
      */
     public Set<? extends Element> getIncludedElements() {
@@ -63,7 +71,10 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Wraps the doctrees from the environment passed in the constructor
+     * in a {@link DocTreesWrapper}.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getDocTrees()
      */
     public DocTrees getDocTrees() {
@@ -71,7 +82,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getElementUtils()
      */
     public Elements getElementUtils() {
@@ -79,7 +92,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getTypeUtils()
      */
     public Types getTypeUtils() {
@@ -87,8 +102,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @param e
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#isIncluded(javax.lang.model.element.Element)
      */
     public boolean isIncluded(Element e) {
@@ -96,8 +112,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @param e
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#isSelected(javax.lang.model.element.Element)
      */
     public boolean isSelected(Element e) {
@@ -105,7 +122,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getJavaFileManager()
      */
     public JavaFileManager getJavaFileManager() {
@@ -113,7 +132,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getSourceVersion()
      */
     public SourceVersion getSourceVersion() {
@@ -121,7 +142,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * @return the module mode
      * @see jdk.javadoc.doclet.DocletEnvironment#getModuleMode()
      */
     public ModuleMode getModuleMode() {
@@ -129,8 +152,9 @@ public class MDocletEnvironment extends DocEnvImpl
     }
 
     /**
-     * @param type
-     * @return
+     * Delegates to the environment passed in the constructor.
+     * 
+     * {@inheritDoc}
      * @see jdk.javadoc.doclet.DocletEnvironment#getFileKind(javax.lang.model.element.TypeElement)
      */
     public Kind getFileKind(TypeElement type) {

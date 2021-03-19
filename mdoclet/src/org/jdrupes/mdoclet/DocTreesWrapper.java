@@ -50,6 +50,14 @@ import com.sun.source.util.TreePath;
 import com.sun.tools.javac.parser.Tokens;
 import com.sun.tools.javac.tree.JCTree;
 
+/**
+ * Wraps the {@link DocTrees} passed to the constructor.
+ * 
+ * The sole purpose of the wrapper is to detect the (hopefully)
+ * first access of the parsed AST by an invocation of
+ * {@link #getDocCommentTree(TreePath)} which triggers the
+ * markdown processind.
+ */
 public class DocTreesWrapper extends DocTrees {
 
     private final DocTrees docTrees;
@@ -60,7 +68,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getBreakIterator()
      */
     public BreakIterator getBreakIterator() {
@@ -68,8 +78,10 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param path
-     * @return
+     * Triggers the markdown processing and then delegates to the 
+     * docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getDocCommentTree(com.sun.source.util.TreePath)
      */
     public DocCommentTree getDocCommentTree(TreePath path) {
@@ -88,8 +100,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param e
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getDocCommentTree(javax.lang.model.element.Element)
      */
     public DocCommentTree getDocCommentTree(Element e) {
@@ -97,8 +110,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param fileObject
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getDocCommentTree(javax.tools.FileObject)
      */
     public DocCommentTree getDocCommentTree(FileObject fileObject) {
@@ -106,8 +120,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param element
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getTree(javax.lang.model.element.Element)
      */
     public Tree getTree(Element element) {
@@ -115,10 +130,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param e
-     * @param relativePath
-     * @return
-     * @throws IOException
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getDocCommentTree(javax.lang.model.element.Element, java.lang.String)
      */
     public DocCommentTree getDocCommentTree(Element e, String relativePath)
@@ -127,8 +141,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param element
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getTree(javax.lang.model.element.TypeElement)
      */
     public ClassTree getTree(TypeElement element) {
@@ -136,8 +151,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param method
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getTree(javax.lang.model.element.ExecutableElement)
      */
     public MethodTree getTree(ExecutableElement method) {
@@ -145,9 +161,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param e
-     * @param a
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getTree(javax.lang.model.element.Element, javax.lang.model.element.AnnotationMirror)
      */
     public Tree getTree(Element e, AnnotationMirror a) {
@@ -155,9 +171,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param fileObject
-     * @param packageElement
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getDocTreePath(javax.tools.FileObject, javax.lang.model.element.PackageElement)
      */
     public DocTreePath getDocTreePath(FileObject fileObject,
@@ -166,10 +182,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param e
-     * @param a
-     * @param v
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getTree(javax.lang.model.element.Element, javax.lang.model.element.AnnotationMirror, javax.lang.model.element.AnnotationValue)
      */
     public Tree getTree(Element e, AnnotationMirror a, AnnotationValue v) {
@@ -177,9 +192,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param unit
-     * @param node
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getPath(com.sun.source.tree.CompilationUnitTree, com.sun.source.tree.Tree)
      */
     public TreePath getPath(CompilationUnitTree unit, Tree node) {
@@ -187,8 +202,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param e
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getPath(javax.lang.model.element.Element)
      */
     public TreePath getPath(Element e) {
@@ -196,8 +212,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param path
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getElement(com.sun.source.util.DocTreePath)
      */
     public Element getElement(DocTreePath path) {
@@ -205,9 +222,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param e
-     * @param a
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getPath(javax.lang.model.element.Element, javax.lang.model.element.AnnotationMirror)
      */
     public TreePath getPath(Element e, AnnotationMirror a) {
@@ -215,8 +232,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param list
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getFirstSentence(java.util.List)
      */
     public List<DocTree> getFirstSentence(List<? extends DocTree> list) {
@@ -224,10 +242,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param e
-     * @param a
-     * @param v
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getPath(javax.lang.model.element.Element, javax.lang.model.element.AnnotationMirror, javax.lang.model.element.AnnotationValue)
      */
     public TreePath getPath(Element e, AnnotationMirror a, AnnotationValue v) {
@@ -235,7 +252,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getSourcePositions()
      */
     public DocSourcePositions getSourcePositions() {
@@ -243,8 +262,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param path
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getElement(com.sun.source.util.TreePath)
      */
     public Element getElement(TreePath path) {
@@ -252,11 +272,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param kind
-     * @param msg
-     * @param t
-     * @param c
-     * @param root
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#printMessage(javax.tools.Diagnostic.Kind, java.lang.CharSequence, com.sun.source.doctree.DocTree, com.sun.source.doctree.DocCommentTree, com.sun.source.tree.CompilationUnitTree)
      */
     public void printMessage(Kind kind, CharSequence msg, DocTree t,
@@ -265,8 +283,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param path
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getTypeMirror(com.sun.source.util.TreePath)
      */
     public TypeMirror getTypeMirror(TreePath path) {
@@ -274,7 +293,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param breakiterator
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#setBreakIterator(java.text.BreakIterator)
      */
     public void setBreakIterator(BreakIterator breakiterator) {
@@ -282,8 +303,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param path
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getScope(com.sun.source.util.TreePath)
      */
     public Scope getScope(TreePath path) {
@@ -291,7 +313,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.DocTrees#getDocTreeFactory()
      */
     public DocTreeFactory getDocTreeFactory() {
@@ -299,8 +323,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param path
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getDocComment(com.sun.source.util.TreePath)
      */
     public String getDocComment(TreePath path) {
@@ -308,9 +333,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param scope
-     * @param type
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#isAccessible(com.sun.source.tree.Scope, javax.lang.model.element.TypeElement)
      */
     public boolean isAccessible(Scope scope, TypeElement type) {
@@ -318,10 +343,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param scope
-     * @param member
-     * @param type
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#isAccessible(com.sun.source.tree.Scope, javax.lang.model.element.Element, javax.lang.model.type.DeclaredType)
      */
     public boolean isAccessible(Scope scope, Element member,
@@ -330,8 +354,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param errorType
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getOriginalType(javax.lang.model.type.ErrorType)
      */
     public TypeMirror getOriginalType(ErrorType errorType) {
@@ -339,10 +364,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param kind
-     * @param msg
-     * @param t
-     * @param root
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#printMessage(javax.tools.Diagnostic.Kind, java.lang.CharSequence, com.sun.source.tree.Tree, com.sun.source.tree.CompilationUnitTree)
      */
     public void printMessage(Kind kind, CharSequence msg, Tree t,
@@ -351,8 +375,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @param tree
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see com.sun.source.util.Trees#getLub(com.sun.source.tree.CatchTree)
      */
     public TypeMirror getLub(CatchTree tree) {
@@ -360,7 +385,9 @@ public class DocTreesWrapper extends DocTrees {
     }
 
     /**
-     * @return
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
      * @see java.lang.Object#toString()
      */
     public String toString() {
