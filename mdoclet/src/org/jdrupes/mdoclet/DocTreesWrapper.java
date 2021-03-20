@@ -33,6 +33,7 @@ import javax.lang.model.type.ErrorType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
+import javax.tools.ForwardingFileObject;
 
 import com.sun.source.doctree.DocCommentTree;
 import com.sun.source.doctree.DocTree;
@@ -51,8 +52,13 @@ import com.sun.source.util.TreePath;
 /**
  * Wraps the {@link DocTrees} passed to the constructor.
  * 
- * The sole purpose of the wrapper is to wrap the results from methods
- * that return a {@link DocCommentTree} in a {@link DocCommentTreeWrapper}.
+ * The main purpose of the wrapper is to wrap the results from methods
+ * that return a {@link DocCommentTree} for already parsed content
+ * in a {@link DocCommentTreeWrapper}.
+ * 
+ * For method invocations with {@link FileObject}s as argument,
+ * the source is converted from markdown to html if the name ends
+ * with ".md".
  */
 public class DocTreesWrapper extends DocTrees {
 
@@ -113,7 +119,31 @@ public class DocTreesWrapper extends DocTrees {
      * @see com.sun.source.util.DocTrees#getDocCommentTree(javax.tools.FileObject)
      */
     public DocCommentTree getDocCommentTree(FileObject fileObject) {
-        return wrap(docTrees.getDocCommentTree(fileObject));
+        return docTrees.getDocCommentTree(wrapMdFile(fileObject));
+    }
+
+    private FileObject wrapMdFile(FileObject fileObject) {
+        if (!fileObject.getName().endsWith(".md")) {
+            return fileObject;
+        }
+        return new ForwardingFileObject<>(fileObject) {
+
+            @Override
+            public String getName() {
+                String origName = super.getName();
+                return origName.substring(0, origName.length() - 2)
+                    + "html";
+            }
+
+            @Override
+            public CharSequence getCharContent(boolean ignoreEncodingErrors)
+                    throws IOException {
+                String md
+                    = super.getCharContent(ignoreEncodingErrors).toString();
+                String html = doclet.getProcessor().toHtml(md);
+                return "<body>" + html + "</body>";
+            }
+        };
     }
 
     /**
@@ -175,7 +205,7 @@ public class DocTreesWrapper extends DocTrees {
      */
     public DocTreePath getDocTreePath(FileObject fileObject,
             PackageElement packageElement) {
-        return docTrees.getDocTreePath(fileObject, packageElement);
+        return docTrees.getDocTreePath(wrapMdFile(fileObject), packageElement);
     }
 
     /**
