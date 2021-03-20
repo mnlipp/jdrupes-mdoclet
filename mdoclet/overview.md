@@ -11,53 +11,23 @@ It's a simple preprocessor to the standard Doclet: It processes all JavaDoc
 comments in the documentation tree and then forwards the result to the 
 standard Doclet.
 
-Leading Spaces
---------------
-
-Sometimes, leading whitespaces are significant in Markdown. Because of the way we
-usually write JavaDoc comments and the way JavaDoc is implemented, this may lead to
-some problems:
-
-```
-/**
- * Title
- * =====
- *
- * Text
- */
-```
-
-In this example, each line has one leading space. Because of this, the title won't be
-recognized as such by the Markdown processor. To work around this problem, the 
-doclet uses a simple trick: The first leading space character (the *actual* space 
-character, i.e. `\\u0020`) will be cut off, if it exists.
-
-This may be important e.g. for code blocks, which should be indented by 4 spaces: Well,
-it's 5 spaces now. ;)
-
-*Note:* If an `overview.md` file is specified, leading spaces will be treated normally
-in this file. The first space will *not* be ignored.
-
-This behaviour is currently *not* customisable.
-
-
 Javadoc Tags
 ------------
 
-The following known tags handled are processed as Markdown:
+The following known tags are processed as Markdown:
 
  *  `@author`
- *  `@version`
- *  `@return`
  *  `@deprecated`
- *  `@since`
  *  `@param`
+ *  `@return`
+ *  `@since`
  *  `@throws`
+ *  `@version`
 
 ### `@see` Tags
 
-The `@see` tag is a special case, as there are several variants of this tag. These two
-variants will remain unchanged:
+The `@see` tag is a special case, as there are several variants of this tag. 
+These two variants will remain unchanged:
 
  *  Javadoc-Links: `@see Foo#bar()`
  *  Links: `@see <a href="http://www.example.com/">Example</a>`
@@ -74,8 +44,8 @@ LABEL falls back to the link's URL, if no label is given.
 
 ### Inline Tags
 
-Inline tags will be removed before processing the Markdown source and re-inserted
-afterwards. Therefore, markup within inline tags won't work.
+Inline tags will be removed before processing the Markdown source and 
+re-inserted afterwards. Therefore, markup within inline tags won't work.
 
 
 Syntax Highlighting

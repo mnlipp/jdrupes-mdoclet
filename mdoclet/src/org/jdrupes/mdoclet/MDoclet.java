@@ -29,6 +29,8 @@ import javax.tools.Diagnostic;
 
 import org.jdrupes.mdoclet.processors.FlexmarkProcessor;
 
+import com.sun.source.doctree.DocCommentTree;
+
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
@@ -38,6 +40,11 @@ import jdk.javadoc.doclet.StandardDoclet;
  * The Doclet implementation. It converts the Markdown from the JavaDoc 
  * comments and tags to HTML.
  * 
+ * The doclet works by installing wrappers to intercept the 
+ * {@link StandardDoclet}'s calls to access the {@link DocCommentTree}s 
+ * (see {@link DocCommentTreeWrapper}).
+ * 
+ * @version 2.0
  * @see <a href='https://openjdk.java.net/groups/compiler/using-new-doclet.html'>Using the new doclet API</a>
  */
 public class MDoclet implements Doclet {
@@ -137,45 +144,4 @@ public class MDoclet implements Doclet {
         return processor;
     }
 
-    /**
-     * Converts Markdown source to HTML according to the options object. If
-     * `fixLeadingSpaces` is `true`, exactly one leading whitespace character ('\\u0020')
-     * will be removed, if it exists.
-     *
-     * @param markup           The Markdown source.
-     * @param fixLeadingSpaces `true` if leading spaces should be fixed.
-     *
-     * @return The resulting HTML.
-     */
-    public String toHtml(String markup, boolean fixLeadingSpaces) {
-//        if (fixLeadingSpaces) {
-//            markup = LINE_START.matcher(markup).replaceAll("");
-//        }
-//        List<String> tags = new ArrayList<>();
-//        String html = processor.toHtml(Tags.extractInlineTags(markup, tags));
-//        return Tags.insertInlineTags(html, tags);
-        return "";
-    }
-
-//    @Override
-//    public boolean run(DocletEnvironment environment) {
-//        docletOptions.validateOptions();
-//        AsciidoctorRenderer renderer
-//            = new AsciidoctorRenderer(docletOptions, reporter);
-//        boolean result;
-//        try (AsciidoctorFilteredEnvironment env
-//            = new AsciidoctorFilteredEnvironment(environment, renderer)) {
-//            result = standardDoclet.run(env);
-//        } catch (IOException e) {
-//            throw new UncheckedIOException(e);
-//        }
-//        return result && postProcess(environment);
-//    }
-
-//    private boolean postProcess(DocletEnvironment environment) {
-//        if (docletOptions.stylesheet().isPresent()) {
-//            return true;
-//        }
-//        return stylesheets.copy(environment);
-//    }
 }

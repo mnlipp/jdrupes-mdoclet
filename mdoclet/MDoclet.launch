@@ -20,7 +20,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="jdk.javadoc.internal.tool.Main"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="mdoclet"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--add-exports jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED&#10;-doclet org.jdrupes.mdoclet.MDoclet --disable-auto-highlight -stylesheetfile stylesheet.css -overview overview.md -d ../../jdrupes-mdoclet.gh-pages/javadoc/  -sourcepath src/ -subpackages org.jdrupes.mdoclet"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--add-exports jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED&#10;-doclet org.jdrupes.mdoclet.MDoclet --disable-auto-highlight -overview overview.md -d ../../jdrupes-mdoclet.gh-pages/javadoc/  -sourcepath src/ -subpackages org.jdrupes.mdoclet"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="mdoclet"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED"/>
 </launchConfiguration>

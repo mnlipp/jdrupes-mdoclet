@@ -59,6 +59,7 @@ public interface MarkdownProcessor extends OptionChecker {
      * 
      * @param markdown the markdown text
      * @return the HTML
+     * @since 2.0
      */
     String toHtmlFragment(String markdown);
 
