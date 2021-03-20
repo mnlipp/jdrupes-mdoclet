@@ -50,4 +50,16 @@ public interface MarkdownProcessor extends OptionChecker {
      */
     String toHtml(String markdown);
 
+    /**
+     * Converts the given markdown snippet to HTML. If the text does
+     * not start with an HTML tag, the markdown processor will most
+     * likely surround it with an additional block tag such as a
+     * paragraph tag. This method should return a result where any
+     * additional tag is removed. 
+     * 
+     * @param markdown the markdown text
+     * @return the HTML
+     */
+    String toHtmlFragment(String markdown);
+
 }

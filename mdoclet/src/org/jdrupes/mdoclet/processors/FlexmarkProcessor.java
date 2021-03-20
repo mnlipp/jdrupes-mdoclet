@@ -225,4 +225,26 @@ public class FlexmarkProcessor implements MarkdownProcessor {
         return renderer.render(document);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jdrupes.mdoclet.MarkdownProcessor#toHtmlFragment(java.lang.String)
+     */
+    @Override
+    public String toHtmlFragment(String markdown) {
+        markdown = markdown.trim();
+        String result = toHtml(markdown).trim();
+        if (markdown.startsWith("<")) {
+            // We should check if a surrounding tag was added. But until
+            // this pops up as an issue, let's keep this simple.
+            return result;
+        }
+        if (result.toUpperCase().startsWith("<P>")
+            && result.toUpperCase().endsWith("</P>")) {
+            return result.substring(3, result.length() - 4);
+        }
+        return result;
+    }
+
 }
