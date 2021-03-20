@@ -51,10 +51,8 @@ import com.sun.source.util.TreePath;
 /**
  * Wraps the {@link DocTrees} passed to the constructor.
  * 
- * The sole purpose of the wrapper is to detect the (hopefully)
- * first access of the parsed AST by an invocation of
- * {@link #getDocCommentTree(TreePath)} which triggers the
- * markdown processing.
+ * The sole purpose of the wrapper is to wrap the results from methods
+ * that return a {@link DocCommentTree} in a {@link DocCommentTreeWrapper}.
  */
 public class DocTreesWrapper extends DocTrees {
 

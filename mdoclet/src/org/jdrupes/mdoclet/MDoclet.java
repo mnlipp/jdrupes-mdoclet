@@ -95,16 +95,6 @@ public class MDoclet implements Doclet {
         return options;
     }
 
-//    @Override
-//    public Set<? extends Option> getSupportedOptions() {
-//        Set<Option> options
-//            = new HashSet<>(standardDoclet.getSupportedOptions());
-//        Arrays.stream(AsciidocletOptions.values())
-//            .map(o -> new OptionProcessor(o, docletOptions))
-//            .forEach(options::add);
-//        return options;
-//    }
-
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latest();

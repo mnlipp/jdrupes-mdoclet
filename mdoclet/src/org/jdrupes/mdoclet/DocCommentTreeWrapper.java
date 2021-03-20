@@ -26,14 +26,20 @@ import java.util.regex.Pattern;
 import com.sun.source.doctree.DocCommentTree;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.doctree.DocTreeVisitor;
+import com.sun.source.doctree.EndElementTree;
+import com.sun.source.doctree.LiteralTree;
+import com.sun.source.doctree.StartElementTree;
 import com.sun.source.doctree.TextTree;
 import com.sun.source.util.DocTreeFactory;
 import com.sun.source.util.SimpleDocTreeVisitor;
 
+/**
+ * Pipes the results of the methods through the markdown processor.
+ */
 public class DocCommentTreeWrapper implements DocCommentTree {
 
     private static final Pattern SCAN_RE
-        = Pattern.compile("-=@([0-9]+)=-");
+        = Pattern.compile("\\{@([0-9]+)\\}");
 
     private final MDoclet doclet;
     private final MDocletEnvironment environment;
@@ -64,9 +70,34 @@ public class DocCommentTreeWrapper implements DocCommentTree {
                     return null;
                 }
 
+                /**
+                 * Parsing is done, literals can be converted to text.
+                 * 
+                 * {@inheritDoc}
+                 */
+                @Override
+                public Void visitLiteral(LiteralTree node, StringBuilder sb) {
+                    sb.append(node.getBody().toString());
+                    return null;
+                }
+
+                @Override
+                public Void visitStartElement(StartElementTree node,
+                        StringBuilder sb) {
+                    sb.append(node.toString());
+                    return null;
+                }
+
+                @Override
+                public Void visitEndElement(EndElementTree node,
+                        StringBuilder sb) {
+                    sb.append(node.toString());
+                    return null;
+                }
+
                 @Override
                 protected Void defaultAction(DocTree node, StringBuilder sb) {
-                    sb.append("-=@" + specials.size() + "=-");
+                    sb.append("\\{@" + specials.size() + "\\}");
                     specials.add(node);
                     return null;
                 }
