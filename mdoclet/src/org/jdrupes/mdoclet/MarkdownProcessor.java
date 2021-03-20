@@ -43,9 +43,9 @@ public interface MarkdownProcessor extends OptionChecker {
     void start(String[][] options);
 
     /**
-     * Converts the given markdown test to HTML.
+     * Converts the given markdown text to HTML.
      * 
-     * @param markdown the markdoen text
+     * @param markdown the markdown text
      * @return the HTML
      */
     String toHtml(String markdown);
