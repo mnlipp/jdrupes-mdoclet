@@ -50,33 +50,31 @@ sourceSets {
     }
 }
 
-javadoc {
+task gendoc(type: JavaExec) {
     dependsOn classes
     inputs.file "overview.md"
 
-    //	if (javax.tools.ToolProvider.getSystemDocumentationTool()
-    //        .isSupportedOption("--allow-script-in-comments")) {
-    //        options.addBooleanOption("-allow-script-in-comments", true)
-    //    }
-
-    title = "JDrupes MDoclet"
-
-    options.docletpath = (sourceSets.main.output + sourceSets.main.compileClasspath) as List
-    options.doclet = "org.jdrupes.mdoclet.MDoclet"
-
-    // Without sourcepath and subpackages, @links in overview aren't rendered as hrefs
-    options.addStringOption("sourcepath", "src")
-    options.addStringOption("subpackages", "org.jdrupes.mdoclet")
-
-    destinationDir = file("../../jdrupes-mdoclet.gh-pages/javadoc/")
-
-    options.addStringOption("overview", "overview.md")
-    options.addBooleanOption("disable-auto-highlight", true)
-    options.addBooleanOption("linksource", true)
-    options.links("http://docs.oracle.com/javase/8/docs/api/")
-    options.stylesheetFile(file("stylesheet.css"))
-    options.addStringOption("bottom", file("misc/javadoc.bottom.txt").text)
-
+    jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
+    classpath sourceSets.main.compileClasspath
+    classpath files(tasks.jar)
+    
+    main = 'jdk.javadoc.internal.tool.Main'
+    args = ['-doctitle', 'JDrupes MDoclet',
+        '-linksource',
+        '-link', 'https://docs.oracle.com/en/java/javase/11/docs/api/',
+        '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '-doclet', 'org.jdrupes.mdoclet.MDoclet',
+        '--disable-auto-highlight',
+        '-overview', 'overview.md',
+        '-d', '../../jdrupes-mdoclet.gh-pages/javadoc/',
+        '-sourcepath', 'src/',
+        '-subpackages', 'org.jdrupes.mdoclet',
+        '-bottom', file("misc/javadoc.bottom.txt").text,
+        '--allow-script-in-comments'
+        ]
+    
+    ignoreExitValue true
+    
 }
 
 task sourcesJar(type: Jar) {
@@ -89,7 +87,7 @@ task javadocJar(type: Jar) {
     classifier "javadoc"
 }
 
-// MavenPublishing (new), incomplete, works only for local.
+// MavenPublishing
 
 publishing {
 
@@ -112,14 +110,6 @@ publishing {
         }
     }
 
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = archivesBaseName
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
 }
 
 // Additional configuration of publishing
@@ -146,35 +136,6 @@ configurePublishing {
                     appendNode('id', 'mnlipp')
                     appendNode('name', 'Michael N. Lipp')
                 }
-            }
-        }
-    }
-}
-
-apply plugin: 'com.jfrog.bintray'
-
-bintray {
-    user = project.properties['bintrayUser'] ?: "nouser"
-    key = project.properties['bintrayApiKey'] ?: "nokey"
-    publications = ['maven']
-    publish = true
-    pkg {
-        repo = "jdrupes"
-        name = "org.jdrupes.mdoclet:doclet"
-        licenses = ['AGPL-V3']
-        vcsUrl = 'https://github.com/mnlipp/jdrupes-mdoclet.git'
-        githubRepo = 'mnlipp/jdrupes-mdoclet'
-        githubReleaseNotesFile = 'README.md'
-        version {
-            name = project.version
-            gpg {
-                sign = true
-            }
-            mavenCentralSync {
-                sync = true
-                user = project.properties['sonatypeTokenKey'] ?: "nokey"
-                password = project.properties['sonatypeTokenSecret'] ?: "nosecret"
-                close = '1'
             }
         }
     }

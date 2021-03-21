@@ -17,6 +17,6 @@
  */
 
 /**
- * This package provides the main doclet class.
+ * This package provides the main doclet classes.
  */
 package org.jdrupes.mdoclet;

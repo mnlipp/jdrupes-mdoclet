@@ -49,7 +49,7 @@ import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
  * 
  * The adapter supports the following flags:
  * 
- * `-parser-profile` 
+ * `--parser-profile` 
  * :   Sets one of the profiles defined in
  *     `com.vladsch.flexmark.parser.ParserEmulationProfile`. The name of the
  *     profle is the lower case name of the enum value. At the time of this
@@ -62,7 +62,7 @@ import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
  *      - multi_markdown
  *      - pegdown
  * 
- * `-clear-extensions`
+ * `--clear-extensions`
  * :   Clears the list of extensions. The following extensions are predefined:
  *       - [Abbreviation](https://github.com/vsch/flexmark-java/wiki/Extensions#abbreviation)
  *       - [AnchorLink](https://github.com/vsch/flexmark-java/wiki/Extensions#anchorlink)
@@ -73,7 +73,7 @@ import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
  *       - [Table of Content](https://github.com/vsch/flexmark-java/wiki/Extensions#table-of-contents-1)
  *       - {@link TopAnchorLinkExtension TopAnchorLink} (provided by MDoclet)
  * 
- * `-extension <name>`
+ * `--extension <name>`
  * :   Adds the flexmark extension with the given name to the list of extensions.
  *     If the name contains a dot, it is assumed to be a fully qualified class
  *     name. Else, it is expanded using the naming pattern used by flexmark.
@@ -109,9 +109,9 @@ import org.jdrupes.mdoclet.processors.flexmark.TopAnchorLinkExtension;
  */
 public class FlexmarkProcessor implements MarkdownProcessor {
 
-    private static final String OPT_PROFILE = "-parser-profile";
-    private static final String OPT_CLEAR_EXTENSIONS = "-clear-extensions";
-    private static final String OPT_EXTENSION = "-extension";
+    private static final String OPT_PROFILE = "--parser-profile";
+    private static final String OPT_CLEAR_EXTENSIONS = "--clear-extensions";
+    private static final String OPT_EXTENSION = "--extension";
 
     private Parser parser;
     private HtmlRenderer renderer;
@@ -132,7 +132,7 @@ public class FlexmarkProcessor implements MarkdownProcessor {
     }
 
     @Override
-    public void start(String[][] options) {
+    public void start(String[] options) {
         Set<Class<? extends Extension>> extensions = new HashSet<>();
         extensions.add(AbbreviationExtension.class);
         extensions.add(AnchorLinkExtension.class);
@@ -147,10 +147,11 @@ public class FlexmarkProcessor implements MarkdownProcessor {
         MutableDataSet flexmarkOpts = new MutableDataSet();
         flexmarkOpts.set(HtmlRenderer.GENERATE_HEADER_ID, true);
 
-        for (String[] opt : options) {
-            switch (opt[0]) {
+        for (String opt : options) {
+            String[] optAndArgs = opt.split("[= ]");
+            switch (optAndArgs[0]) {
             case OPT_PROFILE:
-                setFromProfile(flexmarkOpts, opt[1]);
+                setFromProfile(flexmarkOpts, optAndArgs[1]);
                 continue;
 
             case OPT_CLEAR_EXTENSIONS:
@@ -159,10 +160,11 @@ public class FlexmarkProcessor implements MarkdownProcessor {
 
             case OPT_EXTENSION:
                 try {
-                    String clsName = opt[1];
+                    String clsName = optAndArgs[1];
                     if (!clsName.contains(".")) {
                         clsName = "com.vladsch.flexmark.ext."
-                            + opt[1].toLowerCase() + "." + opt[1] + "Extension";
+                            + optAndArgs[1].toLowerCase() + "." + optAndArgs[1]
+                            + "Extension";
                     }
                     @SuppressWarnings("unchecked")
                     Class<? extends Extension> cls
@@ -171,9 +173,8 @@ public class FlexmarkProcessor implements MarkdownProcessor {
                     extensions.add(cls);
                     continue;
                 } catch (ClassNotFoundException | ClassCastException e) {
-                    throw new IllegalArgumentException(
-                        "Cannot find extension " + opt[1]
-                            + " (check spelling and classpath).");
+                    throw new IllegalArgumentException("Cannot find extension "
+                        + optAndArgs[1] + " (check spelling and classpath).");
                 }
 
             case INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT:
@@ -182,7 +183,8 @@ public class FlexmarkProcessor implements MarkdownProcessor {
                 continue;
 
             default:
-                throw new IllegalArgumentException("Unknown option: " + opt[0]);
+                throw new IllegalArgumentException(
+                    "Unknown option: " + optAndArgs[0]);
             }
         }
 

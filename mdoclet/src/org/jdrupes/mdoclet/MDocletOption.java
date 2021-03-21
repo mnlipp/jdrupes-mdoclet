@@ -53,7 +53,7 @@ public abstract class MDocletOption implements Doclet.Option {
 
     @Override
     public List<String> getNames() {
-        return List.of("--" + name);
+        return List.of((name.length() == 1 ? "-" : "--") + name);
     }
 
     @Override

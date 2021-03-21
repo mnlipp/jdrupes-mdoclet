@@ -19,6 +19,7 @@
 package org.jdrupes.mdoclet;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -37,12 +38,20 @@ import jdk.javadoc.doclet.Reporter;
 import jdk.javadoc.doclet.StandardDoclet;
 
 /**
- * The Doclet implementation. It converts the Markdown from the JavaDoc 
+ * The Doclet implementation, which converts the Markdown from the JavaDoc 
  * comments and tags to HTML.
  * 
  * The doclet works by installing wrappers to intercept the 
  * {@link StandardDoclet}'s calls to access the {@link DocCommentTree}s 
- * (see {@link DocCommentTreeWrapper}).
+ * (see {@link DocCommentTreeWrapper}). At the root of this interception
+ * is a modified doclet environment ({@link MDocletEnvironment}) that 
+ * installs a wrapper around doc trees access.
+ * 
+ * For some strange reason, the `StandardDoclet` does not work
+ * with interface {@link DocletEnvironment} but insists on the instance
+ * being a `DocEnvImpl`. Therefore {@link MDocletEnvironment} has
+ * to extend this class which requires to allow module access with
+ * `--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED`.
  * 
  * @version 2.0
  * @see <a href='https://openjdk.java.net/groups/compiler/using-new-doclet.html'>Using the new doclet API</a>
@@ -54,6 +63,7 @@ public class MDoclet implements Doclet {
 
     private String markdownProcessorName = FlexmarkProcessor.class.getName();
     private MarkdownProcessor processor;
+    private List<String> processorOptions = new ArrayList<>();
 
     public MDoclet() {
         standardDoclet = new StandardDoclet();
@@ -99,6 +109,12 @@ public class MDoclet implements Doclet {
                 return true;
             }
         });
+        options.add(new MDocletOption("M", 1) {
+            @Override
+            public boolean process(String option, List<String> arguments) {
+                return processorOptions.add(arguments.get(0));
+            }
+        });
         return options;
     }
 
@@ -111,7 +127,7 @@ public class MDoclet implements Doclet {
     public boolean run(DocletEnvironment environment) {
         MDocletEnvironment env = new MDocletEnvironment(this, environment);
         processor = createProcessor();
-        processor.start(new String[0][0]);
+        processor.start(processorOptions.toArray(new String[0]));
         boolean result = standardDoclet.run(env);
         return result;
     }

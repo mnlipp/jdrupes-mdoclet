@@ -36,11 +36,9 @@ public interface MarkdownProcessor extends OptionChecker {
      * processor option because disabling the auto highlight feature is usually
      * implemented by configuring the processors HTML renderer in some way.
      *  
-     * @param options an array of options; each entry consists of an array that has
-     *     the option name as first entry and any parameters for that option as 
-     *     subsequent entries
+     * @param options an array of options
      */
-    void start(String[][] options);
+    void start(String[] options);
 
     /**
      * Converts the given markdown text to HTML.
