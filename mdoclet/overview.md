@@ -62,10 +62,10 @@ Invoking
 Specify the Doclet on JavaDoc's command line:
 
 ```
-javadoc -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar
+javadoc -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
 ```
 
-A prebuilt version can be downloaded from ...
+A prebuilt version can be downloaded from Maven Central
 (use the JAR with the suffix "-all" for a JAR file that includes all dependencies).
 
 `--markdown-processor`
@@ -90,28 +90,47 @@ A prebuilt version can be downloaded from ...
 
 ### Gradle
 
-You can simply configure the doclet in the javadoc task with the
-`doclet` and `docletpath` options as shown in the 
-[DSL Reference](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html).
-
-As a convenience, there is a plugin available that configures all your
-javadoc task(s) to use MDoclet. The build script snippets can be found on the 
-[Gradle Plugins Site](https://plugins.gradle.org/plugin/org.jdrupes.mdoclet).
-
-Note that the plugin adds a dependency to the artifact providing MDoclet
-to the configurations. It does not include the MDoclet jar itself. 
-Therefore, you have to make sure that your repositories include 
-maven central, so that the MDoclet artifact can be downloaded.
+Because the standard doclet relies on an implementation class instead of
+the interface `DocletEnvironment`, a module must be made accessible. This
+can only be done when forking a new JVM, which is not supported by the
+gradle JavaDoc task (see the 
+[corresponding issue](https://github.com/gradle/gradle/issues/16602)). Until
+this is fixed, the only way to run the doclet is by using a JavaExec
+task.
 
 ```gradle
-repositories {
-    mavenCentral() // For finding the doclet at compile time
+configurations {
+    markdownDoclet
+}
+ 
+dependencies {
+    markdownDoclet "org.jdrupes.mdoclet:doclet:2.0.0-SNAPSHOT"
+}
+ 
+task java11doc(type: JavaExec) {
+    enabled = JavaVersion.current().isJava11() && !isJitPackBuild
+    
+    dependsOn classes
+    inputs.file "overview.md"
+
+    jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
+    classpath sourceSets.main.compileClasspath
+    main = 'jdk.javadoc.internal.tool.Main'
+    args = ['-doctitle', "My Code",
+        '-overview', "overview.md",
+        '-use',
+        '-linksource',
+        '-link', 'https://docs.oracle.com/en/java/javase/11/docs/api/',
+        '-doclet', 'org.jdrupes.mdoclet.MDoclet',
+        '-docletpath', configurations.markdownDoclet.files.asType(List).join(":"),
+        '-d', file("${project.buildDir}/javadoc"),
+        // Specify sources to be processed
+        ]
 }
 ```
 
 The latest version available on maven central is shown in the badge on the 
-[project page](https://github.com/mnlipp/jdrupes-mdoclet). Note that
-you cannot use snapshot versions of the plugin.
+[project page](https://github.com/mnlipp/jdrupes-mdoclet).
 
 
 Selecting a Markdown processor

@@ -50,7 +50,7 @@ sourceSets {
     }
 }
 
-task gendoc(type: JavaExec) {
+task java11doc(type: JavaExec) {
     dependsOn classes
     inputs.file "overview.md"
 
@@ -60,6 +60,7 @@ task gendoc(type: JavaExec) {
     
     main = 'jdk.javadoc.internal.tool.Main'
     args = ['-doctitle', 'JDrupes MDoclet',
+        '-use',
         '-linksource',
         '-link', 'https://docs.oracle.com/en/java/javase/11/docs/api/',
         '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
