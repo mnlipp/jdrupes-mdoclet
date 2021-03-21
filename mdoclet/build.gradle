@@ -67,7 +67,7 @@ task java11doc(type: JavaExec) {
         '-doclet', 'org.jdrupes.mdoclet.MDoclet',
         '--disable-auto-highlight',
         '-overview', 'overview.md',
-        '-d', '../../jdrupes-mdoclet.gh-pages/javadoc/',
+        '-d', '../../jdrupes-mdoclet.gh-pages/javadoc.jdk9/',
         '-sourcepath', 'src/',
         '-subpackages', 'org.jdrupes.mdoclet',
         '-bottom', file("misc/javadoc.bottom.txt").text,
