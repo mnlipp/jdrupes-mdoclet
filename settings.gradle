@@ -1,5 +1,4 @@
 include 'mdoclet'
-include 'integrations:gradle-plugin'
 
 rootProject.name = 'org.jdrupes.mdoclet'
 
