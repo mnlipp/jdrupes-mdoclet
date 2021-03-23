@@ -119,20 +119,19 @@ public class DocTreesWrapper extends DocTrees {
      * @see com.sun.source.util.DocTrees#getDocCommentTree(javax.tools.FileObject)
      */
     public DocCommentTree getDocCommentTree(FileObject fileObject) {
-        return docTrees.getDocCommentTree(wrapMdFile(fileObject));
+        if (!fileObject.getName().endsWith(".md")) {
+            return docTrees.getDocCommentTree(fileObject);
+        }
+        return wrap(docTrees.getDocCommentTree(wrapMdFile(fileObject)));
     }
 
     private FileObject wrapMdFile(FileObject fileObject) {
-        if (!fileObject.getName().endsWith(".md")) {
-            return fileObject;
-        }
         return new ForwardingFileObject<>(fileObject) {
 
             @Override
             public String getName() {
                 String origName = super.getName();
-                return origName.substring(0, origName.length() - 2)
-                    + "html";
+                return origName.substring(0, origName.length() - 2) + "html";
             }
 
             @Override
@@ -140,8 +139,7 @@ public class DocTreesWrapper extends DocTrees {
                     throws IOException {
                 String md
                     = super.getCharContent(ignoreEncodingErrors).toString();
-                String html = doclet.getProcessor().toHtml(md);
-                return "<body>" + html + "</body>";
+                return "<body>" + md + "</body>";
             }
         };
     }
@@ -205,6 +203,9 @@ public class DocTreesWrapper extends DocTrees {
      */
     public DocTreePath getDocTreePath(FileObject fileObject,
             PackageElement packageElement) {
+        if (!fileObject.getName().endsWith(".md")) {
+            return docTrees.getDocTreePath(fileObject, packageElement);
+        }
         return docTrees.getDocTreePath(wrapMdFile(fileObject), packageElement);
     }
 
