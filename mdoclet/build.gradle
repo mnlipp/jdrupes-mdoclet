@@ -71,7 +71,8 @@ task java11doc(type: JavaExec) {
         '-sourcepath', 'src/',
         '-subpackages', 'org.jdrupes.mdoclet',
         '-bottom', file("misc/javadoc.bottom.txt").text,
-        '--allow-script-in-comments'
+        '--allow-script-in-comments',
+        '-Xdoclint:-html'
         ]
     
     ignoreExitValue true
