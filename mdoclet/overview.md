@@ -3,7 +3,7 @@ A Doclet that enables Markdown in JavaDoc comments.
 MDoclet
 =======
 
-MDoclet converts all JavaDoc
+The {@link org.jdrupes.mdoclet.MDoclet} converts all JavaDoc
 documentation to HTML using a configurable Markdown processor
 ([flexmark-java](https://github.com/vsch/flexmark-java) by default)
 
@@ -178,4 +178,4 @@ development based on the API introduced in JDK 9.
 This Doclet is released under the
 [AGPL 3.0](http://www.gnu.org/licenses/#AGPL).
 
-@see "flexmark-java <https://github.com/vsch/flexmark-java>"
+See [flexmark-java](https://github.com/vsch/flexmark-java>).
