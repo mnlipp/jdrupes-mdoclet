@@ -27,6 +27,7 @@ import com.sun.source.doctree.AuthorTree;
 import com.sun.source.doctree.DeprecatedTree;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.doctree.EndElementTree;
+import com.sun.source.doctree.ErroneousTree;
 import com.sun.source.doctree.LiteralTree;
 import com.sun.source.doctree.ParamTree;
 import com.sun.source.doctree.ReferenceTree;
@@ -42,7 +43,8 @@ import com.sun.source.util.SimpleDocTreeVisitor;
 
 public class TreeConverter {
 
-    private static final Pattern SCAN_RE = Pattern.compile("\\{@([0-9]+)\\}");
+    private static final Pattern SCAN_RE
+        = Pattern.compile("««@([0-9]+)»»");
 
     private MarkdownProcessor processor;
     private DocTreeFactory docTreeFactory;
@@ -90,8 +92,15 @@ public class TreeConverter {
                 }
 
                 @Override
+                public Void visitErroneous(ErroneousTree node,
+                        StringBuilder sb) {
+                    sb.append(node.toString());
+                    return null;
+                }
+
+                @Override
                 protected Void defaultAction(DocTree node, StringBuilder sb) {
-                    sb.append("\\{@" + specials.size() + "\\}");
+                    sb.append("««@" + specials.size() + "»»");
                     specials.add(node);
                     return null;
                 }
