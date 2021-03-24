@@ -18,5 +18,10 @@
 
 /**
  * This package provides the main doclet classes.
+ * 
+ * @version 2.0
+ * @see <a href='https://docs.oracle.com/javase/10/javadoc/javadoc-command.htm'>Javadoc command</a>
+ * @see <a href='https://openjdk.java.net/groups/compiler/using-new-doclet.html'>Using the new doclet API</a>
+ * @see <a href='https://docs.oracle.com/en/java/javase/11/docs/specs/doc-comment-spec.html'>Documentation Comment Specification for the Standard Doclet</a>
  */
 package org.jdrupes.mdoclet;

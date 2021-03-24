@@ -52,10 +52,6 @@ import jdk.javadoc.doclet.StandardDoclet;
  * being a `DocEnvImpl`. Therefore {@link MDocletEnvironment} has
  * to extend this class which requires to allow module access with
  * `--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED`.
- * 
- * @version 2.0
- * @see <a href='https://docs.oracle.com/javase/10/javadoc/javadoc-command.htm'>Javadoc command</a>
- * @see <a href='https://openjdk.java.net/groups/compiler/using-new-doclet.html'>Using the new doclet API</a>
  */
 public class MDoclet implements Doclet {
 
