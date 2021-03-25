@@ -108,7 +108,7 @@ dependencies {
 }
  
 task java11doc(type: JavaExec) {
-    enabled = JavaVersion.current().isJava11() && !isJitPackBuild
+    enabled = JavaVersion.current().isJava11()
     
     dependsOn classes
     inputs.file "overview.md"
