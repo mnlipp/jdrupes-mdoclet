@@ -18,8 +18,15 @@
 
 package org.jdrupes.mdoclet;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -27,6 +34,8 @@ import java.util.Set;
 
 import javax.lang.model.SourceVersion;
 import javax.tools.Diagnostic;
+import javax.tools.DocumentationTool.Location;
+import javax.tools.JavaFileManager;
 
 import org.jdrupes.mdoclet.processors.FlexmarkProcessor;
 
@@ -55,12 +64,39 @@ import jdk.javadoc.doclet.StandardDoclet;
  */
 public class MDoclet implements Doclet {
 
+    public static final String HIGHLIGHT_JS_HTML
+        = "<script type=\"text/javascript\" charset=\"utf-8\" "
+            + "src=\"" + "{@docRoot}/highlight.pack.js" + "\"></script>\n"
+            + "<script type=\"text/javascript\"><!--\n"
+            + "var cssId = 'highlightCss';\n"
+            + "if (!document.getElementById(cssId))\n"
+            + "{\n"
+            + "    var head  = document.getElementsByTagName('head')[0];\n"
+            + "    var link  = document.createElement('link');\n"
+            + "    link.id   = cssId;\n"
+            + "    link.rel  = 'stylesheet';\n"
+            + "    link.type = 'text/css';\n"
+            + "    link.charset = 'utf-8';\n"
+            + "    link.href = '{@docRoot}/highlight.css';\n"
+            + "    link.media = 'all';\n"
+            + "    head.appendChild(link);\n"
+            + "}"
+            + "hljs.initHighlightingOnLoad();\n"
+            + "//--></script>";
+
     private StandardDoclet standardDoclet;
     private Reporter reporter;
+    private JavaFileManager fileManager;
 
     private String markdownProcessorName = FlexmarkProcessor.class.getName();
     private MarkdownProcessor processor;
     private List<String> processorOptions = new ArrayList<>();
+    private Option origFooterOpt;
+    private String bufferedFooter = "";
+    private Option allowScriptsOpt;
+    private boolean disableHighlight;
+    private boolean disableAutoHighlight;
+    private String highlightStyle = "default";
 
     public MDoclet() {
         standardDoclet = new StandardDoclet();
@@ -79,8 +115,17 @@ public class MDoclet implements Doclet {
 
     @Override
     public Set<? extends Option> getSupportedOptions() {
-        Set<Option> options
-            = new HashSet<>(standardDoclet.getSupportedOptions());
+        Set<Option> options = new HashSet<>();
+        for (Option opt : standardDoclet.getSupportedOptions()) {
+            if (opt.getNames().contains("-footer")) {
+                origFooterOpt = opt;
+            } else {
+                options.add(opt);
+            }
+            if (opt.getNames().contains("--allow-script-in-comments")) {
+                allowScriptsOpt = opt;
+            }
+        }
         options.add(new MDocletOption("markdown-processor", 1) {
             @Override
             public boolean process(String option, List<String> arguments) {
@@ -91,18 +136,21 @@ public class MDoclet implements Doclet {
         options.add(new MDocletOption("disable-highlight", 0) {
             @Override
             public boolean process(String option, List<String> arguments) {
+                disableHighlight = true;
                 return true;
             }
         });
         options.add(new MDocletOption("disable-auto-highlight", 0) {
             @Override
             public boolean process(String option, List<String> arguments) {
+                disableAutoHighlight = true;
                 return true;
             }
         });
         options.add(new MDocletOption("highlight-style", 1) {
             @Override
             public boolean process(String option, List<String> arguments) {
+                highlightStyle = arguments.get(0);
                 return true;
             }
         });
@@ -112,7 +160,43 @@ public class MDoclet implements Doclet {
                 return processorOptions.add(arguments.get(0));
             }
         });
+        options.add(new FooterOverride());
         return options;
+    }
+
+    private class FooterOverride implements Option {
+
+        @Override
+        public int getArgumentCount() {
+            return 1;
+        }
+
+        @Override
+        public String getDescription() {
+            return origFooterOpt.getDescription();
+        }
+
+        @Override
+        public Kind getKind() {
+            return origFooterOpt.getKind();
+        }
+
+        @Override
+        public List<String> getNames() {
+            return origFooterOpt.getNames();
+        }
+
+        @Override
+        public String getParameters() {
+            return origFooterOpt.getParameters();
+        }
+
+        @Override
+        public boolean process(String option, List<String> arguments) {
+            bufferedFooter = arguments.get(0);
+            return true;
+        }
+
     }
 
     @Override
@@ -122,11 +206,22 @@ public class MDoclet implements Doclet {
 
     @Override
     public boolean run(DocletEnvironment environment) {
+        fileManager = environment.getJavaFileManager();
+        if (disableHighlight) {
+            if (bufferedFooter.length() > 0) {
+                origFooterOpt.process("-footer", List.of(bufferedFooter));
+            }
+        } else {
+            bufferedFooter += HIGHLIGHT_JS_HTML;
+            origFooterOpt.process("-footer", List.of(bufferedFooter));
+            allowScriptsOpt.process("--allow-script-in-comments",
+                Collections.emptyList());
+        }
+
         MDocletEnvironment env = new MDocletEnvironment(this, environment);
         processor = createProcessor();
         processor.start(processorOptions.toArray(new String[0]));
-        boolean result = standardDoclet.run(env);
-        return result;
+        return standardDoclet.run(env) && postProcess();
     }
 
     private MarkdownProcessor createProcessor() {
@@ -134,8 +229,14 @@ public class MDoclet implements Doclet {
             @SuppressWarnings("unchecked")
             Class<MarkdownProcessor> mpc = (Class<MarkdownProcessor>) getClass()
                 .getClassLoader().loadClass(markdownProcessorName);
-            return (MarkdownProcessor) mpc.getDeclaredConstructor()
-                .newInstance();
+            MarkdownProcessor mdp = (MarkdownProcessor) mpc
+                .getDeclaredConstructor().newInstance();
+            if (disableAutoHighlight && processor.isSupportedOption(
+                MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) >= 0) {
+                processorOptions
+                    .add(MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT);
+            }
+            return mdp;
         } catch (ClassNotFoundException | InstantiationException
                 | IllegalAccessException | ClassCastException
                 | IllegalArgumentException | InvocationTargetException
@@ -155,6 +256,38 @@ public class MDoclet implements Doclet {
      */
     public MarkdownProcessor getProcessor() {
         return processor;
+    }
+
+    private boolean postProcess() {
+        if (disableHighlight) {
+            return true;
+        }
+        return copyResource("highlight.pack.js", "highlight.pack.js",
+            "highlight.js")
+            && copyResource("highlight-LICENSE.txt", "highlight-LICENSE.txt",
+                "highlight.js license")
+            && copyResource("highlight-styles/" + highlightStyle + ".css",
+                "highlight.css",
+                "highlight.js style '" + highlightStyle + "'");
+    }
+
+    private boolean copyResource(String resource, String destination,
+            String description) {
+        try {
+            URL url = MDoclet.class.getResource(resource);
+            if (url == null) {
+                throw new FileNotFoundException();
+            }
+            Files.copy(Path.of(url.toURI()),
+                fileManager.getFileForOutput(Location.DOCUMENTATION_OUTPUT,
+                    "", destination, null).openOutputStream());
+            return true;
+        } catch (IOException | URISyntaxException e) {
+            reporter.print(javax.tools.Diagnostic.Kind.ERROR,
+                "Error writing " + description + ": "
+                    + e.getLocalizedMessage());
+            return false;
+        }
     }
 
 }

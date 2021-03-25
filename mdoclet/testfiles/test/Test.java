@@ -7,6 +7,14 @@ package test;
  *
  * Smaller (`<`) and greater (`>`) as code
  *
+ * ```java
+ * class Test {
+ *     public Test() {
+ *         Object obj = new Object();
+ *     }
+ * }
+ * ```
+ *
  */
 public class Test {
 
