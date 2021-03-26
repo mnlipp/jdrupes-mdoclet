@@ -53,6 +53,7 @@ sourceSets {
 task java11doc(type: JavaExec) {
     dependsOn tasks.jar
     inputs.file "overview.md"
+    ext.destinationDir = '../../jdrupes-mdoclet.gh-pages/javadoc/'
 
     jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
     classpath sourceSets.main.compileClasspath
@@ -67,7 +68,7 @@ task java11doc(type: JavaExec) {
         '-doclet', 'org.jdrupes.mdoclet.MDoclet',
         '--disable-auto-highlight',
         '-overview', 'overview.md',
-        '-d', '../../jdrupes-mdoclet.gh-pages/javadoc/',
+        '-d', destinationDir,
         '-sourcepath', 'src/',
         '-subpackages', 'org.jdrupes.mdoclet',
         '-bottom', file("misc/javadoc.bottom.txt").text,
@@ -85,7 +86,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadocJar(type: Jar) {
-    from javadoc.destinationDir
+    from java11doc.destinationDir
     classifier "javadoc"
 }
 
