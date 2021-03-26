@@ -20,11 +20,8 @@ package org.jdrupes.mdoclet;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -231,7 +228,7 @@ public class MDoclet implements Doclet {
                 .getClassLoader().loadClass(markdownProcessorName);
             MarkdownProcessor mdp = (MarkdownProcessor) mpc
                 .getDeclaredConstructor().newInstance();
-            if (disableAutoHighlight && processor.isSupportedOption(
+            if (disableAutoHighlight && mdp.isSupportedOption(
                 MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) >= 0) {
                 processorOptions
                     .add(MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT);
@@ -274,15 +271,15 @@ public class MDoclet implements Doclet {
     private boolean copyResource(String resource, String destination,
             String description) {
         try {
-            URL url = MDoclet.class.getResource(resource);
-            if (url == null) {
+            InputStream in = MDoclet.class.getResourceAsStream(resource);
+            if (in == null) {
                 throw new FileNotFoundException();
             }
-            Files.copy(Path.of(url.toURI()),
-                fileManager.getFileForOutput(Location.DOCUMENTATION_OUTPUT,
-                    "", destination, null).openOutputStream());
+            in.transferTo(
+                fileManager.getFileForOutput(Location.DOCUMENTATION_OUTPUT, "",
+                    destination, null).openOutputStream());
             return true;
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             reporter.print(javax.tools.Diagnostic.Kind.ERROR,
                 "Error writing " + description + ": "
                     + e.getLocalizedMessage());
