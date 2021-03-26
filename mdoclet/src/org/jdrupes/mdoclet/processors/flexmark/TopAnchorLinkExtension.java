@@ -18,17 +18,19 @@
 
 package org.jdrupes.mdoclet.processors.flexmark;
 
-import com.vladsch.flexmark.Extension;
+import org.jetbrains.annotations.NotNull;
+
 import com.vladsch.flexmark.ast.Link;
-import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.html.AttributeProvider;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.html.HtmlRenderer.Builder;
 import com.vladsch.flexmark.html.IndependentAttributeProviderFactory;
 import com.vladsch.flexmark.html.renderer.AttributablePart;
-import com.vladsch.flexmark.html.renderer.NodeRendererContext;
-import com.vladsch.flexmark.util.html.Attributes;
-import com.vladsch.flexmark.util.options.MutableDataHolder;
+import com.vladsch.flexmark.html.renderer.LinkResolverContext;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.util.data.MutableDataHolder;
+import com.vladsch.flexmark.util.html.MutableAttributes;
+import com.vladsch.flexmark.util.misc.Extension;
 
 /**
  * Provides an extension that adds "`target='_top'`" to all anchor links.
@@ -55,13 +57,14 @@ public class TopAnchorLinkExtension
             new IndependentAttributeProviderFactory() {
 
                 @Override
-                public AttributeProvider create(NodeRendererContext context) {
+                public @NotNull AttributeProvider
+                        apply(@NotNull LinkResolverContext context) {
                     return new AttributeProvider() {
 
                         @Override
-                        public void setAttributes(Node node,
-                                AttributablePart part,
-                                Attributes attributes) {
+                        public void setAttributes(@NotNull Node node,
+                                @NotNull AttributablePart part,
+                                @NotNull MutableAttributes attributes) {
                             if (node instanceof Link
                                 && part == AttributablePart.LINK) {
                                 attributes.replaceValue("target", "_top");
