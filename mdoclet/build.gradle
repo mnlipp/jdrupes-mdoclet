@@ -51,12 +51,11 @@ sourceSets {
 }
 
 task java11doc(type: JavaExec) {
-    dependsOn classes
+    dependsOn tasks.jar
     inputs.file "overview.md"
 
     jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
     classpath sourceSets.main.compileClasspath
-    classpath files(tasks.jar)
     
     main = 'jdk.javadoc.internal.tool.Main'
     args = ['-doctitle', 'JDrupes MDoclet',
@@ -64,6 +63,7 @@ task java11doc(type: JavaExec) {
         '-linksource',
         '-link', 'https://docs.oracle.com/en/java/javase/11/docs/api/',
         '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '-docletpath', file(tasks.jar.archiveFile),
         '-doclet', 'org.jdrupes.mdoclet.MDoclet',
         '--disable-auto-highlight',
         '-overview', 'overview.md',
