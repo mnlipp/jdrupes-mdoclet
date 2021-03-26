@@ -18,12 +18,13 @@
 
 plugins {
 	id "com.gradle.plugin-publish" version "0.12.0"
+    id 'org.ajoberstar.grgit' version '4.1.0'
 }
  
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'
-	version = '2.0.0-SNAPSHOT'
+	version = '2.0.0'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 

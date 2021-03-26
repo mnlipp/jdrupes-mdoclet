@@ -129,7 +129,7 @@ configurePublishing {
             appendNode('licenses').with {
                 appendNode('license').with {
                     appendNode('name', 'AGPL 3.0')
-                    appendNode('url', 'https://www.gnu.org/licenses/gpl-3.0.en.html')
+                    appendNode('url', 'https://www.gnu.org/licenses/agpl-3.0.en.html')
                     appendNode('distribution', 'repo')
                 }
             }
@@ -141,6 +141,26 @@ configurePublishing {
             }
         }
     }
+}
+
+task releaseTag {
+    doLast {
+        String name = project.name.startsWith(project.group + ".") ?
+            project.name.substring(project.group.length() + 1) : project.name
+        name = name.replace('.', '-')
+        String tag = name + "-" + project.version
+        grgit.tag.add(name: tag, message: "Released.")
+        grgit.push(refsOrSpecs: [tag])
+    }
+}
+
+build.mustRunAfter "releaseTag"
+
+task stageOnOssrh {
+    group = "publishing"
+    
+    dependsOn "releaseTag"
+    dependsOn "publishMavenPublicationToReleaseRepository"
 }
 
 eclipse {
