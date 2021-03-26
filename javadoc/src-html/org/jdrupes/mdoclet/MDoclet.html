@@ -1,573 +1,302 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html lang="de">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
+<main role="main">
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * JDrupes MDoclet<a name="line.2"></a>
-<span class="sourceLineNo">003</span> * Copyright 2013 Raffael Herzog<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * Copyright (C) 2017 Michael N. Lipp<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * <a name="line.5"></a>
-<span class="sourceLineNo">006</span> * This program is free software; you can redistribute it and/or modify it <a name="line.6"></a>
-<span class="sourceLineNo">007</span> * under the terms of the GNU General Public License as published by <a name="line.7"></a>
-<span class="sourceLineNo">008</span> * the Free Software Foundation; either version 3 of the License, or <a name="line.8"></a>
-<span class="sourceLineNo">009</span> * (at your option) any later version.<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * <a name="line.10"></a>
-<span class="sourceLineNo">011</span> * This program is distributed in the hope that it will be useful, but <a name="line.11"></a>
-<span class="sourceLineNo">012</span> * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License <a name="line.13"></a>
-<span class="sourceLineNo">014</span> * for more details.<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * <a name="line.15"></a>
-<span class="sourceLineNo">016</span> * You should have received a copy of the GNU General Public License along <a name="line.16"></a>
-<span class="sourceLineNo">017</span> * with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.<a name="line.17"></a>
-<span class="sourceLineNo">018</span> */<a name="line.18"></a>
-<span class="sourceLineNo">019</span><a name="line.19"></a>
-<span class="sourceLineNo">020</span>package org.jdrupes.mdoclet;<a name="line.20"></a>
-<span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>import com.sun.javadoc.AnnotationTypeDoc;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import com.sun.javadoc.ClassDoc;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import com.sun.javadoc.Doc;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import com.sun.javadoc.DocErrorReporter;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import com.sun.javadoc.Doclet;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import com.sun.javadoc.LanguageVersion;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import com.sun.javadoc.MemberDoc;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import com.sun.javadoc.PackageDoc;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import com.sun.javadoc.RootDoc;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import com.sun.javadoc.SourcePosition;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import com.sun.javadoc.Tag;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>import com.sun.tools.doclets.standard.Standard;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>import com.sun.tools.javadoc.Main;<a name="line.34"></a>
-<span class="sourceLineNo">035</span><a name="line.35"></a>
-<span class="sourceLineNo">036</span>import java.io.File;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>import java.io.FileOutputStream;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>import java.io.IOException;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import java.io.InputStream;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import java.io.OutputStream;<a name="line.40"></a>
-<span class="sourceLineNo">041</span>import java.lang.reflect.Field;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>import java.nio.file.Files;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>import java.nio.file.StandardCopyOption;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>import java.util.ArrayList;<a name="line.44"></a>
-<span class="sourceLineNo">045</span>import java.util.Arrays;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>import java.util.HashMap;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>import java.util.HashSet;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>import java.util.List;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>import java.util.Map;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>import java.util.Set;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>import java.util.regex.Pattern;<a name="line.51"></a>
-<span class="sourceLineNo">052</span><a name="line.52"></a>
-<span class="sourceLineNo">053</span>import org.jdrupes.mdoclet.renderers.ParamTagRenderer;<a name="line.53"></a>
-<span class="sourceLineNo">054</span>import org.jdrupes.mdoclet.renderers.SeeTagRenderer;<a name="line.54"></a>
-<span class="sourceLineNo">055</span>import org.jdrupes.mdoclet.renderers.SimpleTagRenderer;<a name="line.55"></a>
-<span class="sourceLineNo">056</span>import org.jdrupes.mdoclet.renderers.TagRenderer;<a name="line.56"></a>
-<span class="sourceLineNo">057</span>import org.jdrupes.mdoclet.renderers.ThrowsTagRenderer;<a name="line.57"></a>
-<span class="sourceLineNo">058</span><a name="line.58"></a>
-<span class="sourceLineNo">059</span>/**<a name="line.59"></a>
-<span class="sourceLineNo">060</span> * The Doclet implementation. It converts the Markdown from the JavaDoc comments and tags<a name="line.60"></a>
-<span class="sourceLineNo">061</span> * to HTML and sets a resulting JavaDoc comment using<a name="line.61"></a>
-<span class="sourceLineNo">062</span> * {@link Doc#setRawCommentText(String)}. It then passes the `RootDoc` to the standard<a name="line.62"></a>
-<span class="sourceLineNo">063</span> * Doclet.<a name="line.63"></a>
-<span class="sourceLineNo">064</span> *<a name="line.64"></a>
-<span class="sourceLineNo">065</span> * @see "[The Doclet Specification](http://docs.oracle.com/javase/1.5.0/docs/guide/javadoc/doclet/spec/index.html)"<a name="line.65"></a>
-<span class="sourceLineNo">066</span> */<a name="line.66"></a>
-<span class="sourceLineNo">067</span>public class MDoclet extends Doclet implements DocErrorReporter {<a name="line.67"></a>
-<span class="sourceLineNo">068</span><a name="line.68"></a>
-<span class="sourceLineNo">069</span>    public static final String HIGHLIGHT_JS_HTML =<a name="line.69"></a>
-<span class="sourceLineNo">070</span>            "&lt;script type=\"text/javascript\" charset=\"utf-8\" "<a name="line.70"></a>
-<span class="sourceLineNo">071</span>            + "src=\"" + "{@docRoot}/highlight.pack.js" + "\"&gt;&lt;/script&gt;\n"<a name="line.71"></a>
-<span class="sourceLineNo">072</span>            + "&lt;script type=\"text/javascript\"&gt;&lt;!--\n"<a name="line.72"></a>
-<span class="sourceLineNo">073</span>            + "var cssId = 'highlightCss';\n"<a name="line.73"></a>
-<span class="sourceLineNo">074</span>            + "if (!document.getElementById(cssId))\n"<a name="line.74"></a>
-<span class="sourceLineNo">075</span>            + "{\n"<a name="line.75"></a>
-<span class="sourceLineNo">076</span>            + "    var head  = document.getElementsByTagName('head')[0];\n"<a name="line.76"></a>
-<span class="sourceLineNo">077</span>            + "    var link  = document.createElement('link');\n"<a name="line.77"></a>
-<span class="sourceLineNo">078</span>            + "    link.id   = cssId;\n"<a name="line.78"></a>
-<span class="sourceLineNo">079</span>            + "    link.rel  = 'stylesheet';\n"<a name="line.79"></a>
-<span class="sourceLineNo">080</span>            + "    link.type = 'text/css';\n"<a name="line.80"></a>
-<span class="sourceLineNo">081</span>            + "    link.charset = 'utf-8';\n"<a name="line.81"></a>
-<span class="sourceLineNo">082</span>            + "    link.href = '{@docRoot}/highlight.css';\n"<a name="line.82"></a>
-<span class="sourceLineNo">083</span>            + "    link.media = 'all';\n"<a name="line.83"></a>
-<span class="sourceLineNo">084</span>            + "    head.appendChild(link);\n"<a name="line.84"></a>
-<span class="sourceLineNo">085</span>            + "}"<a name="line.85"></a>
-<span class="sourceLineNo">086</span>            + "hljs.initHighlightingOnLoad();\n"<a name="line.86"></a>
-<span class="sourceLineNo">087</span>            + "//--&gt;&lt;/script&gt;";<a name="line.87"></a>
-<span class="sourceLineNo">088</span>    private static final Pattern LINE_START = Pattern.compile("^ ", Pattern.MULTILINE);<a name="line.88"></a>
-<span class="sourceLineNo">089</span><a name="line.89"></a>
-<span class="sourceLineNo">090</span>    private final Map&lt;String, TagRenderer&lt;?&gt;&gt; tagRenderers = new HashMap&lt;&gt;();<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>    private final Set&lt;PackageDoc&gt; packages = new HashSet&lt;&gt;();<a name="line.92"></a>
-<span class="sourceLineNo">093</span>    private final Options options;<a name="line.93"></a>
-<span class="sourceLineNo">094</span>    private final RootDoc rootDoc;<a name="line.94"></a>
-<span class="sourceLineNo">095</span>    private MarkdownProcessor processor = null;<a name="line.95"></a>
-<span class="sourceLineNo">096</span><a name="line.96"></a>
-<span class="sourceLineNo">097</span>    private boolean error = false;<a name="line.97"></a>
-<span class="sourceLineNo">098</span><a name="line.98"></a>
-<span class="sourceLineNo">099</span>    /**<a name="line.99"></a>
-<span class="sourceLineNo">100</span>     * Construct a new doclet.<a name="line.100"></a>
-<span class="sourceLineNo">101</span>     *<a name="line.101"></a>
-<span class="sourceLineNo">102</span>     * @param options The command line options.<a name="line.102"></a>
-<span class="sourceLineNo">103</span>     * @param rootDoc The root document.<a name="line.103"></a>
-<span class="sourceLineNo">104</span>     */<a name="line.104"></a>
-<span class="sourceLineNo">105</span>    public MDoclet(Options options, RootDoc rootDoc) {<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        this.options = options;<a name="line.106"></a>
-<span class="sourceLineNo">107</span>        this.rootDoc = rootDoc;<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        tagRenderers.put("@author", SimpleTagRenderer.INSTANCE);<a name="line.108"></a>
-<span class="sourceLineNo">109</span>        tagRenderers.put("@version", SimpleTagRenderer.INSTANCE);<a name="line.109"></a>
-<span class="sourceLineNo">110</span>        tagRenderers.put("@return", SimpleTagRenderer.INSTANCE);<a name="line.110"></a>
-<span class="sourceLineNo">111</span>        tagRenderers.put("@deprecated", SimpleTagRenderer.INSTANCE);<a name="line.111"></a>
-<span class="sourceLineNo">112</span>        tagRenderers.put("@since", SimpleTagRenderer.INSTANCE);<a name="line.112"></a>
-<span class="sourceLineNo">113</span>        tagRenderers.put("@param", ParamTagRenderer.INSTANCE);<a name="line.113"></a>
-<span class="sourceLineNo">114</span>        tagRenderers.put("@throws", ThrowsTagRenderer.INSTANCE);<a name="line.114"></a>
-<span class="sourceLineNo">115</span>        tagRenderers.put("@see", SeeTagRenderer.INSTANCE);<a name="line.115"></a>
-<span class="sourceLineNo">116</span>        for (String tag: options.getMarkedDownTags()) {<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                tagRenderers.put("@" + tag, SimpleTagRenderer.INSTANCE);<a name="line.117"></a>
-<span class="sourceLineNo">118</span>        }<a name="line.118"></a>
-<span class="sourceLineNo">119</span>    }<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>    /**<a name="line.121"></a>
-<span class="sourceLineNo">122</span>     * As specified by the Doclet specification.<a name="line.122"></a>
-<span class="sourceLineNo">123</span>     *<a name="line.123"></a>
-<span class="sourceLineNo">124</span>     * @return Java 1.5.<a name="line.124"></a>
-<span class="sourceLineNo">125</span>     *<a name="line.125"></a>
-<span class="sourceLineNo">126</span>     * @see com.sun.javadoc.Doclet#languageVersion()<a name="line.126"></a>
-<span class="sourceLineNo">127</span>     */<a name="line.127"></a>
-<span class="sourceLineNo">128</span>    public static LanguageVersion languageVersion() {<a name="line.128"></a>
-<span class="sourceLineNo">129</span>        return LanguageVersion.JAVA_1_5;<a name="line.129"></a>
-<span class="sourceLineNo">130</span>    }<a name="line.130"></a>
-<span class="sourceLineNo">131</span><a name="line.131"></a>
-<span class="sourceLineNo">132</span>    /**<a name="line.132"></a>
-<span class="sourceLineNo">133</span>     * As specified by the Doclet specification.<a name="line.133"></a>
-<span class="sourceLineNo">134</span>     *<a name="line.134"></a>
-<span class="sourceLineNo">135</span>     * @param option The option name.<a name="line.135"></a>
-<span class="sourceLineNo">136</span>     *<a name="line.136"></a>
-<span class="sourceLineNo">137</span>     * @return The length of the option.<a name="line.137"></a>
-<span class="sourceLineNo">138</span>     *<a name="line.138"></a>
-<span class="sourceLineNo">139</span>     * @see com.sun.javadoc.Doclet#optionLength(String)<a name="line.139"></a>
-<span class="sourceLineNo">140</span>     */<a name="line.140"></a>
-<span class="sourceLineNo">141</span>    public static int optionLength(String option) {<a name="line.141"></a>
-<span class="sourceLineNo">142</span>        return Options.optionLength(option);<a name="line.142"></a>
-<span class="sourceLineNo">143</span>    }<a name="line.143"></a>
-<span class="sourceLineNo">144</span><a name="line.144"></a>
-<span class="sourceLineNo">145</span>    /**<a name="line.145"></a>
-<span class="sourceLineNo">146</span>     * As specified by the Doclet specification.<a name="line.146"></a>
-<span class="sourceLineNo">147</span>     *<a name="line.147"></a>
-<span class="sourceLineNo">148</span>     * @param options       The command line options.<a name="line.148"></a>
-<span class="sourceLineNo">149</span>     * @param errorReporter An error reporter to print errors.<a name="line.149"></a>
-<span class="sourceLineNo">150</span>     *<a name="line.150"></a>
-<span class="sourceLineNo">151</span>     * @return `true`, if the options are valid.<a name="line.151"></a>
-<span class="sourceLineNo">152</span>     */<a name="line.152"></a>
-<span class="sourceLineNo">153</span>    public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        return Options.validOptions(options, errorReporter);<a name="line.154"></a>
-<span class="sourceLineNo">155</span>    }<a name="line.155"></a>
-<span class="sourceLineNo">156</span><a name="line.156"></a>
-<span class="sourceLineNo">157</span>    /**<a name="line.157"></a>
-<span class="sourceLineNo">158</span>     * As specified by the Doclet specification.<a name="line.158"></a>
-<span class="sourceLineNo">159</span>     *<a name="line.159"></a>
-<span class="sourceLineNo">160</span>     * @param rootDoc The root doc.<a name="line.160"></a>
-<span class="sourceLineNo">161</span>     *<a name="line.161"></a>
-<span class="sourceLineNo">162</span>     * @return `true`, if process was successful.<a name="line.162"></a>
-<span class="sourceLineNo">163</span>     *<a name="line.163"></a>
-<span class="sourceLineNo">164</span>     * @see com.sun.javadoc.Doclet#start(RootDoc)<a name="line.164"></a>
-<span class="sourceLineNo">165</span>     */<a name="line.165"></a>
-<span class="sourceLineNo">166</span>    public static boolean start(RootDoc rootDoc) {<a name="line.166"></a>
-<span class="sourceLineNo">167</span>        Options options = new Options();<a name="line.167"></a>
-<span class="sourceLineNo">168</span>        String[][] forwardedOptions = options.load(rootDoc.options(), rootDoc);<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        if ( forwardedOptions == null ) {<a name="line.169"></a>
-<span class="sourceLineNo">170</span>            return false;<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
-<span class="sourceLineNo">172</span>        MDoclet doclet = new MDoclet(options, rootDoc);<a name="line.172"></a>
-<span class="sourceLineNo">173</span>        doclet.process();<a name="line.173"></a>
-<span class="sourceLineNo">174</span>        if ( doclet.isError() ) {<a name="line.174"></a>
-<span class="sourceLineNo">175</span>            return false;<a name="line.175"></a>
-<span class="sourceLineNo">176</span>        }<a name="line.176"></a>
-<span class="sourceLineNo">177</span>        RootDocWrapper rootDocWrapper = new RootDocWrapper(rootDoc, forwardedOptions);<a name="line.177"></a>
-<span class="sourceLineNo">178</span>        if ( options.isHighlightEnabled() ) {<a name="line.178"></a>
-<span class="sourceLineNo">179</span>            // find the footer option<a name="line.179"></a>
-<span class="sourceLineNo">180</span>            int optIndex = 0;<a name="line.180"></a>
-<span class="sourceLineNo">181</span>            for ( ; optIndex &lt; rootDocWrapper.options().length; optIndex++ ) {<a name="line.181"></a>
-<span class="sourceLineNo">182</span>                if ( rootDocWrapper.options()[optIndex][0].equals("-footer") ) {<a name="line.182"></a>
-<span class="sourceLineNo">183</span>                    rootDocWrapper.options()[optIndex][1] += HIGHLIGHT_JS_HTML;<a name="line.183"></a>
-<span class="sourceLineNo">184</span>                    break;<a name="line.184"></a>
-<span class="sourceLineNo">185</span>                }<a name="line.185"></a>
-<span class="sourceLineNo">186</span>            }<a name="line.186"></a>
-<span class="sourceLineNo">187</span>            if ( optIndex &gt;= rootDocWrapper.options().length ) {<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                rootDocWrapper.appendOption("-footer", HIGHLIGHT_JS_HTML);<a name="line.188"></a>
-<span class="sourceLineNo">189</span>            }<a name="line.189"></a>
-<span class="sourceLineNo">190</span>            if (Standard.optionLength("--allow-script-in-comments") == 1) {<a name="line.190"></a>
-<span class="sourceLineNo">191</span>                if (rootDocWrapper.findOption("--allow-script-in-comments") == null) {<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                        rootDocWrapper.appendOption("--allow-script-in-comments");<a name="line.192"></a>
-<span class="sourceLineNo">193</span>                }<a name="line.193"></a>
-<span class="sourceLineNo">194</span>            }<a name="line.194"></a>
-<span class="sourceLineNo">195</span>        }<a name="line.195"></a>
-<span class="sourceLineNo">196</span>        return Standard.start(rootDocWrapper) &amp;&amp; doclet.postProcess();<a name="line.196"></a>
-<span class="sourceLineNo">197</span>    }<a name="line.197"></a>
-<span class="sourceLineNo">198</span><a name="line.198"></a>
-<span class="sourceLineNo">199</span>    /**<a name="line.199"></a>
-<span class="sourceLineNo">200</span>     * Removes all tag renderers.<a name="line.200"></a>
-<span class="sourceLineNo">201</span>     */<a name="line.201"></a>
-<span class="sourceLineNo">202</span>    public void clearTagRenderers() {<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        tagRenderers.clear();<a name="line.203"></a>
-<span class="sourceLineNo">204</span>    }<a name="line.204"></a>
-<span class="sourceLineNo">205</span><a name="line.205"></a>
-<span class="sourceLineNo">206</span>    /**<a name="line.206"></a>
-<span class="sourceLineNo">207</span>     * Adds a tag renderer for the specified {@link com.sun.javadoc.Tag#kind() kind}.<a name="line.207"></a>
-<span class="sourceLineNo">208</span>     *<a name="line.208"></a>
-<span class="sourceLineNo">209</span>     * @param kind        The kind of the tag the renderer renders.<a name="line.209"></a>
-<span class="sourceLineNo">210</span>     * @param renderer    The tag renderer.<a name="line.210"></a>
-<span class="sourceLineNo">211</span>     */<a name="line.211"></a>
-<span class="sourceLineNo">212</span>    public void addTagRenderer(String kind, TagRenderer&lt;?&gt; renderer) {<a name="line.212"></a>
-<span class="sourceLineNo">213</span>        tagRenderers.put(kind, renderer);<a name="line.213"></a>
-<span class="sourceLineNo">214</span>    }<a name="line.214"></a>
-<span class="sourceLineNo">215</span><a name="line.215"></a>
-<span class="sourceLineNo">216</span>    /**<a name="line.216"></a>
-<span class="sourceLineNo">217</span>     * Removes a tag renderer for the specified {@link com.sun.javadoc.Tag#kind() kind}.<a name="line.217"></a>
-<span class="sourceLineNo">218</span>     *<a name="line.218"></a>
-<span class="sourceLineNo">219</span>     * @param kind        The kind of the tag.<a name="line.219"></a>
-<span class="sourceLineNo">220</span>     */<a name="line.220"></a>
-<span class="sourceLineNo">221</span>    public void removeTagRenderer(String kind) {<a name="line.221"></a>
-<span class="sourceLineNo">222</span>        tagRenderers.remove(kind);<a name="line.222"></a>
-<span class="sourceLineNo">223</span>    }<a name="line.223"></a>
-<span class="sourceLineNo">224</span><a name="line.224"></a>
-<span class="sourceLineNo">225</span>    /**<a name="line.225"></a>
-<span class="sourceLineNo">226</span>     * Get the options.<a name="line.226"></a>
-<span class="sourceLineNo">227</span>     *<a name="line.227"></a>
-<span class="sourceLineNo">228</span>     * @return The options.<a name="line.228"></a>
-<span class="sourceLineNo">229</span>     */<a name="line.229"></a>
-<span class="sourceLineNo">230</span>    public Options getOptions() {<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        return options;<a name="line.231"></a>
-<span class="sourceLineNo">232</span>    }<a name="line.232"></a>
-<span class="sourceLineNo">233</span><a name="line.233"></a>
-<span class="sourceLineNo">234</span>    /**<a name="line.234"></a>
-<span class="sourceLineNo">235</span>     * Get the root doc.<a name="line.235"></a>
-<span class="sourceLineNo">236</span>     *<a name="line.236"></a>
-<span class="sourceLineNo">237</span>     * @return The root doc.<a name="line.237"></a>
-<span class="sourceLineNo">238</span>     */<a name="line.238"></a>
-<span class="sourceLineNo">239</span>    public RootDoc getRootDoc() {<a name="line.239"></a>
-<span class="sourceLineNo">240</span>        return rootDoc;<a name="line.240"></a>
-<span class="sourceLineNo">241</span>    }<a name="line.241"></a>
-<span class="sourceLineNo">242</span><a name="line.242"></a>
-<span class="sourceLineNo">243</span>    /**<a name="line.243"></a>
-<span class="sourceLineNo">244</span>     * Process the documentation tree. If any errors occur during processing,<a name="line.244"></a>
-<span class="sourceLineNo">245</span>     * {@link #isError()} will return `true` afterwards.<a name="line.245"></a>
-<span class="sourceLineNo">246</span>     */<a name="line.246"></a>
-<span class="sourceLineNo">247</span>    public void process() {<a name="line.247"></a>
-<span class="sourceLineNo">248</span>        processor = options.getProcessor();<a name="line.248"></a>
-<span class="sourceLineNo">249</span>        try {<a name="line.249"></a>
-<span class="sourceLineNo">250</span>                processor.start(options.getProcessorOptions());<a name="line.250"></a>
-<span class="sourceLineNo">251</span>        } catch (Throwable e) {<a name="line.251"></a>
-<span class="sourceLineNo">252</span>                printError(e.getMessage());<a name="line.252"></a>
-<span class="sourceLineNo">253</span>                return;<a name="line.253"></a>
-<span class="sourceLineNo">254</span>        }<a name="line.254"></a>
-<span class="sourceLineNo">255</span>        processOverview();<a name="line.255"></a>
-<span class="sourceLineNo">256</span>        for ( ClassDoc doc : rootDoc.classes() ) {<a name="line.256"></a>
-<span class="sourceLineNo">257</span>            packages.add(doc.containingPackage());<a name="line.257"></a>
-<span class="sourceLineNo">258</span>            processClass(doc);<a name="line.258"></a>
-<span class="sourceLineNo">259</span>        }<a name="line.259"></a>
-<span class="sourceLineNo">260</span>        for ( PackageDoc doc : packages ) {<a name="line.260"></a>
-<span class="sourceLineNo">261</span>            processPackage(doc);<a name="line.261"></a>
-<span class="sourceLineNo">262</span>        }<a name="line.262"></a>
-<span class="sourceLineNo">263</span>    }<a name="line.263"></a>
-<span class="sourceLineNo">264</span><a name="line.264"></a>
-<span class="sourceLineNo">265</span>    /**<a name="line.265"></a>
-<span class="sourceLineNo">266</span>     * Called after the standard Doclet *successfully* did its work.<a name="line.266"></a>
-<span class="sourceLineNo">267</span>     *<a name="line.267"></a>
-<span class="sourceLineNo">268</span>     * @return `true` if postprocessing succeeded.<a name="line.268"></a>
-<span class="sourceLineNo">269</span>     */<a name="line.269"></a>
-<span class="sourceLineNo">270</span>    public boolean postProcess() {<a name="line.270"></a>
-<span class="sourceLineNo">271</span>        boolean success = true;<a name="line.271"></a>
-<span class="sourceLineNo">272</span>        if ( options.isHighlightEnabled() ) {<a name="line.272"></a>
-<span class="sourceLineNo">273</span>            success &amp;= copyResource("highlight.pack.js", <a name="line.273"></a>
-<span class="sourceLineNo">274</span>                        "highlight.pack.js", "highlight.js");<a name="line.274"></a>
-<span class="sourceLineNo">275</span>            success &amp;= copyResource("highlight-LICENSE.txt", <a name="line.275"></a>
-<span class="sourceLineNo">276</span>                        "highlight-LICENSE.txt", "highlight.js license");<a name="line.276"></a>
-<span class="sourceLineNo">277</span>            success &amp;= copyResource("highlight-styles/" + options.getHighlightStyle() + ".css", <a name="line.277"></a>
-<span class="sourceLineNo">278</span>                        "highlight.css", <a name="line.278"></a>
-<span class="sourceLineNo">279</span>                        "highlight.js style '" + options.getHighlightStyle() + "'");<a name="line.279"></a>
-<span class="sourceLineNo">280</span>        }<a name="line.280"></a>
-<span class="sourceLineNo">281</span>        return success;<a name="line.281"></a>
-<span class="sourceLineNo">282</span>    }<a name="line.282"></a>
-<span class="sourceLineNo">283</span><a name="line.283"></a>
-<span class="sourceLineNo">284</span>    private boolean copyResource(String resource, String destination, String description) {<a name="line.284"></a>
-<span class="sourceLineNo">285</span>        try (<a name="line.285"></a>
-<span class="sourceLineNo">286</span>                InputStream in = MDoclet.class.getResourceAsStream(resource);<a name="line.286"></a>
-<span class="sourceLineNo">287</span>                OutputStream out = new FileOutputStream(<a name="line.287"></a>
-<span class="sourceLineNo">288</span>                                new File(options.getDestinationDir(), destination))<a name="line.288"></a>
-<span class="sourceLineNo">289</span>        )<a name="line.289"></a>
-<span class="sourceLineNo">290</span>        {<a name="line.290"></a>
-<span class="sourceLineNo">291</span>                Files.copy(in, options.getDestinationDir().toPath().resolve(destination),<a name="line.291"></a>
-<span class="sourceLineNo">292</span>                                StandardCopyOption.REPLACE_EXISTING);<a name="line.292"></a>
-<span class="sourceLineNo">293</span>            return true;<a name="line.293"></a>
-<span class="sourceLineNo">294</span>        }<a name="line.294"></a>
-<span class="sourceLineNo">295</span>        catch ( IOException e ) {<a name="line.295"></a>
-<span class="sourceLineNo">296</span>            printError("Error writing " + description + ": " + e.getLocalizedMessage());<a name="line.296"></a>
-<span class="sourceLineNo">297</span>            return false;<a name="line.297"></a>
-<span class="sourceLineNo">298</span>        }<a name="line.298"></a>
-<span class="sourceLineNo">299</span>    }<a name="line.299"></a>
-<span class="sourceLineNo">300</span><a name="line.300"></a>
-<span class="sourceLineNo">301</span>    /**<a name="line.301"></a>
-<span class="sourceLineNo">302</span>     * Check whether any errors occurred during processing of the documentation tree.<a name="line.302"></a>
-<span class="sourceLineNo">303</span>     *<a name="line.303"></a>
-<span class="sourceLineNo">304</span>     * @return `true` if there were errors processing the documentation tree.<a name="line.304"></a>
-<span class="sourceLineNo">305</span>     */<a name="line.305"></a>
-<span class="sourceLineNo">306</span>    public boolean isError() {<a name="line.306"></a>
-<span class="sourceLineNo">307</span>        return error;<a name="line.307"></a>
-<span class="sourceLineNo">308</span>    }<a name="line.308"></a>
-<span class="sourceLineNo">309</span><a name="line.309"></a>
-<span class="sourceLineNo">310</span>    /**<a name="line.310"></a>
-<span class="sourceLineNo">311</span>     * Process the overview file, if specified.<a name="line.311"></a>
-<span class="sourceLineNo">312</span>     */<a name="line.312"></a>
-<span class="sourceLineNo">313</span>    protected void processOverview() {<a name="line.313"></a>
-<span class="sourceLineNo">314</span>        if ( options.getOverviewFile() != null ) {<a name="line.314"></a>
-<span class="sourceLineNo">315</span>            try {<a name="line.315"></a>
-<span class="sourceLineNo">316</span>                rootDoc.setRawCommentText(new String(Files.readAllBytes(<a name="line.316"></a>
-<span class="sourceLineNo">317</span>                                options.getOverviewFile().toPath()), options.getEncoding()));<a name="line.317"></a>
-<span class="sourceLineNo">318</span>                defaultProcess(rootDoc, false);<a name="line.318"></a>
-<span class="sourceLineNo">319</span>            } catch ( IOException e ) {<a name="line.319"></a>
-<span class="sourceLineNo">320</span>                printError("Error loading overview from " + options.getOverviewFile() <a name="line.320"></a>
-<span class="sourceLineNo">321</span>                        + ": " + e.getLocalizedMessage());<a name="line.321"></a>
-<span class="sourceLineNo">322</span>                rootDoc.setRawCommentText("");<a name="line.322"></a>
-<span class="sourceLineNo">323</span>            }<a name="line.323"></a>
-<span class="sourceLineNo">324</span>        }<a name="line.324"></a>
-<span class="sourceLineNo">325</span>    }<a name="line.325"></a>
-<span class="sourceLineNo">326</span><a name="line.326"></a>
-<span class="sourceLineNo">327</span>    /**<a name="line.327"></a>
-<span class="sourceLineNo">328</span>     * Process the class documentation.<a name="line.328"></a>
-<span class="sourceLineNo">329</span>     *<a name="line.329"></a>
-<span class="sourceLineNo">330</span>     * @param doc   The class documentation.<a name="line.330"></a>
-<span class="sourceLineNo">331</span>     */<a name="line.331"></a>
-<span class="sourceLineNo">332</span>    protected void processClass(ClassDoc doc) {<a name="line.332"></a>
-<span class="sourceLineNo">333</span>        defaultProcess(doc, true);<a name="line.333"></a>
-<span class="sourceLineNo">334</span>        for ( MemberDoc member : doc.fields() ) {<a name="line.334"></a>
-<span class="sourceLineNo">335</span>            processMember(member);<a name="line.335"></a>
-<span class="sourceLineNo">336</span>        }<a name="line.336"></a>
-<span class="sourceLineNo">337</span>        for ( MemberDoc member : doc.constructors() ) {<a name="line.337"></a>
-<span class="sourceLineNo">338</span>            processMember(member);<a name="line.338"></a>
-<span class="sourceLineNo">339</span>        }<a name="line.339"></a>
-<span class="sourceLineNo">340</span>        for ( MemberDoc member : doc.methods() ) {<a name="line.340"></a>
-<span class="sourceLineNo">341</span>            processMember(member);<a name="line.341"></a>
-<span class="sourceLineNo">342</span>        }<a name="line.342"></a>
-<span class="sourceLineNo">343</span>        if ( doc instanceof AnnotationTypeDoc ) {<a name="line.343"></a>
-<span class="sourceLineNo">344</span>            for ( MemberDoc member : ((AnnotationTypeDoc)doc).elements() ) {<a name="line.344"></a>
-<span class="sourceLineNo">345</span>                processMember(member);<a name="line.345"></a>
-<span class="sourceLineNo">346</span>            }<a name="line.346"></a>
-<span class="sourceLineNo">347</span>        }<a name="line.347"></a>
-<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
-<span class="sourceLineNo">349</span><a name="line.349"></a>
-<span class="sourceLineNo">350</span>    /**<a name="line.350"></a>
-<span class="sourceLineNo">351</span>     * Process the member documentation.<a name="line.351"></a>
-<span class="sourceLineNo">352</span>     *<a name="line.352"></a>
-<span class="sourceLineNo">353</span>     * @param doc    The member documentation.<a name="line.353"></a>
-<span class="sourceLineNo">354</span>     */<a name="line.354"></a>
-<span class="sourceLineNo">355</span>    protected void processMember(MemberDoc doc) {<a name="line.355"></a>
-<span class="sourceLineNo">356</span>        defaultProcess(doc, true);<a name="line.356"></a>
-<span class="sourceLineNo">357</span>    }<a name="line.357"></a>
-<span class="sourceLineNo">358</span><a name="line.358"></a>
-<span class="sourceLineNo">359</span>    /**<a name="line.359"></a>
-<span class="sourceLineNo">360</span>     * Process the package documentation.<a name="line.360"></a>
-<span class="sourceLineNo">361</span>     *<a name="line.361"></a>
-<span class="sourceLineNo">362</span>     * @param doc    The package documentation.<a name="line.362"></a>
-<span class="sourceLineNo">363</span>     */<a name="line.363"></a>
-<span class="sourceLineNo">364</span>    protected void processPackage(PackageDoc doc) {<a name="line.364"></a>
-<span class="sourceLineNo">365</span>        // (#1) Set foundDoc to false if possible.<a name="line.365"></a>
-<span class="sourceLineNo">366</span>        // foundDoc will be set to true when setRawCommentText() is called, if the method<a name="line.366"></a>
-<span class="sourceLineNo">367</span>        // is called again, JavaDoc will issue a warning about multiple sources for the<a name="line.367"></a>
-<span class="sourceLineNo">368</span>        // package documentation. If there actually *are* multiple sources, the warning<a name="line.368"></a>
-<span class="sourceLineNo">369</span>        // has already been issued at this point, we will, however, use it to set the<a name="line.369"></a>
-<span class="sourceLineNo">370</span>        // resulting HTML. So, we're setting it back to false here, to suppress the<a name="line.370"></a>
-<span class="sourceLineNo">371</span>        // warning.<a name="line.371"></a>
-<span class="sourceLineNo">372</span>        try {<a name="line.372"></a>
-<span class="sourceLineNo">373</span>            Field foundDoc = doc.getClass().getDeclaredField("foundDoc");<a name="line.373"></a>
-<span class="sourceLineNo">374</span>            foundDoc.setAccessible(true);<a name="line.374"></a>
-<span class="sourceLineNo">375</span>            foundDoc.set(doc, false);<a name="line.375"></a>
-<span class="sourceLineNo">376</span>        } catch ( Exception e ) {<a name="line.376"></a>
-<span class="sourceLineNo">377</span>            printWarning(doc.position(), <a name="line.377"></a>
-<span class="sourceLineNo">378</span>                        "Cannot suppress warning about multiple package sources: " + e);<a name="line.378"></a>
-<span class="sourceLineNo">379</span>        }<a name="line.379"></a>
-<span class="sourceLineNo">380</span>        defaultProcess(doc, true);<a name="line.380"></a>
-<span class="sourceLineNo">381</span>    }<a name="line.381"></a>
-<span class="sourceLineNo">382</span><a name="line.382"></a>
-<span class="sourceLineNo">383</span>    /**<a name="line.383"></a>
-<span class="sourceLineNo">384</span>     * Default processing of any documentation node.<a name="line.384"></a>
-<span class="sourceLineNo">385</span>     *<a name="line.385"></a>
-<span class="sourceLineNo">386</span>     * @param doc              The documentation.<a name="line.386"></a>
-<span class="sourceLineNo">387</span>     * @param fixLeadingSpaces `true` if leading spaces should be fixed.<a name="line.387"></a>
-<span class="sourceLineNo">388</span>     */<a name="line.388"></a>
-<span class="sourceLineNo">389</span>    protected void defaultProcess(Doc doc, boolean fixLeadingSpaces) {<a name="line.389"></a>
-<span class="sourceLineNo">390</span>        try {<a name="line.390"></a>
-<span class="sourceLineNo">391</span>            StringBuilder buf = new StringBuilder();<a name="line.391"></a>
-<span class="sourceLineNo">392</span>            buf.append(toHtml(doc.commentText(), fixLeadingSpaces));<a name="line.392"></a>
-<span class="sourceLineNo">393</span>            buf.append('\n');<a name="line.393"></a>
-<span class="sourceLineNo">394</span>            for ( Tag tag : doc.tags() ) {<a name="line.394"></a>
-<span class="sourceLineNo">395</span>                processTag(tag, buf);<a name="line.395"></a>
-<span class="sourceLineNo">396</span>                buf.append('\n');<a name="line.396"></a>
-<span class="sourceLineNo">397</span>            }<a name="line.397"></a>
-<span class="sourceLineNo">398</span>            doc.setRawCommentText(buf.toString());<a name="line.398"></a>
-<span class="sourceLineNo">399</span>        } catch ( Throwable e ) {<a name="line.399"></a>
-<span class="sourceLineNo">400</span>            if ( doc instanceof RootDoc ) {<a name="line.400"></a>
-<span class="sourceLineNo">401</span>                printError(new SourcePosition() {<a name="line.401"></a>
-<span class="sourceLineNo">402</span>                    @Override<a name="line.402"></a>
-<span class="sourceLineNo">403</span>                    public File file() {<a name="line.403"></a>
-<span class="sourceLineNo">404</span>                        return options.getOverviewFile();<a name="line.404"></a>
-<span class="sourceLineNo">405</span>                    }<a name="line.405"></a>
-<span class="sourceLineNo">406</span>                    <a name="line.406"></a>
-<span class="sourceLineNo">407</span>                    @Override<a name="line.407"></a>
-<span class="sourceLineNo">408</span>                    public int line() {<a name="line.408"></a>
-<span class="sourceLineNo">409</span>                        return 0;<a name="line.409"></a>
-<span class="sourceLineNo">410</span>                    }<a name="line.410"></a>
-<span class="sourceLineNo">411</span>                    <a name="line.411"></a>
-<span class="sourceLineNo">412</span>                    @Override<a name="line.412"></a>
-<span class="sourceLineNo">413</span>                    public int column() {<a name="line.413"></a>
-<span class="sourceLineNo">414</span>                        return 0;<a name="line.414"></a>
-<span class="sourceLineNo">415</span>                    }<a name="line.415"></a>
-<span class="sourceLineNo">416</span>                }, e.getMessage());<a name="line.416"></a>
-<span class="sourceLineNo">417</span>            } else {<a name="line.417"></a>
-<span class="sourceLineNo">418</span>                printError(doc.position(), e.getMessage());<a name="line.418"></a>
-<span class="sourceLineNo">419</span>            }<a name="line.419"></a>
-<span class="sourceLineNo">420</span>        }<a name="line.420"></a>
-<span class="sourceLineNo">421</span>    }<a name="line.421"></a>
-<span class="sourceLineNo">422</span><a name="line.422"></a>
-<span class="sourceLineNo">423</span>    /**<a name="line.423"></a>
-<span class="sourceLineNo">424</span>     * Process a tag.<a name="line.424"></a>
-<span class="sourceLineNo">425</span>     *<a name="line.425"></a>
-<span class="sourceLineNo">426</span>     * @param tag      The tag.<a name="line.426"></a>
-<span class="sourceLineNo">427</span>     * @param target   The target string builder.<a name="line.427"></a>
-<span class="sourceLineNo">428</span>     */<a name="line.428"></a>
-<span class="sourceLineNo">429</span>    @SuppressWarnings("unchecked")<a name="line.429"></a>
-<span class="sourceLineNo">430</span>    protected void processTag(Tag tag, StringBuilder target) {<a name="line.430"></a>
-<span class="sourceLineNo">431</span>        TagRenderer&lt;Tag&gt; renderer = (TagRenderer&lt;Tag&gt;)tagRenderers.get(tag.kind());<a name="line.431"></a>
-<span class="sourceLineNo">432</span>        if ( renderer == null ) {<a name="line.432"></a>
-<span class="sourceLineNo">433</span>            renderer = TagRenderer.VERBATIM;<a name="line.433"></a>
-<span class="sourceLineNo">434</span>        }<a name="line.434"></a>
-<span class="sourceLineNo">435</span>        renderer.render(tag, target, this);<a name="line.435"></a>
-<span class="sourceLineNo">436</span>    }<a name="line.436"></a>
-<span class="sourceLineNo">437</span><a name="line.437"></a>
-<span class="sourceLineNo">438</span>    /**<a name="line.438"></a>
-<span class="sourceLineNo">439</span>     * Clears the processor.<a name="line.439"></a>
-<span class="sourceLineNo">440</span>     */<a name="line.440"></a>
-<span class="sourceLineNo">441</span>    public void clearProcessor() {<a name="line.441"></a>
-<span class="sourceLineNo">442</span>        processor = null;<a name="line.442"></a>
-<span class="sourceLineNo">443</span>    }<a name="line.443"></a>
-<span class="sourceLineNo">444</span>    <a name="line.444"></a>
-<span class="sourceLineNo">445</span>    /**<a name="line.445"></a>
-<span class="sourceLineNo">446</span>     * Convert the given markup to HTML according to the {@link Options}.<a name="line.446"></a>
-<span class="sourceLineNo">447</span>     *<a name="line.447"></a>
-<span class="sourceLineNo">448</span>     * @param markup    The Markdown source.<a name="line.448"></a>
-<span class="sourceLineNo">449</span>     *<a name="line.449"></a>
-<span class="sourceLineNo">450</span>     * @return The resulting HTML.<a name="line.450"></a>
-<span class="sourceLineNo">451</span>     */<a name="line.451"></a>
-<span class="sourceLineNo">452</span>    public String toHtml(String markup) {<a name="line.452"></a>
-<span class="sourceLineNo">453</span>        return toHtml(markup, true);<a name="line.453"></a>
-<span class="sourceLineNo">454</span>    }<a name="line.454"></a>
-<span class="sourceLineNo">455</span><a name="line.455"></a>
-<span class="sourceLineNo">456</span>    /**<a name="line.456"></a>
-<span class="sourceLineNo">457</span>     * Converts Markdown source to HTML according to the options object. If<a name="line.457"></a>
-<span class="sourceLineNo">458</span>     * `fixLeadingSpaces` is `true`, exactly one leading whitespace character ('\\u0020')<a name="line.458"></a>
-<span class="sourceLineNo">459</span>     * will be removed, if it exists.<a name="line.459"></a>
-<span class="sourceLineNo">460</span>     *<a name="line.460"></a>
-<span class="sourceLineNo">461</span>     * @param markup           The Markdown source.<a name="line.461"></a>
-<span class="sourceLineNo">462</span>     * @param fixLeadingSpaces `true` if leading spaces should be fixed.<a name="line.462"></a>
-<span class="sourceLineNo">463</span>     *<a name="line.463"></a>
-<span class="sourceLineNo">464</span>     * @return The resulting HTML.<a name="line.464"></a>
-<span class="sourceLineNo">465</span>     */<a name="line.465"></a>
-<span class="sourceLineNo">466</span>    public String toHtml(String markup, boolean fixLeadingSpaces) {<a name="line.466"></a>
-<span class="sourceLineNo">467</span>        if ( fixLeadingSpaces ) {<a name="line.467"></a>
-<span class="sourceLineNo">468</span>            markup = LINE_START.matcher(markup).replaceAll("");<a name="line.468"></a>
-<span class="sourceLineNo">469</span>        }<a name="line.469"></a>
-<span class="sourceLineNo">470</span>        List&lt;String&gt; tags = new ArrayList&lt;&gt;();<a name="line.470"></a>
-<span class="sourceLineNo">471</span>        String html = processor.toHtml(Tags.extractInlineTags(markup, tags));<a name="line.471"></a>
-<span class="sourceLineNo">472</span>        return Tags.insertInlineTags(html, tags);<a name="line.472"></a>
-<span class="sourceLineNo">473</span>    }<a name="line.473"></a>
-<span class="sourceLineNo">474</span><a name="line.474"></a>
-<span class="sourceLineNo">475</span>    /**<a name="line.475"></a>
-<span class="sourceLineNo">476</span>     * Indicate that an error occurred. This method will also be called by<a name="line.476"></a>
-<span class="sourceLineNo">477</span>     * {@link #printError(String)} and<a name="line.477"></a>
-<span class="sourceLineNo">478</span>     * {@link #printError(com.sun.javadoc.SourcePosition, String)}.<a name="line.478"></a>
-<span class="sourceLineNo">479</span>     */<a name="line.479"></a>
-<span class="sourceLineNo">480</span>    public void error() {<a name="line.480"></a>
-<span class="sourceLineNo">481</span>        error = true;<a name="line.481"></a>
-<span class="sourceLineNo">482</span>    }<a name="line.482"></a>
-<span class="sourceLineNo">483</span><a name="line.483"></a>
-<span class="sourceLineNo">484</span>    @Override<a name="line.484"></a>
-<span class="sourceLineNo">485</span>    public void printError(String msg) {<a name="line.485"></a>
-<span class="sourceLineNo">486</span>        error();<a name="line.486"></a>
-<span class="sourceLineNo">487</span>        rootDoc.printError(msg);<a name="line.487"></a>
-<span class="sourceLineNo">488</span>    }<a name="line.488"></a>
-<span class="sourceLineNo">489</span><a name="line.489"></a>
-<span class="sourceLineNo">490</span>    @Override<a name="line.490"></a>
-<span class="sourceLineNo">491</span>    public void printError(SourcePosition pos, String msg) {<a name="line.491"></a>
-<span class="sourceLineNo">492</span>        error();<a name="line.492"></a>
-<span class="sourceLineNo">493</span>        rootDoc.printError(pos, msg);<a name="line.493"></a>
-<span class="sourceLineNo">494</span>    }<a name="line.494"></a>
-<span class="sourceLineNo">495</span><a name="line.495"></a>
-<span class="sourceLineNo">496</span>    @Override<a name="line.496"></a>
-<span class="sourceLineNo">497</span>    public void printWarning(String msg) {<a name="line.497"></a>
-<span class="sourceLineNo">498</span>        rootDoc.printWarning(msg);<a name="line.498"></a>
-<span class="sourceLineNo">499</span>    }<a name="line.499"></a>
-<span class="sourceLineNo">500</span><a name="line.500"></a>
-<span class="sourceLineNo">501</span>    @Override<a name="line.501"></a>
-<span class="sourceLineNo">502</span>    public void printWarning(SourcePosition pos,<a name="line.502"></a>
-<span class="sourceLineNo">503</span>                             String msg)<a name="line.503"></a>
-<span class="sourceLineNo">504</span>    {<a name="line.504"></a>
-<span class="sourceLineNo">505</span>        rootDoc.printWarning(pos, msg);<a name="line.505"></a>
-<span class="sourceLineNo">506</span>    }<a name="line.506"></a>
-<span class="sourceLineNo">507</span><a name="line.507"></a>
-<span class="sourceLineNo">508</span>    @Override<a name="line.508"></a>
-<span class="sourceLineNo">509</span>    public void printNotice(String msg) {<a name="line.509"></a>
-<span class="sourceLineNo">510</span>        rootDoc.printNotice(msg);<a name="line.510"></a>
-<span class="sourceLineNo">511</span>    }<a name="line.511"></a>
-<span class="sourceLineNo">512</span><a name="line.512"></a>
-<span class="sourceLineNo">513</span>    @Override<a name="line.513"></a>
-<span class="sourceLineNo">514</span>    public void printNotice(SourcePosition pos, String msg) {<a name="line.514"></a>
-<span class="sourceLineNo">515</span>        rootDoc.printNotice(pos, msg);<a name="line.515"></a>
-<span class="sourceLineNo">516</span>    }<a name="line.516"></a>
-<span class="sourceLineNo">517</span><a name="line.517"></a>
-<span class="sourceLineNo">518</span>    /**<a name="line.518"></a>
-<span class="sourceLineNo">519</span>     * Returns a prefix for relative URLs from a documentation element relative to the<a name="line.519"></a>
-<span class="sourceLineNo">520</span>     * given package. This prefix can be used to refer to the root URL of the<a name="line.520"></a>
-<span class="sourceLineNo">521</span>     * documentation:<a name="line.521"></a>
-<span class="sourceLineNo">522</span>     *<a name="line.522"></a>
-<span class="sourceLineNo">523</span>     * ```java<a name="line.523"></a>
-<span class="sourceLineNo">524</span>     * doc = "&lt;script type=\"text/javascript\" src=\""<a name="line.524"></a>
-<span class="sourceLineNo">525</span>     *     + rootUrlPrefix(classDoc.containingPackage()) + "highlight.js"<a name="line.525"></a>
-<span class="sourceLineNo">526</span>     *     + "\"&gt;&lt;/script&gt;";<a name="line.526"></a>
-<span class="sourceLineNo">527</span>     * ```<a name="line.527"></a>
-<span class="sourceLineNo">528</span>     *<a name="line.528"></a>
-<span class="sourceLineNo">529</span>     * @param doc    The package containing the element from where to reference the root.<a name="line.529"></a>
-<span class="sourceLineNo">530</span>     *<a name="line.530"></a>
-<span class="sourceLineNo">531</span>     * @return A URL prefix for URLs referring to the doc root.<a name="line.531"></a>
-<span class="sourceLineNo">532</span>     */<a name="line.532"></a>
-<span class="sourceLineNo">533</span>    public String rootUrlPrefix(PackageDoc doc) {<a name="line.533"></a>
-<span class="sourceLineNo">534</span>        if ( doc == null || doc.name().isEmpty() ) {<a name="line.534"></a>
-<span class="sourceLineNo">535</span>            return "";<a name="line.535"></a>
-<span class="sourceLineNo">536</span>        } else {<a name="line.536"></a>
-<span class="sourceLineNo">537</span>            StringBuilder buf = new StringBuilder();<a name="line.537"></a>
-<span class="sourceLineNo">538</span>            buf.append("../");<a name="line.538"></a>
-<span class="sourceLineNo">539</span>            for ( int i = 0; i &lt; doc.name().length(); i++ ) {<a name="line.539"></a>
-<span class="sourceLineNo">540</span>                if ( doc.name().charAt(i) == '.' ) {<a name="line.540"></a>
-<span class="sourceLineNo">541</span>                    buf.append("../");<a name="line.541"></a>
-<span class="sourceLineNo">542</span>                }<a name="line.542"></a>
-<span class="sourceLineNo">543</span>            }<a name="line.543"></a>
-<span class="sourceLineNo">544</span>            return buf.toString();<a name="line.544"></a>
-<span class="sourceLineNo">545</span>        }<a name="line.545"></a>
-<span class="sourceLineNo">546</span>    }<a name="line.546"></a>
-<span class="sourceLineNo">547</span><a name="line.547"></a>
-<span class="sourceLineNo">548</span>    /**<a name="line.548"></a>
-<span class="sourceLineNo">549</span>     * Just a main method for debugging.<a name="line.549"></a>
-<span class="sourceLineNo">550</span>     *<a name="line.550"></a>
-<span class="sourceLineNo">551</span>     * @param args The command line arguments.<a name="line.551"></a>
-<span class="sourceLineNo">552</span>     *<a name="line.552"></a>
-<span class="sourceLineNo">553</span>     * @throws Exception If anything goes wrong.<a name="line.553"></a>
-<span class="sourceLineNo">554</span>     */<a name="line.554"></a>
-<span class="sourceLineNo">555</span>    public static void main(String[] args) throws Exception {<a name="line.555"></a>
-<span class="sourceLineNo">556</span>        args = Arrays.copyOf(args, args.length + 2);<a name="line.556"></a>
-<span class="sourceLineNo">557</span>        args[args.length - 2] = "-doclet";<a name="line.557"></a>
-<span class="sourceLineNo">558</span>        args[args.length - 1] = MDoclet.class.getName();<a name="line.558"></a>
-<span class="sourceLineNo">559</span>        Main.main(args);<a name="line.559"></a>
-<span class="sourceLineNo">560</span>    }<a name="line.560"></a>
-<span class="sourceLineNo">561</span><a name="line.561"></a>
-<span class="sourceLineNo">562</span>}<a name="line.562"></a>
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * JDrupes MDoclet</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * Copyright (C) 2021 Michael N. Lipp</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * </a>
+<span class="sourceLineNo">005</span><a id="line.5"> * This program is free software; you can redistribute it and/or modify it </a>
+<span class="sourceLineNo">006</span><a id="line.6"> * under the terms of the GNU Affero General Public License as published by </a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the Free Software Foundation; either version 3 of the License, or </a>
+<span class="sourceLineNo">008</span><a id="line.8"> * (at your option) any later version.</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *</a>
+<span class="sourceLineNo">010</span><a id="line.10"> * This program is distributed in the hope that it will be useful, but </a>
+<span class="sourceLineNo">011</span><a id="line.11"> * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License </a>
+<span class="sourceLineNo">013</span><a id="line.13"> * for more details.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> *</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * You should have received a copy of the GNU Affero General Public License along </a>
+<span class="sourceLineNo">016</span><a id="line.16"> * with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.</a>
+<span class="sourceLineNo">017</span><a id="line.17"> */</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">package org.jdrupes.mdoclet;</a>
+<span class="sourceLineNo">020</span><a id="line.20"></a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.io.FileNotFoundException;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.io.IOException;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.io.InputStream;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.lang.reflect.InvocationTargetException;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.ArrayList;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.util.Collections;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.util.HashSet;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.util.List;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import java.util.Locale;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import java.util.Set;</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">import javax.lang.model.SourceVersion;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import javax.tools.Diagnostic;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import javax.tools.DocumentationTool.Location;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import javax.tools.JavaFileManager;</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.jdrupes.mdoclet.processors.FlexmarkProcessor;</a>
+<span class="sourceLineNo">038</span><a id="line.38"></a>
+<span class="sourceLineNo">039</span><a id="line.39">import com.sun.source.doctree.DocCommentTree;</a>
+<span class="sourceLineNo">040</span><a id="line.40"></a>
+<span class="sourceLineNo">041</span><a id="line.41">import jdk.javadoc.doclet.Doclet;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import jdk.javadoc.doclet.DocletEnvironment;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import jdk.javadoc.doclet.Reporter;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import jdk.javadoc.doclet.StandardDoclet;</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46">/**</a>
+<span class="sourceLineNo">047</span><a id="line.47"> * The Doclet implementation, which converts the Markdown from the JavaDoc </a>
+<span class="sourceLineNo">048</span><a id="line.48"> * comments and tags to HTML.</a>
+<span class="sourceLineNo">049</span><a id="line.49"> * </a>
+<span class="sourceLineNo">050</span><a id="line.50"> * The doclet works by installing wrappers to intercept the </a>
+<span class="sourceLineNo">051</span><a id="line.51"> * {@link StandardDoclet}'s calls to access the {@link DocCommentTree}s </a>
+<span class="sourceLineNo">052</span><a id="line.52"> * (see {@link DocCommentTreeWrapper}). At the root of this interception</a>
+<span class="sourceLineNo">053</span><a id="line.53"> * is a modified doclet environment ({@link MDocletEnvironment}) that </a>
+<span class="sourceLineNo">054</span><a id="line.54"> * installs a wrapper around doc trees access.</a>
+<span class="sourceLineNo">055</span><a id="line.55"> * </a>
+<span class="sourceLineNo">056</span><a id="line.56"> * For some strange reason, the `StandardDoclet` does not work</a>
+<span class="sourceLineNo">057</span><a id="line.57"> * with interface {@link DocletEnvironment} but insists on the instance</a>
+<span class="sourceLineNo">058</span><a id="line.58"> * being a `DocEnvImpl`. Therefore {@link MDocletEnvironment} has</a>
+<span class="sourceLineNo">059</span><a id="line.59"> * to extend this class which requires to allow module access with</a>
+<span class="sourceLineNo">060</span><a id="line.60"> * `--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED`.</a>
+<span class="sourceLineNo">061</span><a id="line.61"> */</a>
+<span class="sourceLineNo">062</span><a id="line.62">public class MDoclet implements Doclet {</a>
+<span class="sourceLineNo">063</span><a id="line.63"></a>
+<span class="sourceLineNo">064</span><a id="line.64">    public static final String HIGHLIGHT_JS_HTML</a>
+<span class="sourceLineNo">065</span><a id="line.65">        = "&lt;script type=\"text/javascript\" charset=\"utf-8\" "</a>
+<span class="sourceLineNo">066</span><a id="line.66">            + "src=\"" + "{@docRoot}/highlight.pack.js" + "\"&gt;&lt;/script&gt;\n"</a>
+<span class="sourceLineNo">067</span><a id="line.67">            + "&lt;script type=\"text/javascript\"&gt;&lt;!--\n"</a>
+<span class="sourceLineNo">068</span><a id="line.68">            + "var cssId = 'highlightCss';\n"</a>
+<span class="sourceLineNo">069</span><a id="line.69">            + "if (!document.getElementById(cssId))\n"</a>
+<span class="sourceLineNo">070</span><a id="line.70">            + "{\n"</a>
+<span class="sourceLineNo">071</span><a id="line.71">            + "    var head  = document.getElementsByTagName('head')[0];\n"</a>
+<span class="sourceLineNo">072</span><a id="line.72">            + "    var link  = document.createElement('link');\n"</a>
+<span class="sourceLineNo">073</span><a id="line.73">            + "    link.id   = cssId;\n"</a>
+<span class="sourceLineNo">074</span><a id="line.74">            + "    link.rel  = 'stylesheet';\n"</a>
+<span class="sourceLineNo">075</span><a id="line.75">            + "    link.type = 'text/css';\n"</a>
+<span class="sourceLineNo">076</span><a id="line.76">            + "    link.charset = 'utf-8';\n"</a>
+<span class="sourceLineNo">077</span><a id="line.77">            + "    link.href = '{@docRoot}/highlight.css';\n"</a>
+<span class="sourceLineNo">078</span><a id="line.78">            + "    link.media = 'all';\n"</a>
+<span class="sourceLineNo">079</span><a id="line.79">            + "    head.appendChild(link);\n"</a>
+<span class="sourceLineNo">080</span><a id="line.80">            + "}"</a>
+<span class="sourceLineNo">081</span><a id="line.81">            + "hljs.initHighlightingOnLoad();\n"</a>
+<span class="sourceLineNo">082</span><a id="line.82">            + "//--&gt;&lt;/script&gt;";</a>
+<span class="sourceLineNo">083</span><a id="line.83"></a>
+<span class="sourceLineNo">084</span><a id="line.84">    private StandardDoclet standardDoclet;</a>
+<span class="sourceLineNo">085</span><a id="line.85">    private Reporter reporter;</a>
+<span class="sourceLineNo">086</span><a id="line.86">    private JavaFileManager fileManager;</a>
+<span class="sourceLineNo">087</span><a id="line.87"></a>
+<span class="sourceLineNo">088</span><a id="line.88">    private String markdownProcessorName = FlexmarkProcessor.class.getName();</a>
+<span class="sourceLineNo">089</span><a id="line.89">    private MarkdownProcessor processor;</a>
+<span class="sourceLineNo">090</span><a id="line.90">    private List&lt;String&gt; processorOptions = new ArrayList&lt;&gt;();</a>
+<span class="sourceLineNo">091</span><a id="line.91">    private Option origFooterOpt;</a>
+<span class="sourceLineNo">092</span><a id="line.92">    private String bufferedFooter = "";</a>
+<span class="sourceLineNo">093</span><a id="line.93">    private Option allowScriptsOpt;</a>
+<span class="sourceLineNo">094</span><a id="line.94">    private boolean disableHighlight;</a>
+<span class="sourceLineNo">095</span><a id="line.95">    private boolean disableAutoHighlight;</a>
+<span class="sourceLineNo">096</span><a id="line.96">    private String highlightStyle = "default";</a>
+<span class="sourceLineNo">097</span><a id="line.97"></a>
+<span class="sourceLineNo">098</span><a id="line.98">    public MDoclet() {</a>
+<span class="sourceLineNo">099</span><a id="line.99">        standardDoclet = new StandardDoclet();</a>
+<span class="sourceLineNo">100</span><a id="line.100">    }</a>
+<span class="sourceLineNo">101</span><a id="line.101"></a>
+<span class="sourceLineNo">102</span><a id="line.102">    @Override</a>
+<span class="sourceLineNo">103</span><a id="line.103">    public void init(Locale locale, Reporter reporter) {</a>
+<span class="sourceLineNo">104</span><a id="line.104">        this.reporter = reporter;</a>
+<span class="sourceLineNo">105</span><a id="line.105">        standardDoclet.init(locale, reporter);</a>
+<span class="sourceLineNo">106</span><a id="line.106">    }</a>
+<span class="sourceLineNo">107</span><a id="line.107"></a>
+<span class="sourceLineNo">108</span><a id="line.108">    @Override</a>
+<span class="sourceLineNo">109</span><a id="line.109">    public String getName() {</a>
+<span class="sourceLineNo">110</span><a id="line.110">        return getClass().getSimpleName();</a>
+<span class="sourceLineNo">111</span><a id="line.111">    }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">    @Override</a>
+<span class="sourceLineNo">114</span><a id="line.114">    public Set&lt;? extends Option&gt; getSupportedOptions() {</a>
+<span class="sourceLineNo">115</span><a id="line.115">        Set&lt;Option&gt; options = new HashSet&lt;&gt;();</a>
+<span class="sourceLineNo">116</span><a id="line.116">        for (Option opt : standardDoclet.getSupportedOptions()) {</a>
+<span class="sourceLineNo">117</span><a id="line.117">            if (opt.getNames().contains("-footer")) {</a>
+<span class="sourceLineNo">118</span><a id="line.118">                origFooterOpt = opt;</a>
+<span class="sourceLineNo">119</span><a id="line.119">            } else {</a>
+<span class="sourceLineNo">120</span><a id="line.120">                options.add(opt);</a>
+<span class="sourceLineNo">121</span><a id="line.121">            }</a>
+<span class="sourceLineNo">122</span><a id="line.122">            if (opt.getNames().contains("--allow-script-in-comments")) {</a>
+<span class="sourceLineNo">123</span><a id="line.123">                allowScriptsOpt = opt;</a>
+<span class="sourceLineNo">124</span><a id="line.124">            }</a>
+<span class="sourceLineNo">125</span><a id="line.125">        }</a>
+<span class="sourceLineNo">126</span><a id="line.126">        options.add(new MDocletOption("markdown-processor", 1) {</a>
+<span class="sourceLineNo">127</span><a id="line.127">            @Override</a>
+<span class="sourceLineNo">128</span><a id="line.128">            public boolean process(String option, List&lt;String&gt; arguments) {</a>
+<span class="sourceLineNo">129</span><a id="line.129">                markdownProcessorName = arguments.get(0);</a>
+<span class="sourceLineNo">130</span><a id="line.130">                return true;</a>
+<span class="sourceLineNo">131</span><a id="line.131">            }</a>
+<span class="sourceLineNo">132</span><a id="line.132">        });</a>
+<span class="sourceLineNo">133</span><a id="line.133">        options.add(new MDocletOption("disable-highlight", 0) {</a>
+<span class="sourceLineNo">134</span><a id="line.134">            @Override</a>
+<span class="sourceLineNo">135</span><a id="line.135">            public boolean process(String option, List&lt;String&gt; arguments) {</a>
+<span class="sourceLineNo">136</span><a id="line.136">                disableHighlight = true;</a>
+<span class="sourceLineNo">137</span><a id="line.137">                return true;</a>
+<span class="sourceLineNo">138</span><a id="line.138">            }</a>
+<span class="sourceLineNo">139</span><a id="line.139">        });</a>
+<span class="sourceLineNo">140</span><a id="line.140">        options.add(new MDocletOption("disable-auto-highlight", 0) {</a>
+<span class="sourceLineNo">141</span><a id="line.141">            @Override</a>
+<span class="sourceLineNo">142</span><a id="line.142">            public boolean process(String option, List&lt;String&gt; arguments) {</a>
+<span class="sourceLineNo">143</span><a id="line.143">                disableAutoHighlight = true;</a>
+<span class="sourceLineNo">144</span><a id="line.144">                return true;</a>
+<span class="sourceLineNo">145</span><a id="line.145">            }</a>
+<span class="sourceLineNo">146</span><a id="line.146">        });</a>
+<span class="sourceLineNo">147</span><a id="line.147">        options.add(new MDocletOption("highlight-style", 1) {</a>
+<span class="sourceLineNo">148</span><a id="line.148">            @Override</a>
+<span class="sourceLineNo">149</span><a id="line.149">            public boolean process(String option, List&lt;String&gt; arguments) {</a>
+<span class="sourceLineNo">150</span><a id="line.150">                highlightStyle = arguments.get(0);</a>
+<span class="sourceLineNo">151</span><a id="line.151">                return true;</a>
+<span class="sourceLineNo">152</span><a id="line.152">            }</a>
+<span class="sourceLineNo">153</span><a id="line.153">        });</a>
+<span class="sourceLineNo">154</span><a id="line.154">        options.add(new MDocletOption("M", 1) {</a>
+<span class="sourceLineNo">155</span><a id="line.155">            @Override</a>
+<span class="sourceLineNo">156</span><a id="line.156">            public boolean process(String option, List&lt;String&gt; arguments) {</a>
+<span class="sourceLineNo">157</span><a id="line.157">                return processorOptions.add(arguments.get(0));</a>
+<span class="sourceLineNo">158</span><a id="line.158">            }</a>
+<span class="sourceLineNo">159</span><a id="line.159">        });</a>
+<span class="sourceLineNo">160</span><a id="line.160">        options.add(new FooterOverride());</a>
+<span class="sourceLineNo">161</span><a id="line.161">        return options;</a>
+<span class="sourceLineNo">162</span><a id="line.162">    }</a>
+<span class="sourceLineNo">163</span><a id="line.163"></a>
+<span class="sourceLineNo">164</span><a id="line.164">    private class FooterOverride implements Option {</a>
+<span class="sourceLineNo">165</span><a id="line.165"></a>
+<span class="sourceLineNo">166</span><a id="line.166">        @Override</a>
+<span class="sourceLineNo">167</span><a id="line.167">        public int getArgumentCount() {</a>
+<span class="sourceLineNo">168</span><a id="line.168">            return 1;</a>
+<span class="sourceLineNo">169</span><a id="line.169">        }</a>
+<span class="sourceLineNo">170</span><a id="line.170"></a>
+<span class="sourceLineNo">171</span><a id="line.171">        @Override</a>
+<span class="sourceLineNo">172</span><a id="line.172">        public String getDescription() {</a>
+<span class="sourceLineNo">173</span><a id="line.173">            return origFooterOpt.getDescription();</a>
+<span class="sourceLineNo">174</span><a id="line.174">        }</a>
+<span class="sourceLineNo">175</span><a id="line.175"></a>
+<span class="sourceLineNo">176</span><a id="line.176">        @Override</a>
+<span class="sourceLineNo">177</span><a id="line.177">        public Kind getKind() {</a>
+<span class="sourceLineNo">178</span><a id="line.178">            return origFooterOpt.getKind();</a>
+<span class="sourceLineNo">179</span><a id="line.179">        }</a>
+<span class="sourceLineNo">180</span><a id="line.180"></a>
+<span class="sourceLineNo">181</span><a id="line.181">        @Override</a>
+<span class="sourceLineNo">182</span><a id="line.182">        public List&lt;String&gt; getNames() {</a>
+<span class="sourceLineNo">183</span><a id="line.183">            return origFooterOpt.getNames();</a>
+<span class="sourceLineNo">184</span><a id="line.184">        }</a>
+<span class="sourceLineNo">185</span><a id="line.185"></a>
+<span class="sourceLineNo">186</span><a id="line.186">        @Override</a>
+<span class="sourceLineNo">187</span><a id="line.187">        public String getParameters() {</a>
+<span class="sourceLineNo">188</span><a id="line.188">            return origFooterOpt.getParameters();</a>
+<span class="sourceLineNo">189</span><a id="line.189">        }</a>
+<span class="sourceLineNo">190</span><a id="line.190"></a>
+<span class="sourceLineNo">191</span><a id="line.191">        @Override</a>
+<span class="sourceLineNo">192</span><a id="line.192">        public boolean process(String option, List&lt;String&gt; arguments) {</a>
+<span class="sourceLineNo">193</span><a id="line.193">            bufferedFooter = arguments.get(0);</a>
+<span class="sourceLineNo">194</span><a id="line.194">            return true;</a>
+<span class="sourceLineNo">195</span><a id="line.195">        }</a>
+<span class="sourceLineNo">196</span><a id="line.196"></a>
+<span class="sourceLineNo">197</span><a id="line.197">    }</a>
+<span class="sourceLineNo">198</span><a id="line.198"></a>
+<span class="sourceLineNo">199</span><a id="line.199">    @Override</a>
+<span class="sourceLineNo">200</span><a id="line.200">    public SourceVersion getSupportedSourceVersion() {</a>
+<span class="sourceLineNo">201</span><a id="line.201">        return SourceVersion.latest();</a>
+<span class="sourceLineNo">202</span><a id="line.202">    }</a>
+<span class="sourceLineNo">203</span><a id="line.203"></a>
+<span class="sourceLineNo">204</span><a id="line.204">    @Override</a>
+<span class="sourceLineNo">205</span><a id="line.205">    public boolean run(DocletEnvironment environment) {</a>
+<span class="sourceLineNo">206</span><a id="line.206">        fileManager = environment.getJavaFileManager();</a>
+<span class="sourceLineNo">207</span><a id="line.207">        if (disableHighlight) {</a>
+<span class="sourceLineNo">208</span><a id="line.208">            if (bufferedFooter.length() &gt; 0) {</a>
+<span class="sourceLineNo">209</span><a id="line.209">                origFooterOpt.process("-footer", List.of(bufferedFooter));</a>
+<span class="sourceLineNo">210</span><a id="line.210">            }</a>
+<span class="sourceLineNo">211</span><a id="line.211">        } else {</a>
+<span class="sourceLineNo">212</span><a id="line.212">            bufferedFooter += HIGHLIGHT_JS_HTML;</a>
+<span class="sourceLineNo">213</span><a id="line.213">            origFooterOpt.process("-footer", List.of(bufferedFooter));</a>
+<span class="sourceLineNo">214</span><a id="line.214">            allowScriptsOpt.process("--allow-script-in-comments",</a>
+<span class="sourceLineNo">215</span><a id="line.215">                Collections.emptyList());</a>
+<span class="sourceLineNo">216</span><a id="line.216">        }</a>
+<span class="sourceLineNo">217</span><a id="line.217"></a>
+<span class="sourceLineNo">218</span><a id="line.218">        MDocletEnvironment env = new MDocletEnvironment(this, environment);</a>
+<span class="sourceLineNo">219</span><a id="line.219">        processor = createProcessor();</a>
+<span class="sourceLineNo">220</span><a id="line.220">        processor.start(processorOptions.toArray(new String[0]));</a>
+<span class="sourceLineNo">221</span><a id="line.221">        return standardDoclet.run(env) &amp;&amp; postProcess();</a>
+<span class="sourceLineNo">222</span><a id="line.222">    }</a>
+<span class="sourceLineNo">223</span><a id="line.223"></a>
+<span class="sourceLineNo">224</span><a id="line.224">    private MarkdownProcessor createProcessor() {</a>
+<span class="sourceLineNo">225</span><a id="line.225">        try {</a>
+<span class="sourceLineNo">226</span><a id="line.226">            @SuppressWarnings("unchecked")</a>
+<span class="sourceLineNo">227</span><a id="line.227">            Class&lt;MarkdownProcessor&gt; mpc = (Class&lt;MarkdownProcessor&gt;) getClass()</a>
+<span class="sourceLineNo">228</span><a id="line.228">                .getClassLoader().loadClass(markdownProcessorName);</a>
+<span class="sourceLineNo">229</span><a id="line.229">            MarkdownProcessor mdp = (MarkdownProcessor) mpc</a>
+<span class="sourceLineNo">230</span><a id="line.230">                .getDeclaredConstructor().newInstance();</a>
+<span class="sourceLineNo">231</span><a id="line.231">            if (disableAutoHighlight &amp;&amp; mdp.isSupportedOption(</a>
+<span class="sourceLineNo">232</span><a id="line.232">                MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT) &gt;= 0) {</a>
+<span class="sourceLineNo">233</span><a id="line.233">                processorOptions</a>
+<span class="sourceLineNo">234</span><a id="line.234">                    .add(MarkdownProcessor.INTERNAL_OPT_DISABLE_AUTO_HIGHLIGHT);</a>
+<span class="sourceLineNo">235</span><a id="line.235">            }</a>
+<span class="sourceLineNo">236</span><a id="line.236">            return mdp;</a>
+<span class="sourceLineNo">237</span><a id="line.237">        } catch (ClassNotFoundException | InstantiationException</a>
+<span class="sourceLineNo">238</span><a id="line.238">                | IllegalAccessException | ClassCastException</a>
+<span class="sourceLineNo">239</span><a id="line.239">                | IllegalArgumentException | InvocationTargetException</a>
+<span class="sourceLineNo">240</span><a id="line.240">                | NoSuchMethodException | SecurityException e) {</a>
+<span class="sourceLineNo">241</span><a id="line.241">            reporter.print(Diagnostic.Kind.ERROR,</a>
+<span class="sourceLineNo">242</span><a id="line.242">                "Markdown processor \"" + markdownProcessorName</a>
+<span class="sourceLineNo">243</span><a id="line.243">                    + "\" cannot be loaded (" + e.getMessage()</a>
+<span class="sourceLineNo">244</span><a id="line.244">                    + "), check name and docletpath");</a>
+<span class="sourceLineNo">245</span><a id="line.245">            return null;</a>
+<span class="sourceLineNo">246</span><a id="line.246">        }</a>
+<span class="sourceLineNo">247</span><a id="line.247">    }</a>
+<span class="sourceLineNo">248</span><a id="line.248"></a>
+<span class="sourceLineNo">249</span><a id="line.249">    /**</a>
+<span class="sourceLineNo">250</span><a id="line.250">     * Returns the processor selected by the options.</a>
+<span class="sourceLineNo">251</span><a id="line.251">     * </a>
+<span class="sourceLineNo">252</span><a id="line.252">     * @return the processor</a>
+<span class="sourceLineNo">253</span><a id="line.253">     */</a>
+<span class="sourceLineNo">254</span><a id="line.254">    public MarkdownProcessor getProcessor() {</a>
+<span class="sourceLineNo">255</span><a id="line.255">        return processor;</a>
+<span class="sourceLineNo">256</span><a id="line.256">    }</a>
+<span class="sourceLineNo">257</span><a id="line.257"></a>
+<span class="sourceLineNo">258</span><a id="line.258">    private boolean postProcess() {</a>
+<span class="sourceLineNo">259</span><a id="line.259">        if (disableHighlight) {</a>
+<span class="sourceLineNo">260</span><a id="line.260">            return true;</a>
+<span class="sourceLineNo">261</span><a id="line.261">        }</a>
+<span class="sourceLineNo">262</span><a id="line.262">        return copyResource("highlight.pack.js", "highlight.pack.js",</a>
+<span class="sourceLineNo">263</span><a id="line.263">            "highlight.js")</a>
+<span class="sourceLineNo">264</span><a id="line.264">            &amp;&amp; copyResource("highlight-LICENSE.txt", "highlight-LICENSE.txt",</a>
+<span class="sourceLineNo">265</span><a id="line.265">                "highlight.js license")</a>
+<span class="sourceLineNo">266</span><a id="line.266">            &amp;&amp; copyResource("highlight-styles/" + highlightStyle + ".css",</a>
+<span class="sourceLineNo">267</span><a id="line.267">                "highlight.css",</a>
+<span class="sourceLineNo">268</span><a id="line.268">                "highlight.js style '" + highlightStyle + "'");</a>
+<span class="sourceLineNo">269</span><a id="line.269">    }</a>
+<span class="sourceLineNo">270</span><a id="line.270"></a>
+<span class="sourceLineNo">271</span><a id="line.271">    private boolean copyResource(String resource, String destination,</a>
+<span class="sourceLineNo">272</span><a id="line.272">            String description) {</a>
+<span class="sourceLineNo">273</span><a id="line.273">        try {</a>
+<span class="sourceLineNo">274</span><a id="line.274">            InputStream in = MDoclet.class.getResourceAsStream(resource);</a>
+<span class="sourceLineNo">275</span><a id="line.275">            if (in == null) {</a>
+<span class="sourceLineNo">276</span><a id="line.276">                throw new FileNotFoundException();</a>
+<span class="sourceLineNo">277</span><a id="line.277">            }</a>
+<span class="sourceLineNo">278</span><a id="line.278">            in.transferTo(</a>
+<span class="sourceLineNo">279</span><a id="line.279">                fileManager.getFileForOutput(Location.DOCUMENTATION_OUTPUT, "",</a>
+<span class="sourceLineNo">280</span><a id="line.280">                    destination, null).openOutputStream());</a>
+<span class="sourceLineNo">281</span><a id="line.281">            return true;</a>
+<span class="sourceLineNo">282</span><a id="line.282">        } catch (IOException e) {</a>
+<span class="sourceLineNo">283</span><a id="line.283">            reporter.print(javax.tools.Diagnostic.Kind.ERROR,</a>
+<span class="sourceLineNo">284</span><a id="line.284">                "Error writing " + description + ": "</a>
+<span class="sourceLineNo">285</span><a id="line.285">                    + e.getLocalizedMessage());</a>
+<span class="sourceLineNo">286</span><a id="line.286">            return false;</a>
+<span class="sourceLineNo">287</span><a id="line.287">        }</a>
+<span class="sourceLineNo">288</span><a id="line.288">    }</a>
+<span class="sourceLineNo">289</span><a id="line.289"></a>
+<span class="sourceLineNo">290</span><a id="line.290">}</a>
 
 
 
@@ -630,5 +359,6 @@
 
 </pre>
 </div>
+</main>
 </body>
 </html>
