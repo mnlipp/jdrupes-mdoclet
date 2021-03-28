@@ -16,28 +16,28 @@ Javadoc Tags
 
 The following known tags are processed as Markdown:
 
-* `@author`
-* `@deprecated`
-* `@param`
-* `@return`
-* `@since`
-* `@throws`
-* `@version`
+ * `@author`
+ * `@deprecated`
+ * `@param`
+ * `@return`
+ * `@since`
+ * `@throws`
+ * `@version`
 
 ### `@see` Tags
 
 The `@see` tag is a special case, as there are several variants of this tag. 
 These two variants will remain unchanged:
 
-* Javadoc-Links: `@see Foo#bar()`
-* Links: `@see <a href="http://www.example.com/">Example</a>`
+ * Javadoc-Links: `@see Foo#bar()`
+ * Links: `@see <a href="http://www.example.com/">Example</a>`
 
 The third variant however, which is originally meant to refer to a printed book, may
 also contain Markdown-style links:
 
-* `@see "[Example](http://www.example.com/)"`
-* `@see "<http://www.example.com/>"`
-* `@see "Example <http://www.example.com/>"`
+ * `@see "[Example](http://www.example.com/)"`
+ * `@see "<http://www.example.com/>"`
+ * `@see "Example <http://www.example.com/>"`
 
 These are all rendered as `@see <a href="http://www.example.com/">LABEL</a>`, where
 LABEL falls back to the link's URL, if no label is given.
