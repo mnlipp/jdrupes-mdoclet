@@ -16,28 +16,28 @@ Javadoc Tags
 
 The following known tags are processed as Markdown:
 
- *  `@author`
- *  `@deprecated`
- *  `@param`
- *  `@return`
- *  `@since`
- *  `@throws`
- *  `@version`
+* `@author`
+* `@deprecated`
+* `@param`
+* `@return`
+* `@since`
+* `@throws`
+* `@version`
 
 ### `@see` Tags
 
 The `@see` tag is a special case, as there are several variants of this tag. 
 These two variants will remain unchanged:
 
- *  Javadoc-Links: `@see Foo#bar()`
- *  Links: `@see <a href="http://www.example.com/">Example</a>`
+* Javadoc-Links: `@see Foo#bar()`
+* Links: `@see <a href="http://www.example.com/">Example</a>`
 
 The third variant however, which is originally meant to refer to a printed book, may
 also contain Markdown-style links:
 
- *  `@see "[Example](http://www.example.com/)"`
- *  `@see "<http://www.example.com/>"`
- *  `@see "Example <http://www.example.com/>"`
+* `@see "[Example](http://www.example.com/)"`
+* `@see "<http://www.example.com/>"`
+* `@see "Example <http://www.example.com/>"`
 
 These are all rendered as `@see <a href="http://www.example.com/">LABEL</a>`, where
 LABEL falls back to the link's URL, if no label is given.
@@ -47,7 +47,6 @@ LABEL falls back to the link's URL, if no label is given.
 Inline tags will be removed before processing the Markdown source and 
 re-inserted afterwards. Therefore, Markdown within inline tags won't work.
 
-
 Syntax Highlighting
 -------------------
 
@@ -55,14 +54,13 @@ MDoclet integrates
 [highlight.js](http://softwaremaniacs.org/soft/highlight/en/) to enable syntax
 highlighting for fenced blocks.
 
-
 Invoking
 --------
 
 Specify the Doclet on JavaDoc's command line:
 
-```
-javadoc -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
+```sh
+javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
 ```
 
 A prebuilt version can be downloaded from Maven Central
@@ -135,7 +133,6 @@ The latest version available on maven central is shown in the badge on the
  
 Still using this? Well, you're on your own...
 
-
 Selecting a Markdown processor
 ------------------------------
 
@@ -163,7 +160,6 @@ The option may be used multiple times.
 The flags supported by the default Markdown processor can be found in the 
 description of its {@linkplain org.jdrupes.mdoclet.processors.FlexmarkProcessor 
 adapter class}.
-
 
 Notes
 -----
