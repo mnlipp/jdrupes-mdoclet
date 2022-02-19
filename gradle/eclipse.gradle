@@ -6,8 +6,6 @@ eclipse {
         downloadSources = true
     }
     jdt {
-		sourceCompatibility = 11
-        targetCompatibility = 11
         javaRuntimeName = "JavaSE-11"
         file {
             withProperties { properties ->
