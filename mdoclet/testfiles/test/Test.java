@@ -26,4 +26,10 @@ public class Test {
 
 	}
 
+	/**
+	 * Test {@link #main2} illegal link.
+	 */
+	public void f() {
+	    
+	}
 }
