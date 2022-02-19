@@ -21,6 +21,7 @@ apply plugin: 'signing'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = '11'
+targetCompatibility = '11'
 
 dependencies {
     api libs.markdown
@@ -34,7 +35,16 @@ java {
 
 compileJava {
     options.compilerArgs << '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED'
+    options.compilerArgs << '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED'
 }
+
+//// This is not picked up when a doclet is loaded.
+//jar {
+//    manifest {
+//        attributes('Add-Exports': 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED' 
+//            + ' jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED')
+//    }
+//}
 
 archivesBaseName = "doclet"
 
@@ -55,7 +65,8 @@ task java11doc(type: JavaExec) {
     inputs.file "overview.md"
     ext.destinationDir = '../../jdrupes-mdoclet.gh-pages/javadoc/'
 
-    jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
+    jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED']
     classpath sourceSets.main.compileClasspath
     
     main = 'jdk.javadoc.internal.tool.Main'
@@ -64,6 +75,7 @@ task java11doc(type: JavaExec) {
         '-linksource',
         '-link', 'https://docs.oracle.com/en/java/javase/11/docs/api/',
         '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '-docletpath', file(tasks.jar.archiveFile),
         '-doclet', 'org.jdrupes.mdoclet.MDoclet',
         '--disable-auto-highlight',

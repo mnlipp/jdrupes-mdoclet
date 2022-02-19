@@ -24,24 +24,46 @@ import java.util.List;
 import com.sun.source.doctree.DocCommentTree;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.doctree.DocTreeVisitor;
+import com.sun.tools.javac.tree.DCTree;
 
 /**
  * Feeds the results of the methods through the {@link TreeConverter}
  * where appropriate.
+ * 
+ * With JDK 11, {@link DocCommentTreeWrapper} only had to implement
+ * {@link DocCommentTree}. Starting with (at least) JDK 15, javadoc
+ * casts (without check) {@link DocCommentTree} instances to
+ * {@link DCTree.DCDocComment} when reporting errors e.g. about
+ * a missing link target. That's the only reason why the
+ * wrapper extends {@link DCTree.DCDocComment}.
  */
-public class DocCommentTreeWrapper implements DocCommentTree {
+public class DocCommentTreeWrapper extends DCTree.DCDocComment 
+    implements DocCommentTree {
 
     private DocCommentTree tree;
     private TreeConverter treeConverter;
 
     public DocCommentTreeWrapper(MDoclet doclet, MDocletEnvironment environment,
             DocCommentTree tree) {
-        super();
+        super(tree instanceof DCTree.DCDocComment 
+            ? ((DCTree.DCDocComment)tree).comment : null, 
+            null, null, null, null, null, null);
         this.tree = tree;
         treeConverter = new TreeConverter(doclet.getProcessor(),
             environment.getDocTrees().getDocTreeFactory());
     }
 
+    /**
+     * Overridden by {@link DCTree.DCDocComment}, restore to default.
+     */
+    @Override
+    public List<? extends DocTree> getFullBody() {
+        ArrayList<DocTree> bodyList = new ArrayList<>();
+        bodyList.addAll(getFirstSentence());
+        bodyList.addAll(getBody());
+        return bodyList;
+    }
+    
     /**
      * {@inheritDoc}
      * 
