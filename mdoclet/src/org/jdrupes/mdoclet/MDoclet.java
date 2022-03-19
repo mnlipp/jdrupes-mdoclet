@@ -88,8 +88,8 @@ public class MDoclet implements Doclet {
     private String markdownProcessorName = FlexmarkProcessor.class.getName();
     private MarkdownProcessor processor;
     private List<String> processorOptions = new ArrayList<>();
-    private Option origFooterOpt;
-    private String bufferedFooter = "";
+    private Option origHeaderOpt;
+    private String bufferedHeader = "";
     private Option allowScriptsOpt;
     private boolean disableHighlight;
     private boolean disableAutoHighlight;
@@ -114,8 +114,8 @@ public class MDoclet implements Doclet {
     public Set<? extends Option> getSupportedOptions() {
         Set<Option> options = new HashSet<>();
         for (Option opt : standardDoclet.getSupportedOptions()) {
-            if (opt.getNames().contains("-footer")) {
-                origFooterOpt = opt;
+            if (opt.getNames().contains("-header")) {
+                origHeaderOpt = opt;
             } else {
                 options.add(opt);
             }
@@ -157,11 +157,11 @@ public class MDoclet implements Doclet {
                 return processorOptions.add(arguments.get(0));
             }
         });
-        options.add(new FooterOverride());
+        options.add(new HeaderOverride());
         return options;
     }
 
-    private class FooterOverride implements Option {
+    private class HeaderOverride implements Option {
 
         @Override
         public int getArgumentCount() {
@@ -170,27 +170,27 @@ public class MDoclet implements Doclet {
 
         @Override
         public String getDescription() {
-            return origFooterOpt.getDescription();
+            return origHeaderOpt.getDescription();
         }
 
         @Override
         public Kind getKind() {
-            return origFooterOpt.getKind();
+            return origHeaderOpt.getKind();
         }
 
         @Override
         public List<String> getNames() {
-            return origFooterOpt.getNames();
+            return origHeaderOpt.getNames();
         }
 
         @Override
         public String getParameters() {
-            return origFooterOpt.getParameters();
+            return origHeaderOpt.getParameters();
         }
 
         @Override
         public boolean process(String option, List<String> arguments) {
-            bufferedFooter = arguments.get(0);
+            bufferedHeader = arguments.get(0);
             return true;
         }
 
@@ -205,12 +205,12 @@ public class MDoclet implements Doclet {
     public boolean run(DocletEnvironment environment) {
         fileManager = environment.getJavaFileManager();
         if (disableHighlight) {
-            if (bufferedFooter.length() > 0) {
-                origFooterOpt.process("-footer", List.of(bufferedFooter));
+            if (bufferedHeader.length() > 0) {
+                origHeaderOpt.process("-header", List.of(bufferedHeader));
             }
         } else {
-            bufferedFooter += HIGHLIGHT_JS_HTML;
-            origFooterOpt.process("-footer", List.of(bufferedFooter));
+            bufferedHeader += HIGHLIGHT_JS_HTML;
+            origHeaderOpt.process("-header", List.of(bufferedHeader));
             allowScriptsOpt.process("--allow-script-in-comments",
                 Collections.emptyList());
         }
