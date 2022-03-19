@@ -174,6 +174,32 @@ public class TreeConverter {
     }
 
     /**
+     * Converts a fragment such as the description of a tag. An attempt is
+     * made to remove any surrounding HTML tag added by the markdown
+     * processor.
+     * 
+     * @param tree the tree to convert
+     * @return the result
+     */
+    public List<? extends DocTree>
+            convertSeeFragment(List<? extends DocTree> tree) {
+        if (tree.isEmpty()) {
+            return tree;
+        }
+        List<DocTree> specials = new ArrayList<>();
+        String markdownSource = toMarkdownSource(specials, tree);
+        String transformed = processor.toHtmlFragment(markdownSource).trim();
+        if (transformed.startsWith("&ldquo;")
+                && transformed.endsWith("&rdquo;")) {
+            transformed = "\"" + transformed.substring("&ldquo;".length(),
+                transformed.length() - "&rdquo;".length())
+                .replace('\"', '\'') + "\"";
+        }
+        List<DocTree> replacement = mdOutToDocTrees(specials, transformed);
+        return replacement;
+    }
+
+    /**
      * Default conversion is a noop. 
      * 
      * @param target the list to append the result to 
@@ -279,7 +305,7 @@ public class TreeConverter {
             return;
         }
         target.add(docTreeFactory
-            .newSeeTree(convertFragment(tree.getReference())));
+            .newSeeTree(convertSeeFragment(tree.getReference())));
     }
 
     /**

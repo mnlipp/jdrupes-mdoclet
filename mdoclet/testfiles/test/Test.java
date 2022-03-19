@@ -15,6 +15,7 @@ package test;
  * }
  * ```
  *
+ * @see "[MDoclet](https://github.com/mnlipp/jdrupes-mdoclet)"
  */
 public class Test {
 
