@@ -60,7 +60,9 @@ Invoking
 Specify the Doclet on JavaDoc's command line:
 
 ```sh
-javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
+javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
 ```
 
 A prebuilt version can be downloaded from Maven Central
@@ -101,7 +103,7 @@ configurations {
 }
  
 dependencies {
-    markdownDoclet "org.jdrupes.mdoclet:doclet:2.0.0-SNAPSHOT"
+    markdownDoclet "org.jdrupes.mdoclet:doclet:2.2.0"
 }
  
 task java11doc(type: JavaExec) {
