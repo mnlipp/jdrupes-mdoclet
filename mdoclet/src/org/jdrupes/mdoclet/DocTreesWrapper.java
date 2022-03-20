@@ -1,6 +1,6 @@
 /*
  * JDrupes MDoclet
- * Copyright (C) 2021 Michael N. Lipp
+ * Copyright (C) 2021,2022 Michael N. Lipp
  * 
  * This program is free software; you can redistribute it and/or modify it 
  * under the terms of the GNU Affero General Public License as published by 
@@ -37,6 +37,7 @@ import javax.tools.ForwardingFileObject;
 
 import com.sun.source.doctree.DocCommentTree;
 import com.sun.source.doctree.DocTree;
+import com.sun.source.doctree.EntityTree;
 import com.sun.source.tree.CatchTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.CompilationUnitTree;
@@ -410,6 +411,26 @@ public class DocTreesWrapper extends DocTrees {
      */
     public TypeMirror getLub(CatchTree tree) {
         return docTrees.getLub(tree);
+    }
+
+    /**
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public TypeMirror getType(DocTreePath path) {
+        return docTrees.getType(path);
+    }
+
+    /**
+     * Delegates to the docTrees passed to the constructor.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCharacters(EntityTree tree) {
+        return docTrees.getCharacters(tree);
     }
 
     /**
