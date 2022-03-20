@@ -97,8 +97,8 @@
 <span class="sourceLineNo">088</span><a id="line.88">    private String markdownProcessorName = FlexmarkProcessor.class.getName();</a>
 <span class="sourceLineNo">089</span><a id="line.89">    private MarkdownProcessor processor;</a>
 <span class="sourceLineNo">090</span><a id="line.90">    private List&lt;String&gt; processorOptions = new ArrayList&lt;&gt;();</a>
-<span class="sourceLineNo">091</span><a id="line.91">    private Option origFooterOpt;</a>
-<span class="sourceLineNo">092</span><a id="line.92">    private String bufferedFooter = "";</a>
+<span class="sourceLineNo">091</span><a id="line.91">    private Option origHeaderOpt;</a>
+<span class="sourceLineNo">092</span><a id="line.92">    private String bufferedHeader = "";</a>
 <span class="sourceLineNo">093</span><a id="line.93">    private Option allowScriptsOpt;</a>
 <span class="sourceLineNo">094</span><a id="line.94">    private boolean disableHighlight;</a>
 <span class="sourceLineNo">095</span><a id="line.95">    private boolean disableAutoHighlight;</a>
@@ -123,8 +123,8 @@
 <span class="sourceLineNo">114</span><a id="line.114">    public Set&lt;? extends Option&gt; getSupportedOptions() {</a>
 <span class="sourceLineNo">115</span><a id="line.115">        Set&lt;Option&gt; options = new HashSet&lt;&gt;();</a>
 <span class="sourceLineNo">116</span><a id="line.116">        for (Option opt : standardDoclet.getSupportedOptions()) {</a>
-<span class="sourceLineNo">117</span><a id="line.117">            if (opt.getNames().contains("-footer")) {</a>
-<span class="sourceLineNo">118</span><a id="line.118">                origFooterOpt = opt;</a>
+<span class="sourceLineNo">117</span><a id="line.117">            if (opt.getNames().contains("-header")) {</a>
+<span class="sourceLineNo">118</span><a id="line.118">                origHeaderOpt = opt;</a>
 <span class="sourceLineNo">119</span><a id="line.119">            } else {</a>
 <span class="sourceLineNo">120</span><a id="line.120">                options.add(opt);</a>
 <span class="sourceLineNo">121</span><a id="line.121">            }</a>
@@ -166,11 +166,11 @@
 <span class="sourceLineNo">157</span><a id="line.157">                return processorOptions.add(arguments.get(0));</a>
 <span class="sourceLineNo">158</span><a id="line.158">            }</a>
 <span class="sourceLineNo">159</span><a id="line.159">        });</a>
-<span class="sourceLineNo">160</span><a id="line.160">        options.add(new FooterOverride());</a>
+<span class="sourceLineNo">160</span><a id="line.160">        options.add(new HeaderOverride());</a>
 <span class="sourceLineNo">161</span><a id="line.161">        return options;</a>
 <span class="sourceLineNo">162</span><a id="line.162">    }</a>
 <span class="sourceLineNo">163</span><a id="line.163"></a>
-<span class="sourceLineNo">164</span><a id="line.164">    private class FooterOverride implements Option {</a>
+<span class="sourceLineNo">164</span><a id="line.164">    private class HeaderOverride implements Option {</a>
 <span class="sourceLineNo">165</span><a id="line.165"></a>
 <span class="sourceLineNo">166</span><a id="line.166">        @Override</a>
 <span class="sourceLineNo">167</span><a id="line.167">        public int getArgumentCount() {</a>
@@ -179,27 +179,27 @@
 <span class="sourceLineNo">170</span><a id="line.170"></a>
 <span class="sourceLineNo">171</span><a id="line.171">        @Override</a>
 <span class="sourceLineNo">172</span><a id="line.172">        public String getDescription() {</a>
-<span class="sourceLineNo">173</span><a id="line.173">            return origFooterOpt.getDescription();</a>
+<span class="sourceLineNo">173</span><a id="line.173">            return origHeaderOpt.getDescription();</a>
 <span class="sourceLineNo">174</span><a id="line.174">        }</a>
 <span class="sourceLineNo">175</span><a id="line.175"></a>
 <span class="sourceLineNo">176</span><a id="line.176">        @Override</a>
 <span class="sourceLineNo">177</span><a id="line.177">        public Kind getKind() {</a>
-<span class="sourceLineNo">178</span><a id="line.178">            return origFooterOpt.getKind();</a>
+<span class="sourceLineNo">178</span><a id="line.178">            return origHeaderOpt.getKind();</a>
 <span class="sourceLineNo">179</span><a id="line.179">        }</a>
 <span class="sourceLineNo">180</span><a id="line.180"></a>
 <span class="sourceLineNo">181</span><a id="line.181">        @Override</a>
 <span class="sourceLineNo">182</span><a id="line.182">        public List&lt;String&gt; getNames() {</a>
-<span class="sourceLineNo">183</span><a id="line.183">            return origFooterOpt.getNames();</a>
+<span class="sourceLineNo">183</span><a id="line.183">            return origHeaderOpt.getNames();</a>
 <span class="sourceLineNo">184</span><a id="line.184">        }</a>
 <span class="sourceLineNo">185</span><a id="line.185"></a>
 <span class="sourceLineNo">186</span><a id="line.186">        @Override</a>
 <span class="sourceLineNo">187</span><a id="line.187">        public String getParameters() {</a>
-<span class="sourceLineNo">188</span><a id="line.188">            return origFooterOpt.getParameters();</a>
+<span class="sourceLineNo">188</span><a id="line.188">            return origHeaderOpt.getParameters();</a>
 <span class="sourceLineNo">189</span><a id="line.189">        }</a>
 <span class="sourceLineNo">190</span><a id="line.190"></a>
 <span class="sourceLineNo">191</span><a id="line.191">        @Override</a>
 <span class="sourceLineNo">192</span><a id="line.192">        public boolean process(String option, List&lt;String&gt; arguments) {</a>
-<span class="sourceLineNo">193</span><a id="line.193">            bufferedFooter = arguments.get(0);</a>
+<span class="sourceLineNo">193</span><a id="line.193">            bufferedHeader = arguments.get(0);</a>
 <span class="sourceLineNo">194</span><a id="line.194">            return true;</a>
 <span class="sourceLineNo">195</span><a id="line.195">        }</a>
 <span class="sourceLineNo">196</span><a id="line.196"></a>
@@ -214,12 +214,12 @@
 <span class="sourceLineNo">205</span><a id="line.205">    public boolean run(DocletEnvironment environment) {</a>
 <span class="sourceLineNo">206</span><a id="line.206">        fileManager = environment.getJavaFileManager();</a>
 <span class="sourceLineNo">207</span><a id="line.207">        if (disableHighlight) {</a>
-<span class="sourceLineNo">208</span><a id="line.208">            if (bufferedFooter.length() &gt; 0) {</a>
-<span class="sourceLineNo">209</span><a id="line.209">                origFooterOpt.process("-footer", List.of(bufferedFooter));</a>
+<span class="sourceLineNo">208</span><a id="line.208">            if (bufferedHeader.length() &gt; 0) {</a>
+<span class="sourceLineNo">209</span><a id="line.209">                origHeaderOpt.process("-header", List.of(bufferedHeader));</a>
 <span class="sourceLineNo">210</span><a id="line.210">            }</a>
 <span class="sourceLineNo">211</span><a id="line.211">        } else {</a>
-<span class="sourceLineNo">212</span><a id="line.212">            bufferedFooter += HIGHLIGHT_JS_HTML;</a>
-<span class="sourceLineNo">213</span><a id="line.213">            origFooterOpt.process("-footer", List.of(bufferedFooter));</a>
+<span class="sourceLineNo">212</span><a id="line.212">            bufferedHeader += HIGHLIGHT_JS_HTML;</a>
+<span class="sourceLineNo">213</span><a id="line.213">            origHeaderOpt.process("-header", List.of(bufferedHeader));</a>
 <span class="sourceLineNo">214</span><a id="line.214">            allowScriptsOpt.process("--allow-script-in-comments",</a>
 <span class="sourceLineNo">215</span><a id="line.215">                Collections.emptyList());</a>
 <span class="sourceLineNo">216</span><a id="line.216">        }</a>

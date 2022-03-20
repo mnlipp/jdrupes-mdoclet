@@ -33,93 +33,115 @@
 <span class="sourceLineNo">024</span><a id="line.24">import com.sun.source.doctree.DocCommentTree;</a>
 <span class="sourceLineNo">025</span><a id="line.25">import com.sun.source.doctree.DocTree;</a>
 <span class="sourceLineNo">026</span><a id="line.26">import com.sun.source.doctree.DocTreeVisitor;</a>
-<span class="sourceLineNo">027</span><a id="line.27"></a>
-<span class="sourceLineNo">028</span><a id="line.28">/**</a>
-<span class="sourceLineNo">029</span><a id="line.29"> * Feeds the results of the methods through the {@link TreeConverter}</a>
-<span class="sourceLineNo">030</span><a id="line.30"> * where appropriate.</a>
-<span class="sourceLineNo">031</span><a id="line.31"> */</a>
-<span class="sourceLineNo">032</span><a id="line.32">public class DocCommentTreeWrapper implements DocCommentTree {</a>
-<span class="sourceLineNo">033</span><a id="line.33"></a>
-<span class="sourceLineNo">034</span><a id="line.34">    private DocCommentTree tree;</a>
-<span class="sourceLineNo">035</span><a id="line.35">    private TreeConverter treeConverter;</a>
-<span class="sourceLineNo">036</span><a id="line.36"></a>
-<span class="sourceLineNo">037</span><a id="line.37">    public DocCommentTreeWrapper(MDoclet doclet, MDocletEnvironment environment,</a>
-<span class="sourceLineNo">038</span><a id="line.38">            DocCommentTree tree) {</a>
-<span class="sourceLineNo">039</span><a id="line.39">        super();</a>
-<span class="sourceLineNo">040</span><a id="line.40">        this.tree = tree;</a>
-<span class="sourceLineNo">041</span><a id="line.41">        treeConverter = new TreeConverter(doclet.getProcessor(),</a>
-<span class="sourceLineNo">042</span><a id="line.42">            environment.getDocTrees().getDocTreeFactory());</a>
-<span class="sourceLineNo">043</span><a id="line.43">    }</a>
-<span class="sourceLineNo">044</span><a id="line.44"></a>
-<span class="sourceLineNo">045</span><a id="line.45">    /**</a>
-<span class="sourceLineNo">046</span><a id="line.46">     * {@inheritDoc}</a>
-<span class="sourceLineNo">047</span><a id="line.47">     * </a>
-<span class="sourceLineNo">048</span><a id="line.48">     * @see com.sun.source.doctree.DocCommentTree#getFirstSentence()</a>
-<span class="sourceLineNo">049</span><a id="line.49">     */</a>
-<span class="sourceLineNo">050</span><a id="line.50">    public List&lt;? extends DocTree&gt; getFirstSentence() {</a>
-<span class="sourceLineNo">051</span><a id="line.51">        return treeConverter.convertFragment(tree.getFirstSentence());</a>
-<span class="sourceLineNo">052</span><a id="line.52">    }</a>
-<span class="sourceLineNo">053</span><a id="line.53"></a>
-<span class="sourceLineNo">054</span><a id="line.54">    /**</a>
-<span class="sourceLineNo">055</span><a id="line.55">     * {@inheritDoc}</a>
-<span class="sourceLineNo">056</span><a id="line.56">     * </a>
-<span class="sourceLineNo">057</span><a id="line.57">     * @see com.sun.source.doctree.DocCommentTree#getBody()</a>
+<span class="sourceLineNo">027</span><a id="line.27">import com.sun.tools.javac.tree.DCTree;</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">/**</a>
+<span class="sourceLineNo">030</span><a id="line.30"> * Feeds the results of the methods through the {@link TreeConverter}</a>
+<span class="sourceLineNo">031</span><a id="line.31"> * where appropriate.</a>
+<span class="sourceLineNo">032</span><a id="line.32"> * </a>
+<span class="sourceLineNo">033</span><a id="line.33"> * With JDK 11, {@link DocCommentTreeWrapper} only had to implement</a>
+<span class="sourceLineNo">034</span><a id="line.34"> * {@link DocCommentTree}. Starting with (at least) JDK 15, javadoc</a>
+<span class="sourceLineNo">035</span><a id="line.35"> * casts (without check) {@link DocCommentTree} instances to</a>
+<span class="sourceLineNo">036</span><a id="line.36"> * {@link DCTree.DCDocComment} when reporting errors e.g. about</a>
+<span class="sourceLineNo">037</span><a id="line.37"> * a missing link target. That's the only reason why the</a>
+<span class="sourceLineNo">038</span><a id="line.38"> * wrapper extends {@link DCTree.DCDocComment}.</a>
+<span class="sourceLineNo">039</span><a id="line.39"> */</a>
+<span class="sourceLineNo">040</span><a id="line.40">public class DocCommentTreeWrapper extends DCTree.DCDocComment </a>
+<span class="sourceLineNo">041</span><a id="line.41">    implements DocCommentTree {</a>
+<span class="sourceLineNo">042</span><a id="line.42"></a>
+<span class="sourceLineNo">043</span><a id="line.43">    private DocCommentTree tree;</a>
+<span class="sourceLineNo">044</span><a id="line.44">    private TreeConverter treeConverter;</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46">    public DocCommentTreeWrapper(MDoclet doclet, MDocletEnvironment environment,</a>
+<span class="sourceLineNo">047</span><a id="line.47">            DocCommentTree tree) {</a>
+<span class="sourceLineNo">048</span><a id="line.48">        super(tree instanceof DCTree.DCDocComment </a>
+<span class="sourceLineNo">049</span><a id="line.49">            ? ((DCTree.DCDocComment)tree).comment : null, </a>
+<span class="sourceLineNo">050</span><a id="line.50">            null, null, null, null, null, null);</a>
+<span class="sourceLineNo">051</span><a id="line.51">        this.tree = tree;</a>
+<span class="sourceLineNo">052</span><a id="line.52">        treeConverter = new TreeConverter(doclet.getProcessor(),</a>
+<span class="sourceLineNo">053</span><a id="line.53">            environment.getDocTrees().getDocTreeFactory());</a>
+<span class="sourceLineNo">054</span><a id="line.54">    }</a>
+<span class="sourceLineNo">055</span><a id="line.55"></a>
+<span class="sourceLineNo">056</span><a id="line.56">    /**</a>
+<span class="sourceLineNo">057</span><a id="line.57">     * Overridden by {@link DCTree.DCDocComment}, restore to default.</a>
 <span class="sourceLineNo">058</span><a id="line.58">     */</a>
-<span class="sourceLineNo">059</span><a id="line.59">    public List&lt;? extends DocTree&gt; getBody() {</a>
-<span class="sourceLineNo">060</span><a id="line.60">        return treeConverter.convertDescription(tree.getBody());</a>
-<span class="sourceLineNo">061</span><a id="line.61">    }</a>
-<span class="sourceLineNo">062</span><a id="line.62"></a>
-<span class="sourceLineNo">063</span><a id="line.63">    /**</a>
-<span class="sourceLineNo">064</span><a id="line.64">     * {@inheritDoc}</a>
-<span class="sourceLineNo">065</span><a id="line.65">     * </a>
-<span class="sourceLineNo">066</span><a id="line.66">     * @see com.sun.source.doctree.DocCommentTree#getBlockTags()</a>
-<span class="sourceLineNo">067</span><a id="line.67">     */</a>
-<span class="sourceLineNo">068</span><a id="line.68">    public List&lt;? extends DocTree&gt; getBlockTags() {</a>
-<span class="sourceLineNo">069</span><a id="line.69">        List&lt;? extends DocTree&gt; blockTags = tree.getBlockTags();</a>
-<span class="sourceLineNo">070</span><a id="line.70">        List&lt;DocTree&gt; result = new ArrayList&lt;&gt;();</a>
-<span class="sourceLineNo">071</span><a id="line.71">        for (DocTree tree : blockTags) {</a>
-<span class="sourceLineNo">072</span><a id="line.72">            treeConverter.convertTag(result, tree);</a>
-<span class="sourceLineNo">073</span><a id="line.73">        }</a>
-<span class="sourceLineNo">074</span><a id="line.74">        return result;</a>
-<span class="sourceLineNo">075</span><a id="line.75">    }</a>
-<span class="sourceLineNo">076</span><a id="line.76"></a>
-<span class="sourceLineNo">077</span><a id="line.77">    /**</a>
-<span class="sourceLineNo">078</span><a id="line.78">     * {@inheritDoc}</a>
-<span class="sourceLineNo">079</span><a id="line.79">     * </a>
-<span class="sourceLineNo">080</span><a id="line.80">     * @see com.sun.source.doctree.DocCommentTree#getPreamble()</a>
-<span class="sourceLineNo">081</span><a id="line.81">     */</a>
-<span class="sourceLineNo">082</span><a id="line.82">    public List&lt;? extends DocTree&gt; getPreamble() {</a>
-<span class="sourceLineNo">083</span><a id="line.83">        return tree.getPreamble();</a>
-<span class="sourceLineNo">084</span><a id="line.84">    }</a>
-<span class="sourceLineNo">085</span><a id="line.85"></a>
-<span class="sourceLineNo">086</span><a id="line.86">    /**</a>
-<span class="sourceLineNo">087</span><a id="line.87">     * {@inheritDoc}</a>
-<span class="sourceLineNo">088</span><a id="line.88">     * </a>
-<span class="sourceLineNo">089</span><a id="line.89">     * @see com.sun.source.doctree.DocCommentTree#getPostamble()</a>
-<span class="sourceLineNo">090</span><a id="line.90">     */</a>
-<span class="sourceLineNo">091</span><a id="line.91">    public List&lt;? extends DocTree&gt; getPostamble() {</a>
-<span class="sourceLineNo">092</span><a id="line.92">        return tree.getPostamble();</a>
-<span class="sourceLineNo">093</span><a id="line.93">    }</a>
-<span class="sourceLineNo">094</span><a id="line.94"></a>
-<span class="sourceLineNo">095</span><a id="line.95">    /**</a>
-<span class="sourceLineNo">096</span><a id="line.96">     * {@inheritDoc}</a>
-<span class="sourceLineNo">097</span><a id="line.97">     * </a>
-<span class="sourceLineNo">098</span><a id="line.98">     * @see com.sun.source.doctree.DocTree#getKind()</a>
-<span class="sourceLineNo">099</span><a id="line.99">     */</a>
-<span class="sourceLineNo">100</span><a id="line.100">    public Kind getKind() {</a>
-<span class="sourceLineNo">101</span><a id="line.101">        return tree.getKind();</a>
-<span class="sourceLineNo">102</span><a id="line.102">    }</a>
-<span class="sourceLineNo">103</span><a id="line.103"></a>
-<span class="sourceLineNo">104</span><a id="line.104">    /**</a>
-<span class="sourceLineNo">105</span><a id="line.105">     * {@inheritDoc}</a>
-<span class="sourceLineNo">106</span><a id="line.106">     * </a>
-<span class="sourceLineNo">107</span><a id="line.107">     * @see com.sun.source.doctree.DocTree#accept(com.sun.source.doctree.DocTreeVisitor, java.lang.Object)</a>
-<span class="sourceLineNo">108</span><a id="line.108">     */</a>
-<span class="sourceLineNo">109</span><a id="line.109">    public &lt;R, D&gt; R accept(DocTreeVisitor&lt;R, D&gt; visitor, D data) {</a>
-<span class="sourceLineNo">110</span><a id="line.110">        return tree.accept(visitor, data);</a>
-<span class="sourceLineNo">111</span><a id="line.111">    }</a>
-<span class="sourceLineNo">112</span><a id="line.112"></a>
-<span class="sourceLineNo">113</span><a id="line.113">}</a>
+<span class="sourceLineNo">059</span><a id="line.59">    @Override</a>
+<span class="sourceLineNo">060</span><a id="line.60">    public List&lt;? extends DocTree&gt; getFullBody() {</a>
+<span class="sourceLineNo">061</span><a id="line.61">        ArrayList&lt;DocTree&gt; bodyList = new ArrayList&lt;&gt;();</a>
+<span class="sourceLineNo">062</span><a id="line.62">        bodyList.addAll(getFirstSentence());</a>
+<span class="sourceLineNo">063</span><a id="line.63">        bodyList.addAll(getBody());</a>
+<span class="sourceLineNo">064</span><a id="line.64">        return bodyList;</a>
+<span class="sourceLineNo">065</span><a id="line.65">    }</a>
+<span class="sourceLineNo">066</span><a id="line.66">    </a>
+<span class="sourceLineNo">067</span><a id="line.67">    /**</a>
+<span class="sourceLineNo">068</span><a id="line.68">     * {@inheritDoc}</a>
+<span class="sourceLineNo">069</span><a id="line.69">     * </a>
+<span class="sourceLineNo">070</span><a id="line.70">     * @see com.sun.source.doctree.DocCommentTree#getFirstSentence()</a>
+<span class="sourceLineNo">071</span><a id="line.71">     */</a>
+<span class="sourceLineNo">072</span><a id="line.72">    public List&lt;? extends DocTree&gt; getFirstSentence() {</a>
+<span class="sourceLineNo">073</span><a id="line.73">        return treeConverter.convertFragment(tree.getFirstSentence());</a>
+<span class="sourceLineNo">074</span><a id="line.74">    }</a>
+<span class="sourceLineNo">075</span><a id="line.75"></a>
+<span class="sourceLineNo">076</span><a id="line.76">    /**</a>
+<span class="sourceLineNo">077</span><a id="line.77">     * {@inheritDoc}</a>
+<span class="sourceLineNo">078</span><a id="line.78">     * </a>
+<span class="sourceLineNo">079</span><a id="line.79">     * @see com.sun.source.doctree.DocCommentTree#getBody()</a>
+<span class="sourceLineNo">080</span><a id="line.80">     */</a>
+<span class="sourceLineNo">081</span><a id="line.81">    public List&lt;? extends DocTree&gt; getBody() {</a>
+<span class="sourceLineNo">082</span><a id="line.82">        return treeConverter.convertDescription(tree.getBody());</a>
+<span class="sourceLineNo">083</span><a id="line.83">    }</a>
+<span class="sourceLineNo">084</span><a id="line.84"></a>
+<span class="sourceLineNo">085</span><a id="line.85">    /**</a>
+<span class="sourceLineNo">086</span><a id="line.86">     * {@inheritDoc}</a>
+<span class="sourceLineNo">087</span><a id="line.87">     * </a>
+<span class="sourceLineNo">088</span><a id="line.88">     * @see com.sun.source.doctree.DocCommentTree#getBlockTags()</a>
+<span class="sourceLineNo">089</span><a id="line.89">     */</a>
+<span class="sourceLineNo">090</span><a id="line.90">    public List&lt;? extends DocTree&gt; getBlockTags() {</a>
+<span class="sourceLineNo">091</span><a id="line.91">        List&lt;? extends DocTree&gt; blockTags = tree.getBlockTags();</a>
+<span class="sourceLineNo">092</span><a id="line.92">        List&lt;DocTree&gt; result = new ArrayList&lt;&gt;();</a>
+<span class="sourceLineNo">093</span><a id="line.93">        for (DocTree tree : blockTags) {</a>
+<span class="sourceLineNo">094</span><a id="line.94">            treeConverter.convertTag(result, tree);</a>
+<span class="sourceLineNo">095</span><a id="line.95">        }</a>
+<span class="sourceLineNo">096</span><a id="line.96">        return result;</a>
+<span class="sourceLineNo">097</span><a id="line.97">    }</a>
+<span class="sourceLineNo">098</span><a id="line.98"></a>
+<span class="sourceLineNo">099</span><a id="line.99">    /**</a>
+<span class="sourceLineNo">100</span><a id="line.100">     * {@inheritDoc}</a>
+<span class="sourceLineNo">101</span><a id="line.101">     * </a>
+<span class="sourceLineNo">102</span><a id="line.102">     * @see com.sun.source.doctree.DocCommentTree#getPreamble()</a>
+<span class="sourceLineNo">103</span><a id="line.103">     */</a>
+<span class="sourceLineNo">104</span><a id="line.104">    public List&lt;? extends DocTree&gt; getPreamble() {</a>
+<span class="sourceLineNo">105</span><a id="line.105">        return tree.getPreamble();</a>
+<span class="sourceLineNo">106</span><a id="line.106">    }</a>
+<span class="sourceLineNo">107</span><a id="line.107"></a>
+<span class="sourceLineNo">108</span><a id="line.108">    /**</a>
+<span class="sourceLineNo">109</span><a id="line.109">     * {@inheritDoc}</a>
+<span class="sourceLineNo">110</span><a id="line.110">     * </a>
+<span class="sourceLineNo">111</span><a id="line.111">     * @see com.sun.source.doctree.DocCommentTree#getPostamble()</a>
+<span class="sourceLineNo">112</span><a id="line.112">     */</a>
+<span class="sourceLineNo">113</span><a id="line.113">    public List&lt;? extends DocTree&gt; getPostamble() {</a>
+<span class="sourceLineNo">114</span><a id="line.114">        return tree.getPostamble();</a>
+<span class="sourceLineNo">115</span><a id="line.115">    }</a>
+<span class="sourceLineNo">116</span><a id="line.116"></a>
+<span class="sourceLineNo">117</span><a id="line.117">    /**</a>
+<span class="sourceLineNo">118</span><a id="line.118">     * {@inheritDoc}</a>
+<span class="sourceLineNo">119</span><a id="line.119">     * </a>
+<span class="sourceLineNo">120</span><a id="line.120">     * @see com.sun.source.doctree.DocTree#getKind()</a>
+<span class="sourceLineNo">121</span><a id="line.121">     */</a>
+<span class="sourceLineNo">122</span><a id="line.122">    public Kind getKind() {</a>
+<span class="sourceLineNo">123</span><a id="line.123">        return tree.getKind();</a>
+<span class="sourceLineNo">124</span><a id="line.124">    }</a>
+<span class="sourceLineNo">125</span><a id="line.125"></a>
+<span class="sourceLineNo">126</span><a id="line.126">    /**</a>
+<span class="sourceLineNo">127</span><a id="line.127">     * {@inheritDoc}</a>
+<span class="sourceLineNo">128</span><a id="line.128">     * </a>
+<span class="sourceLineNo">129</span><a id="line.129">     * @see com.sun.source.doctree.DocTree#accept(com.sun.source.doctree.DocTreeVisitor, java.lang.Object)</a>
+<span class="sourceLineNo">130</span><a id="line.130">     */</a>
+<span class="sourceLineNo">131</span><a id="line.131">    public &lt;R, D&gt; R accept(DocTreeVisitor&lt;R, D&gt; visitor, D data) {</a>
+<span class="sourceLineNo">132</span><a id="line.132">        return tree.accept(visitor, data);</a>
+<span class="sourceLineNo">133</span><a id="line.133">    }</a>
+<span class="sourceLineNo">134</span><a id="line.134"></a>
+<span class="sourceLineNo">135</span><a id="line.135">}</a>
 
 
 
