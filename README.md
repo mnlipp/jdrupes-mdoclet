@@ -19,6 +19,8 @@ from markdown to HTML.
 See the [javadoc overview](https://mnlipp.github.io/jdrupes-mdoclet/javadoc/)
 for details. 
 
+ * Version 3.0.0 supports/requires JDK 17.
+
  * Version 2.2.0 avoids a warning when using @see tags with quoted strings.
 
  * Version 2.1.0 fixes a problem that caused a class cast exception 

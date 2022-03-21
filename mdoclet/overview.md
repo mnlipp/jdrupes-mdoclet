@@ -36,10 +36,8 @@ The third variant however, which is originally meant to refer to a printed book,
 also contain Markdown-style links:
 
  * `@see "[Example](http://www.example.com/)"`
- * `@see "<http://www.example.com/>"`
- * `@see "Example <http://www.example.com/>"`
 
-These are all rendered as `@see <a href="http://www.example.com/">LABEL</a>`, where
+This is rendered as `@see <a href="http://www.example.com/">LABEL</a>`, where
 LABEL falls back to the link's URL, if no label is given.
 
 ### Inline Tags
@@ -103,11 +101,11 @@ configurations {
 }
  
 dependencies {
-    markdownDoclet "org.jdrupes.mdoclet:doclet:2.2.0"
+    markdownDoclet "org.jdrupes.mdoclet:doclet:3.0.0"
 }
  
 task java11doc(type: JavaExec) {
-    enabled = JavaVersion.current().isJava11()
+    enabled = JavaVersion.current() == JavaVersion.VERSION_17
     
     dependsOn classes
     inputs.file "overview.md"
