@@ -29,9 +29,6 @@ dependencies {
 
 java {
     modularity.inferModulePath = true
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
 }
 
 
