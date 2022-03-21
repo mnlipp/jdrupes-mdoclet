@@ -14,13 +14,12 @@ package test;
  *     }
  * }
  * ```
- *
  * @see "[MDoclet](https://github.com/mnlipp/jdrupes-mdoclet)"
  */
 public class Test {
 
 	/**
-	 * @param args the command line arguments
+	 * @param args the *command line* arguments
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

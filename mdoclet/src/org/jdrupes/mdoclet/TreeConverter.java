@@ -18,11 +18,7 @@
 
 package org.jdrupes.mdoclet;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.sun.source.doctree.AttributeTree.ValueKind;
 import com.sun.source.doctree.AuthorTree;
 import com.sun.source.doctree.DeprecatedTree;
 import com.sun.source.doctree.DocTree;
@@ -40,6 +36,17 @@ import com.sun.source.doctree.ThrowsTree;
 import com.sun.source.doctree.VersionTree;
 import com.sun.source.util.DocTreeFactory;
 import com.sun.source.util.SimpleDocTreeVisitor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.lang.model.util.Elements;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 
 public class TreeConverter {
 
@@ -48,11 +55,13 @@ public class TreeConverter {
 
     private MarkdownProcessor processor;
     private DocTreeFactory docTreeFactory;
+    private Elements elements;
 
     public TreeConverter(MarkdownProcessor processor,
-            DocTreeFactory docTreeFactory) {
+            DocTreeFactory docTreeFactory, Elements elements) {
         this.processor = processor;
         this.docTreeFactory = docTreeFactory;
+        this.elements = elements;
     }
 
     private String toMarkdownSource(List<DocTree> specials,
@@ -174,9 +183,8 @@ public class TreeConverter {
     }
 
     /**
-     * Converts a fragment such as the description of a tag. An attempt is
-     * made to remove any surrounding HTML tag added by the markdown
-     * processor.
+     * Converts a "see" tag. The text is interpreted as markdown.
+     * If the result is a quoted link, only the link is returned.
      * 
      * @param tree the tree to convert
      * @return the result
@@ -189,14 +197,46 @@ public class TreeConverter {
         List<DocTree> specials = new ArrayList<>();
         String markdownSource = toMarkdownSource(specials, tree);
         String transformed = processor.toHtmlFragment(markdownSource).trim();
-        if (transformed.startsWith("&ldquo;")
-                && transformed.endsWith("&rdquo;")) {
-            transformed = "\"" + transformed.substring("&ldquo;".length(),
-                transformed.length() - "&rdquo;".length())
-                .replace('\"', '\'') + "\"";
+        Element target = Jsoup.parseBodyFragment(transformed).body();
+        var childNodes = target.childNodes();
+        if (childNodes.get(0) instanceof TextNode
+            && "“".equals(((TextNode) childNodes.get(0)).text())
+            && childNodes.get(1) instanceof Element
+            && childNodes.get(2) instanceof TextNode
+            && "”".equals(((TextNode) childNodes.get(2)).text())) {
+            return nodeToDocTree((Element) childNodes.get(1));
         }
-        List<DocTree> replacement = mdOutToDocTrees(specials, transformed);
-        return replacement;
+        return childrenToDocTree(target);
+    }
+
+    private List<DocTree> childrenToDocTree(Element root) {
+        var result = new ArrayList<DocTree>();
+        for (var node : root.childNodes()) {
+            result.addAll(nodeToDocTree(node));
+        }
+        return result;
+    }
+
+    private List<DocTree> nodeToDocTree(Node node) {
+        var result = new ArrayList<DocTree>();
+        if (node instanceof TextNode) {
+            result.add(docTreeFactory.newTextTree(((TextNode) node).text()));
+        } else if (node instanceof Element) {
+            var element = (Element) node;
+            var tag = elements.getName(element.tagName());
+            var attrs = new ArrayList<DocTree>();
+            for (var attr : element.attributes()) {
+                attrs.add(docTreeFactory.newAttributeTree(
+                    elements.getName(attr.getKey()), ValueKind.DOUBLE,
+                    List.of(docTreeFactory.newTextTree(attr.getValue()))));
+            }
+            var start = docTreeFactory.newStartElementTree(
+                tag, attrs, false);
+            result.add(start);
+            result.addAll(childrenToDocTree(element));
+            result.add(docTreeFactory.newEndElementTree(tag));
+        }
+        return result;
     }
 
     /**
@@ -304,8 +344,9 @@ public class TreeConverter {
             target.add(tree);
             return;
         }
-        target.add(docTreeFactory
-            .newSeeTree(convertSeeFragment(tree.getReference())));
+        SeeTree newTree = docTreeFactory
+            .newSeeTree(convertSeeFragment(tree.getReference()));
+        target.add(newTree);
     }
 
     /**

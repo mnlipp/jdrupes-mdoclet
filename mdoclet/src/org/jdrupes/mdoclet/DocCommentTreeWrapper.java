@@ -50,7 +50,8 @@ public class DocCommentTreeWrapper extends DCTree.DCDocComment
             null, null, null, null, null, null);
         this.tree = tree;
         treeConverter = new TreeConverter(doclet.getProcessor(),
-            environment.getDocTrees().getDocTreeFactory());
+            environment.getDocTrees().getDocTreeFactory(),
+            environment.getElementUtils());
     }
 
     /**
