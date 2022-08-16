@@ -37,16 +37,21 @@ import com.sun.tools.javac.tree.DCTree;
  * a missing link target. That's the only reason why the
  * wrapper extends {@link DCTree.DCDocComment}.
  */
-public class DocCommentTreeWrapper extends DCTree.DCDocComment 
-    implements DocCommentTree {
+public class DocCommentTreeWrapper extends DCTree.DCDocComment
+        implements DocCommentTree {
 
     private DocCommentTree tree;
     private TreeConverter treeConverter;
+    private List<DocTree> fullBody;
+    private List<DocTree> firstSentence;
+    private List<DocTree> body;
+    private List<DocTree> blockTags;
 
     public DocCommentTreeWrapper(MDoclet doclet, MDocletEnvironment environment,
             DocCommentTree tree) {
-        super(tree instanceof DCTree.DCDocComment 
-            ? ((DCTree.DCDocComment)tree).comment : null, 
+        super(tree instanceof DCTree.DCDocComment
+            ? ((DCTree.DCDocComment) tree).comment
+            : null,
             null, null, null, null, null, null);
         this.tree = tree;
         treeConverter = new TreeConverter(doclet.getProcessor(),
@@ -59,19 +64,25 @@ public class DocCommentTreeWrapper extends DCTree.DCDocComment
      */
     @Override
     public List<? extends DocTree> getFullBody() {
-        ArrayList<DocTree> bodyList = new ArrayList<>();
-        bodyList.addAll(getFirstSentence());
-        bodyList.addAll(getBody());
-        return bodyList;
+        if (fullBody == null) {
+            fullBody = new ArrayList<>();
+            fullBody.addAll(getFirstSentence());
+            fullBody.addAll(getBody());
+        }
+        return fullBody;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      * @see com.sun.source.doctree.DocCommentTree#getFirstSentence()
      */
     public List<? extends DocTree> getFirstSentence() {
-        return treeConverter.convertFragment(tree.getFirstSentence());
+        if (firstSentence == null) {
+            firstSentence
+                = treeConverter.convertFragment(tree.getFirstSentence());
+        }
+        return firstSentence;
     }
 
     /**
@@ -80,7 +91,10 @@ public class DocCommentTreeWrapper extends DCTree.DCDocComment
      * @see com.sun.source.doctree.DocCommentTree#getBody()
      */
     public List<? extends DocTree> getBody() {
-        return treeConverter.convertDescription(tree.getBody());
+        if (body == null) {
+            body = treeConverter.convertDescription(tree.getBody());
+        }
+        return body;
     }
 
     /**
@@ -89,12 +103,14 @@ public class DocCommentTreeWrapper extends DCTree.DCDocComment
      * @see com.sun.source.doctree.DocCommentTree#getBlockTags()
      */
     public List<? extends DocTree> getBlockTags() {
-        List<? extends DocTree> blockTags = tree.getBlockTags();
-        List<DocTree> result = new ArrayList<>();
-        for (DocTree tree : blockTags) {
-            treeConverter.convertTag(result, tree);
+        if (blockTags == null) {
+            List<? extends DocTree> origTags = tree.getBlockTags();
+            blockTags = new ArrayList<>();
+            for (DocTree tree : origTags) {
+                treeConverter.convertTag(blockTags, tree);
+            }
         }
-        return result;
+        return blockTags;
     }
 
     /**
@@ -130,6 +146,12 @@ public class DocCommentTreeWrapper extends DCTree.DCDocComment
      * @see com.sun.source.doctree.DocTree#accept(com.sun.source.doctree.DocTreeVisitor, java.lang.Object)
      */
     public <R, D> R accept(DocTreeVisitor<R, D> visitor, D data) {
+        // Work around NPE when reporting param related problems.
+        if (tree instanceof DCTree.DCDocComment
+            && visitor.getClass().getName()
+                .equals("com.sun.source.util.DocTreePath$1PathFinder")) {
+            return visitor.visitDocComment(this, data);
+        }
         return tree.accept(visitor, data);
     }
 

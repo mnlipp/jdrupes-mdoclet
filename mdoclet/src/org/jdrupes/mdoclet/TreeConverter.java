@@ -150,10 +150,10 @@ public class TreeConverter {
      * @param tree the tree to convert
      * @return the result
      */
-    public List<? extends DocTree>
-            convertDescription(List<? extends DocTree> tree) {
+    @SuppressWarnings("unchecked")
+    public List<DocTree> convertDescription(List<? extends DocTree> tree) {
         if (tree.isEmpty()) {
-            return tree;
+            return (List<DocTree>) tree;
         }
         List<DocTree> specials = new ArrayList<>();
         String markdownSource = toMarkdownSource(specials, tree);
@@ -170,10 +170,10 @@ public class TreeConverter {
      * @param tree the tree to convert
      * @return the result
      */
-    public List<? extends DocTree>
-            convertFragment(List<? extends DocTree> tree) {
+    @SuppressWarnings("unchecked")
+    public List<DocTree> convertFragment(List<? extends DocTree> tree) {
         if (tree.isEmpty()) {
-            return tree;
+            return (List<DocTree>) tree;
         }
         List<DocTree> specials = new ArrayList<>();
         String markdownSource = toMarkdownSource(specials, tree);
