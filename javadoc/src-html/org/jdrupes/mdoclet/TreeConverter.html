@@ -163,10 +163,10 @@
 <span class="source-line-no">150</span><span id="line-150">     * @param tree the tree to convert</span>
 <span class="source-line-no">151</span><span id="line-151">     * @return the result</span>
 <span class="source-line-no">152</span><span id="line-152">     */</span>
-<span class="source-line-no">153</span><span id="line-153">    public List&lt;? extends DocTree&gt;</span>
-<span class="source-line-no">154</span><span id="line-154">            convertDescription(List&lt;? extends DocTree&gt; tree) {</span>
+<span class="source-line-no">153</span><span id="line-153">    @SuppressWarnings("unchecked")</span>
+<span class="source-line-no">154</span><span id="line-154">    public List&lt;DocTree&gt; convertDescription(List&lt;? extends DocTree&gt; tree) {</span>
 <span class="source-line-no">155</span><span id="line-155">        if (tree.isEmpty()) {</span>
-<span class="source-line-no">156</span><span id="line-156">            return tree;</span>
+<span class="source-line-no">156</span><span id="line-156">            return (List&lt;DocTree&gt;) tree;</span>
 <span class="source-line-no">157</span><span id="line-157">        }</span>
 <span class="source-line-no">158</span><span id="line-158">        List&lt;DocTree&gt; specials = new ArrayList&lt;&gt;();</span>
 <span class="source-line-no">159</span><span id="line-159">        String markdownSource = toMarkdownSource(specials, tree);</span>
@@ -183,10 +183,10 @@
 <span class="source-line-no">170</span><span id="line-170">     * @param tree the tree to convert</span>
 <span class="source-line-no">171</span><span id="line-171">     * @return the result</span>
 <span class="source-line-no">172</span><span id="line-172">     */</span>
-<span class="source-line-no">173</span><span id="line-173">    public List&lt;? extends DocTree&gt;</span>
-<span class="source-line-no">174</span><span id="line-174">            convertFragment(List&lt;? extends DocTree&gt; tree) {</span>
+<span class="source-line-no">173</span><span id="line-173">    @SuppressWarnings("unchecked")</span>
+<span class="source-line-no">174</span><span id="line-174">    public List&lt;DocTree&gt; convertFragment(List&lt;? extends DocTree&gt; tree) {</span>
 <span class="source-line-no">175</span><span id="line-175">        if (tree.isEmpty()) {</span>
-<span class="source-line-no">176</span><span id="line-176">            return tree;</span>
+<span class="source-line-no">176</span><span id="line-176">            return (List&lt;DocTree&gt;) tree;</span>
 <span class="source-line-no">177</span><span id="line-177">        }</span>
 <span class="source-line-no">178</span><span id="line-178">        List&lt;DocTree&gt; specials = new ArrayList&lt;&gt;();</span>
 <span class="source-line-no">179</span><span id="line-179">        String markdownSource = toMarkdownSource(specials, tree);</span>
