@@ -134,7 +134,43 @@ The latest version available on maven central is shown in the badge on the
 
 ### Maven
  
-Still using this? Well, you're on your own...
+I don't use maven, but according to 
+[this contribution](https://github.com/mnlipp/jdrupes-mdoclet/issues/11#issuecomment-1446857303)
+it should be sufficient to add the following to your pom:
+
+```maven
+  <plugin>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <!-- do not use 3.5.1: transitive dependencies of docletArtifact are not added to 
+         docletpath, version 3.5.1 resolves this issue.
+         https://issues.apache.org/jira/browse/MJAVADOC-742 -->
+    <version>3.4.1</version>
+    <configuration>
+      ... your configuration options here
+      <useStandardDocletOptions>true</useStandardDocletOptions>
+      <doclet>org.jdrupes.mdoclet.MDoclet</doclet>
+      <docletArtifacts>
+        <docletArtifact>
+          <groupId>org.jdrupes.mdoclet</groupId>
+          <artifactId>doclet</artifactId>
+          <version>3.1.0</version>
+        </docletArtifact>
+        <docletArtifact>
+          <groupId>com.vladsch.flexmark</groupId>
+          <artifactId>flexmark-all</artifactId>
+          <version>0.64.0</version>   
+        </docletArtifact>   
+      </docletArtifacts>      
+      <!--  Note: additionalDependencies are added to the -classpath, not the docletpath -->
+      <additionalDependencies>
+      </additionalDependencies>
+      <additionalJOptions>
+        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+      </additionalJOptions>
+    </configuration>
+  </plugin>
+```
 
 Selecting a Markdown processor
 ------------------------------
