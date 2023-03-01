@@ -50,7 +50,7 @@ subprojects {
 
     ext {
         libs = [
-                markdown: [group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.64.0'],
+                markdown: [group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.62.2'],
                 jdkTools: files(org.gradle.internal.jvm.Jvm.current().toolsJar),
         ]
         docletProject = project(':mdoclet')
