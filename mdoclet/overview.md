@@ -140,19 +140,29 @@ it should be sufficient to add the following to your pom:
 
 ```maven
   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
     <!-- do not use 3.5.1: transitive dependencies of docletArtifact are not added to 
          docletpath, version 3.5.1 resolves this issue.
          https://issues.apache.org/jira/browse/MJAVADOC-742 -->
     <version>3.4.1</version>
+    <executions>
+      <execution>
+        <id>attach-sources</id>
+        <goals>
+            <goal>jar</goal>
+            <goal>test-jar</goal>
+        </goals>
+      </execution>
+    </executions>
     <configuration>
-      ... your configuration options here
       <useStandardDocletOptions>true</useStandardDocletOptions>
       <doclet>org.jdrupes.mdoclet.MDoclet</doclet>
       <docletArtifacts>
         <docletArtifact>
           <groupId>org.jdrupes.mdoclet</groupId>
           <artifactId>doclet</artifactId>
+          <!-- version 2.2.0 for java 11 and version 1.0.10 for java 8 -->
           <version>3.1.0</version>
         </docletArtifact>
         <docletArtifact>
