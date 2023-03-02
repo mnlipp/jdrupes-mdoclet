@@ -135,16 +135,15 @@ The latest version available on maven central is shown in the badge on the
 ### Maven
  
 I don't use maven, but according to 
-[this contribution](https://github.com/mnlipp/jdrupes-mdoclet/issues/11#issuecomment-1446857303)
+[this contribution](https://github.com/mnlipp/jdrupes-mdoclet/issues/11#issuecomment-1446857303) (and updates provided by others)
 it should be sufficient to add the following to your pom:
 
 ```maven
   <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
-    <!-- do not use 3.5.1: transitive dependencies of docletArtifact are not added to 
-         docletpath, version 3.5.1 resolves this issue.
-         https://issues.apache.org/jira/browse/MJAVADOC-742 -->
+    &lt;!-- do not use 3.5.1: transitive dependencies of docletArtifact are not added to 
+         docletpath, version 3.5.1 resolves this issue. https://issues.apache.org/jira/browse/MJAVADOC-742 --&gt;
     <version>3.4.1</version>
     <executions>
       <execution>
@@ -162,7 +161,7 @@ it should be sufficient to add the following to your pom:
         <docletArtifact>
           <groupId>org.jdrupes.mdoclet</groupId>
           <artifactId>doclet</artifactId>
-          <!-- version 2.2.0 for java 11 and version 1.0.10 for java 8 -->
+          &lt;!-- version 2.2.0 for java 11 and version 1.0.10 for java 8 --&gt;
           <version>3.1.0</version>
         </docletArtifact>
         <docletArtifact>
@@ -171,7 +170,7 @@ it should be sufficient to add the following to your pom:
           <version>0.64.0</version>   
         </docletArtifact>   
       </docletArtifacts>      
-      <!--  Note: additionalDependencies are added to the -classpath, not the docletpath -->
+      &lt;!--  Note: additionalDependencies are added to the -classpath, not the docletpath --&gt;
       <additionalDependencies>
       </additionalDependencies>
       <additionalJOptions>
