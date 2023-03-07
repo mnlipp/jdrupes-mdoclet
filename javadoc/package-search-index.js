@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.jdrupes.mdoclet"},{"l":"org.jdrupes.mdoclet.processors"},{"l":"org.jdrupes.mdoclet.processors.flexmark"}];updateSearchResults();
