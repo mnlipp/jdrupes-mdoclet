@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
         <listEntry value="/mdoclet"/>
     </listAttribute>
@@ -13,7 +14,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17/"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="jdk.javadoc.internal.tool.Main"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="mdoclet"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED&#10;--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED&#10;-doclet org.jdrupes.mdoclet.MDoclet --disable-auto-highlight -Xdoclint:-html&#10;-overview testfiles/overview.md -d ../../jdrupes-mdoclet.gh-pages/javadoc.jdk9/  -d build/testfiles testfiles/test/Test.java"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED&#10;--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED&#10;-doclet org.jdrupes.mdoclet.MDoclet --disable-auto-highlight -Xdoclint:-html&#10;-overview testfiles/overview.md -d ../../jdrupes-mdoclet.gh-pages/javadoc.jdk9/  -d build/testfiles testfiles/test/Test.java testfiles/test/MDocletExample.java"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="mdoclet"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED&#10;--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED"/>
 </launchConfiguration>
