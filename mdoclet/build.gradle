@@ -32,6 +32,11 @@ java {
 }
 
 def addedExports = ['jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+    'jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
+    'jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',
+    'jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',
+    'jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
+    'jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',
     'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED']
 
 compileJava {
