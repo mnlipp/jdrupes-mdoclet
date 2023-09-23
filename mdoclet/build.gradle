@@ -21,18 +21,40 @@ apply plugin: 'signing'
 apply plugin: 'maven-publish'
 
 dependencies {
-    api libs.markdown
-    api "org.jsoup:jsoup:1.14.3"
+    implementation 'com.vladsch.flexmark:flexmark:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-abbreviation:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-anchorlink:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-definition:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-footnotes:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-tables:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-toc:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-typographic:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-wikilink:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-util:0.64.8'
+    implementation "org.jsoup:jsoup:1.14.3"
 
 //    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
 }
 
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
     modularity.inferModulePath = true
 }
 
 def addedExports = ['jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
-    'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED']
+    'jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+    'jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED']
 
 compileJava {
     addedExports.forEach {
@@ -185,6 +207,14 @@ eclipse {
         file {
             withXml {
                 def classpath = it.asNode()
+
+//    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-20">
+//        <attributes>
+//            <attribute name="module" value="true"/>
+//            <attribute name="add-exports" value="jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED"/>
+//        </attributes>
+//    </classpathentry>
+                
                 classpath.children().each { entry ->
                     if (entry.attribute('path').startsWith(
                         'org.eclipse.jdt.launching.JRE_CONTAINER/')) {

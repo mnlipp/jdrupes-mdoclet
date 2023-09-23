@@ -57,7 +57,7 @@ import jdk.javadoc.doclet.StandardDoclet;
  * with interface {@link DocletEnvironment} but insists on the instance
  * being a `DocEnvImpl`. Therefore {@link MDocletEnvironment} has
  * to extend this class which requires to allow module access with
- * `--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED`.
+ * `--add-exports=jdk.javadoc/org.jdrupes.mdoclet.internal.tool=ALL-UNNAMED`.
  */
 public class MDoclet implements Doclet {
 

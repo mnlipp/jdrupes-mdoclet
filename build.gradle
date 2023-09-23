@@ -43,16 +43,7 @@ subprojects {
         mavenCentral()
     }
 
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
-        }
-    }
-
     ext {
-        libs = [
-                markdown: [group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.64.0']
-        ]
         docletProject = project(':mdoclet')
  	}
 
