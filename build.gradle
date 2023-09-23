@@ -23,8 +23,8 @@ plugins {
  
 allprojects {
 	
-  group = 'org.jdrupes.mdoclet'
-	version = '3.1.0'
+    group = 'org.jdrupes.mdoclet'
+	version = '4.0.0-SNAPSHOT'
 
 	description = 'A doclet for processing javadoc comments written with Markup'
 
@@ -41,6 +41,12 @@ subprojects {
 	 
     repositories {
         mavenCentral()
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
     }
 
     ext {
