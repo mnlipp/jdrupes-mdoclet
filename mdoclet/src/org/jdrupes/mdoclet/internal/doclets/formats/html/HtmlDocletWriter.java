@@ -1545,10 +1545,8 @@ public class HtmlDocletWriter {
                 @Override
                 public Boolean visitText(TextTree node, Content content) {
                     String text = node.getBody();
-                    result.add(text.startsWith("<![CDATA[")
-                        ? RawHtml.cdata(text)
-                        : Text
-                            .of(textCleanup(text, isLastNode, commentRemoved)));
+                    result.add(RawHtml
+                        .of(textCleanup(text, isLastNode, commentRemoved)));
                     return false;
                 }
 
