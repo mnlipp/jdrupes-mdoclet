@@ -17,37 +17,20 @@
  */
 
 plugins {
-	id "com.gradle.plugin-publish" version "0.20.0"
+  	id "com.gradle.plugin-publish" version "0.20.0"
     id 'org.ajoberstar.grgit' version '4.1.0'
 }
+
+apply plugin: 'mdoclet.java-library-conventions'
  
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'
-	version = '4.0.0-SNAPSHOT'
+	  version = '4.0.0-SNAPSHOT'
 
-	description = 'A doclet for processing javadoc comments written with Markup'
+  	description = 'A doclet for processing javadoc comments written with Markup'
 
-	// Makes Eclipse-groovy handle *.gradle file properly
-    apply plugin:'groovy' 
-
-	// (Known thanks to applying groovy plugin)	
-	archivesBaseName = project.name
+	  // (Known thanks to applying groovy plugin)	
+	  archivesBaseName = project.name
 }
 
-subprojects {
-
-	apply from: "${project.rootDir}/gradle/eclipse.gradle"
-	 
-    repositories {
-        mavenCentral()
-    }
-
-    ext {
-        docletProject = project(':mdoclet')
- 	}
-
-}
-
-apply plugin: 'eclipse'
-tasks.eclipse.dependsOn(cleanEclipse)

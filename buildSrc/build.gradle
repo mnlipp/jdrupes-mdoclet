@@ -1,11 +1,34 @@
+plugins {
+    // Support convention plugins written in Groovy. Convention plugins 
+    // are build scripts in 'src/main' that automatically become available 
+    // as plugins in the main build.
+    id 'groovy-gradle-plugin'
+
+    // Apply eclipse plugin
+    id 'eclipse'
+
+    id 'java-gradle-plugin' // so we can assign and ID to our plugin
+}
+
+repositories {
+    // Use the plugin portal to apply community plugins in convention plugins.
+    gradlePluginPortal()
+    
+    mavenCentral()
+}
+
 dependencies {
-	implementation gradleApi()
-	implementation localGroovy()
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'org.ow2.asm:asm:8.0.1'
 }
 
 // Configure sensible layout
 sourceSets {
 	main {
+    java {
+      srcDir 'src'
+    }
 		groovy {
 			srcDir 'src'
 		}
@@ -15,6 +38,9 @@ sourceSets {
 	}
 
 	test {
+    java {
+      srcDir 'test'
+    }
 		groovy {
 			srcDir 'test'
 		}
@@ -22,6 +48,20 @@ sourceSets {
 			srcDir 'resources'
 		}
 	}
+}
+
+jar {
+    duplicatesStrategy 'exclude'
+}
+
+gradlePlugin {
+    plugins {
+        // here we register our plugin with an ID
+        register("extra-java-module-info") {
+            id = "extra-java-module-info"
+            implementationClass = "org.gradle.sample.transform.javamodules.ExtraModuleInfoPlugin"
+        }
+    }
 }
 
 apply plugin: 'eclipse'
