@@ -43,7 +43,7 @@ java {
     modularity.inferModulePath = true
 }
 
-def addedExports = ['jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+def addedExports = ['jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
     'jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
     'jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
     'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
@@ -54,7 +54,7 @@ def addedExports = ['jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
     'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
     'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
     'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-    'jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED']
+    'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
 
 compileJava {
     addedExports.forEach {
@@ -89,17 +89,37 @@ task apidocs(type: JavaExec) {
     inputs.file "overview.md"
     ext.destinationDir = '../../jdrupes-mdoclet.gh-pages/javadoc/'
 
-    jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED']
-    classpath jar // sourceSets.main.compileClasspath
+    jvmArgs = ['--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED']
+    classpath jar
+    classpath sourceSets.main.compileClasspath
     
-    main = 'jdk.javadoc.internal.tool.Main'
+    main = 'org.jdrupes.mdoclet.internal.tool.Main'
     args = ['-doctitle', 'JDrupes MDoclet',
         '-use',
         '-linksource',
         '-link', 'https://docs.oracle.com/en/java/javase/21/docs/api/',
-        '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '--add-exports', 'jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
         '--add-exports', 'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
         '-docletpath', file(tasks.jar.archiveFile),
         '-doclet', 'org.jdrupes.mdoclet.MDoclet',
         '--disable-auto-highlight',
