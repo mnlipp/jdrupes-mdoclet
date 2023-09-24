@@ -376,6 +376,9 @@ public class HtmlDoclet extends AbstractDoclet {
         String legalNotices = configuration.getOptions().legalNotices();
         switch (legalNotices) {
         case "", "default" -> {
+            if (getClass().getModule().getName() == null) {
+                return;
+            }
             Path javaHome = Path.of(System.getProperty("java.home"));
             legalNoticesDir = javaHome.resolve("legal")
                 .resolve(getClass().getModule().getName());
