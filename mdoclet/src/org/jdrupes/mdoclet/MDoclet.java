@@ -48,7 +48,7 @@ import jdk.javadoc.doclet.Reporter;
  * comments and tags to HTML.
  * 
  * The doclet works by installing wrappers to intercept the 
- * {@link StandardDoclet}'s calls to access the {@link DocCommentTree}s 
+ * {@link HtmlDoclet}'s calls to access the {@link DocCommentTree}s 
  * (see {@link DocCommentTreeWrapper}). At the root of this interception
  * is a modified doclet environment ({@link MDocletEnvironment}) that 
  * installs a wrapper around doc trees access.
