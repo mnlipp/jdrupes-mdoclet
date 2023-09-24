@@ -16,7 +16,7 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java-library'
+apply plugin: 'mdoclet.java-library-conventions'
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
 
@@ -59,7 +59,6 @@ def addedExports = ['jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
 compileJava {
     addedExports.forEach {
         options.compilerArgs << '--add-exports=' + it
-        
     }
 }
 
@@ -71,28 +70,28 @@ compileJava {
 //    }
 //}
 
-archivesBaseName = "doclet"
-
-// Configure sensible layout
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-        resources {
-            srcDir 'resources'
-        }
+jar {
+    dependsOn 'generatePomFileForMavenPublication'
+    into("META-INF/maven/$project.group/$project.name") {
+        from { generatePomFileForMavenPublication }
+        rename ".*", "pom.xml"
+    }
+    // jdk source uses non-standard directories for resources
+    from('src') {
+        include '**/resources/**'
     }
 }
 
-task java11doc(type: JavaExec) {
+archivesBaseName = "doclet"
+
+task apidocs(type: JavaExec) {
     dependsOn tasks.jar
     inputs.file "overview.md"
     ext.destinationDir = '../../jdrupes-mdoclet.gh-pages/javadoc/'
 
     jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED']
-    classpath sourceSets.main.compileClasspath
+    classpath jar // sourceSets.main.compileClasspath
     
     main = 'jdk.javadoc.internal.tool.Main'
     args = ['-doctitle', 'JDrupes MDoclet',
@@ -114,7 +113,6 @@ task java11doc(type: JavaExec) {
         ]
     
     ignoreExitValue true
-    
 }
 
 task sourcesJar(type: Jar) {
@@ -123,7 +121,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadocJar(type: Jar) {
-    from java11doc.destinationDir
+    from apidocs.destinationDir
     archiveClassifier = "javadoc"
 }
 
