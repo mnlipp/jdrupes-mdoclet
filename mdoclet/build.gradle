@@ -99,11 +99,11 @@ task apidocs(type: JavaExec) {
         '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED']
-    classpath jar
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
     classpath sourceSets.main.compileClasspath
     
-    main = 'org.jdrupes.mdoclet.internal.tool.Main'
+    main = 'jdk.javadoc.internal.tool.Main'
     args = ['-doctitle', 'JDrupes MDoclet',
         '-use',
         '-linksource',
@@ -136,6 +136,43 @@ task apidocs(type: JavaExec) {
     
     ignoreExitValue true
 }
+
+configurations {
+    markdownDoclet {
+        extendsFrom sourceSets.main.compileClasspath
+    }
+}
+
+dependencies {
+    markdownDoclet files(tasks.jar)
+}
+
+task testJavadoc(type: Javadoc) {
+    dependsOn jar
+
+    source = fileTree(dir: 'testfiles', include: '**/*.java')
+    destinationDir = project.file("build/testfiles-gradle")
+    options.docletpath = configurations.markdownDoclet.files.asType(List)
+    options.doclet = 'org.jdrupes.mdoclet.MDoclet'
+    options.overview = 'testfiles/overview.md'
+    options.addStringOption('Xdoclint:-html', '-quiet')
+
+    options.setJFlags([
+        '--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED'])
+}
+
+check.dependsOn testJavadoc
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
