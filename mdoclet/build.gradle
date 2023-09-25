@@ -16,28 +16,49 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java-library'
+apply plugin: 'mdoclet.java-library-conventions'
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
 
 dependencies {
-    api libs.markdown
-    api "org.jsoup:jsoup:1.14.3"
+    implementation 'com.vladsch.flexmark:flexmark:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-abbreviation:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-anchorlink:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-definition:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-footnotes:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-tables:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-toc:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-typographic:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-ext-wikilink:0.64.8'
+    implementation 'com.vladsch.flexmark:flexmark-util:0.64.8'
+    implementation "org.jsoup:jsoup:1.14.3"
 
 //    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
 }
 
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
     modularity.inferModulePath = true
 }
 
-def addedExports = ['jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
-    'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED']
+def addedExports = ['jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+    'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+    'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
 
 compileJava {
     addedExports.forEach {
         options.compilerArgs << '--add-exports=' + it
-        
     }
 }
 
@@ -49,36 +70,56 @@ compileJava {
 //    }
 //}
 
-archivesBaseName = "doclet"
-
-// Configure sensible layout
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-        resources {
-            srcDir 'resources'
-        }
+jar {
+    dependsOn 'generatePomFileForMavenPublication'
+    into("META-INF/maven/$project.group/$project.name") {
+        from { generatePomFileForMavenPublication }
+        rename ".*", "pom.xml"
+    }
+    // jdk source uses non-standard directories for resources
+    from('src') {
+        include '**/resources/**'
     }
 }
 
-task java11doc(type: JavaExec) {
+archivesBaseName = "doclet"
+
+task apidocs(type: JavaExec) {
     dependsOn tasks.jar
     inputs.file "overview.md"
     ext.destinationDir = '../../jdrupes-mdoclet.gh-pages/javadoc/'
 
-    jvmArgs = ['--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED']
+    jvmArgs = ['--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED']
+    classpath jar
     classpath sourceSets.main.compileClasspath
     
-    main = 'jdk.javadoc.internal.tool.Main'
+    main = 'org.jdrupes.mdoclet.internal.tool.Main'
     args = ['-doctitle', 'JDrupes MDoclet',
         '-use',
         '-linksource',
         '-link', 'https://docs.oracle.com/en/java/javase/21/docs/api/',
-        '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '--add-exports', 'jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
         '--add-exports', 'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
         '-docletpath', file(tasks.jar.archiveFile),
         '-doclet', 'org.jdrupes.mdoclet.MDoclet',
         '--disable-auto-highlight',
@@ -88,11 +129,12 @@ task java11doc(type: JavaExec) {
         '-subpackages', 'org.jdrupes.mdoclet',
         '-bottom', file("misc/javadoc.bottom.txt").text,
         '--allow-script-in-comments',
-        '-Xdoclint:-html'
+        '-Xdoclint:-html',
+        '--add-stylesheet', 'javadoc-resources/tabs.css',
+        '--add-script', 'javadoc-resources/tabs.js'
         ]
     
     ignoreExitValue true
-    
 }
 
 task sourcesJar(type: Jar) {
@@ -101,7 +143,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadocJar(type: Jar) {
-    from java11doc.destinationDir
+    from apidocs.destinationDir
     archiveClassifier = "javadoc"
 }
 
@@ -185,6 +227,14 @@ eclipse {
         file {
             withXml {
                 def classpath = it.asNode()
+
+//    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-20">
+//        <attributes>
+//            <attribute name="module" value="true"/>
+//            <attribute name="add-exports" value="jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED"/>
+//        </attributes>
+//    </classpathentry>
+                
                 classpath.children().each { entry ->
                     if (entry.attribute('path').startsWith(
                         'org.eclipse.jdt.launching.JRE_CONTAINER/')) {

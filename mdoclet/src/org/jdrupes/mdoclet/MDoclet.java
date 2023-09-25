@@ -34,6 +34,7 @@ import javax.tools.Diagnostic;
 import javax.tools.DocumentationTool.Location;
 import javax.tools.JavaFileManager;
 
+import org.jdrupes.mdoclet.internal.doclets.formats.html.HtmlDoclet;
 import org.jdrupes.mdoclet.processors.FlexmarkProcessor;
 
 import com.sun.source.doctree.DocCommentTree;
@@ -41,14 +42,13 @@ import com.sun.source.doctree.DocCommentTree;
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
-import jdk.javadoc.doclet.StandardDoclet;
 
 /**
  * The Doclet implementation, which converts the Markdown from the JavaDoc 
  * comments and tags to HTML.
  * 
  * The doclet works by installing wrappers to intercept the 
- * {@link StandardDoclet}'s calls to access the {@link DocCommentTree}s 
+ * {@link HtmlDoclet}'s calls to access the {@link DocCommentTree}s 
  * (see {@link DocCommentTreeWrapper}). At the root of this interception
  * is a modified doclet environment ({@link MDocletEnvironment}) that 
  * installs a wrapper around doc trees access.
@@ -57,7 +57,7 @@ import jdk.javadoc.doclet.StandardDoclet;
  * with interface {@link DocletEnvironment} but insists on the instance
  * being a `DocEnvImpl`. Therefore {@link MDocletEnvironment} has
  * to extend this class which requires to allow module access with
- * `--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED`.
+ * `--add-exports=jdk.javadoc/org.jdrupes.mdoclet.internal.tool=ALL-UNNAMED`.
  */
 public class MDoclet implements Doclet {
 
@@ -81,7 +81,6 @@ public class MDoclet implements Doclet {
             + "hljs.initHighlightingOnLoad();\n"
             + "//--></script>";
 
-    private StandardDoclet standardDoclet;
     private Reporter reporter;
     private JavaFileManager fileManager;
 
@@ -95,14 +94,16 @@ public class MDoclet implements Doclet {
     private boolean disableAutoHighlight;
     private String highlightStyle = "default";
 
+    private final HtmlDoclet htmlDoclet;
+
     public MDoclet() {
-        standardDoclet = new StandardDoclet();
+        htmlDoclet = new HtmlDoclet(this);
     }
 
     @Override
     public void init(Locale locale, Reporter reporter) {
         this.reporter = reporter;
-        standardDoclet.init(locale, reporter);
+        htmlDoclet.init(locale, reporter);
     }
 
     @Override
@@ -113,7 +114,7 @@ public class MDoclet implements Doclet {
     @Override
     public Set<? extends Option> getSupportedOptions() {
         Set<Option> options = new HashSet<>();
-        for (Option opt : standardDoclet.getSupportedOptions()) {
+        for (Option opt : htmlDoclet.getSupportedOptions()) {
             if (opt.getNames().contains("-header")) {
                 origHeaderOpt = opt;
             } else {
@@ -218,7 +219,7 @@ public class MDoclet implements Doclet {
         MDocletEnvironment env = new MDocletEnvironment(this, environment);
         processor = createProcessor();
         processor.start(processorOptions.toArray(new String[0]));
-        return standardDoclet.run(env) && postProcess();
+        return htmlDoclet.run(env) && postProcess();
     }
 
     private MarkdownProcessor createProcessor() {

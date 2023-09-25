@@ -1,3 +1,13 @@
+plugins {
+    // Support convention plugins written in Groovy. Convention plugins 
+    // are build scripts in 'src/main' that automatically become available 
+    // as plugins in the main build.
+    id 'groovy-gradle-plugin'
+
+    // Apply eclipse plugin
+    id 'eclipse'
+}
+
 dependencies {
 	implementation gradleApi()
 	implementation localGroovy()
@@ -23,8 +33,6 @@ sourceSets {
 		}
 	}
 }
-
-apply plugin: 'eclipse'
 
 eclipse {
     project {
