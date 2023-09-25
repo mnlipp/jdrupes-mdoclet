@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.tools.DocumentationTool.DocumentationTask;
 
-import org.jdrupes.mdoclet.internal.tool.Start;
+import jdk.javadoc.internal.tool.Start;
 
 import javax.tools.JavaFileObject;
 
@@ -57,17 +57,16 @@ public class JavadocTaskImpl implements DocumentationTask {
     private final List<String> addModules = new ArrayList<>();
 
     public JavadocTaskImpl(Context context,
-                           Class<?> docletClass,
-                           Iterable<String> options,
-                           Iterable<? extends JavaFileObject> fileObjects)
-    {
+            Class<?> docletClass,
+            Iterable<String> options,
+            Iterable<? extends JavaFileObject> fileObjects) {
         this.context = context;
         this.docletClass = docletClass;
 
         this.options = (options == null) ? Set.of()
-                : nullCheck(options);
+            : nullCheck(options);
         this.fileObjects = (fileObjects == null) ? Set.of()
-                : nullCheck(fileObjects);
+            : nullCheck(fileObjects);
         setLocale(Locale.getDefault());
     }
 
@@ -105,13 +104,14 @@ public class JavadocTaskImpl implements DocumentationTask {
     }
 
     private void initContext() {
-        //initialize compiler's default locale
+        // initialize compiler's default locale
         context.put(Locale.class, locale);
         if (!addModules.isEmpty()) {
             String names = String.join(",", addModules);
             Options opts = Options.instance(context);
             String prev = opts.get(Option.ADD_MODULES);
-            opts.put(Option.ADD_MODULES, (prev == null) ? names : prev + "," + names);
+            opts.put(Option.ADD_MODULES,
+                (prev == null) ? names : prev + "," + names);
         }
     }
 

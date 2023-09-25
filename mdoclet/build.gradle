@@ -99,11 +99,11 @@ task apidocs(type: JavaExec) {
         '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED']
-    classpath jar
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
     classpath sourceSets.main.compileClasspath
     
-    main = 'org.jdrupes.mdoclet.internal.tool.Main'
+    main = 'jdk.javadoc.internal.tool.Main'
     args = ['-doctitle', 'JDrupes MDoclet',
         '-use',
         '-linksource',

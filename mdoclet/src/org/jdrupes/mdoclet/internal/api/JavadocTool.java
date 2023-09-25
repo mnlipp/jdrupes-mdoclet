@@ -44,7 +44,7 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
-import org.jdrupes.mdoclet.internal.tool.ToolOptions;
+import jdk.javadoc.internal.tool.ToolOptions;
 
 import com.sun.tools.javac.api.ClientCodeWrapper;
 import com.sun.tools.javac.file.JavacFileManager;
@@ -161,7 +161,7 @@ public class JavadocTool implements DocumentationTool {
             = new PrintWriter(err == null ? System.err : err, true);
         PrintWriter out_pw = new PrintWriter(out == null ? System.out : out);
         try {
-            return org.jdrupes.mdoclet.internal.tool.Main.execute(arguments,
+            return jdk.javadoc.internal.tool.Main.execute(arguments,
                 err_pw);
         } finally {
             err_pw.flush();

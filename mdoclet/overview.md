@@ -82,6 +82,7 @@ Specify the Doclet on JavaDoc's command line:
     -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED \
+    -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
     -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar</code></pre>
 </div>
 
@@ -181,7 +182,8 @@ task apidocs(type: JavaExec) {
         '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED']
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
     classpath sourceSets.main.compileClasspath
     main = 'jdk.javadoc.internal.tool.Main'
     args = ['-doctitle', "My Code",

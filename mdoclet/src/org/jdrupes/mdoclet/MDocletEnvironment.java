@@ -28,7 +28,7 @@ import javax.lang.model.util.Types;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject.Kind;
 
-import org.jdrupes.mdoclet.internal.tool.DocEnvImpl;
+import jdk.javadoc.internal.tool.DocEnvImpl;
 
 import com.sun.source.util.DocTrees;
 

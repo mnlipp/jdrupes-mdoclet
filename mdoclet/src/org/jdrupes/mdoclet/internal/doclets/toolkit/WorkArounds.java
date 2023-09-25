@@ -48,8 +48,8 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileManager.Location;
 
 import org.jdrupes.mdoclet.internal.doclets.toolkit.util.Utils;
-import org.jdrupes.mdoclet.internal.tool.DocEnvImpl;
-import org.jdrupes.mdoclet.internal.tool.ToolEnvironment;
+import jdk.javadoc.internal.tool.DocEnvImpl;
+import jdk.javadoc.internal.tool.ToolEnvironment;
 
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Flags;
