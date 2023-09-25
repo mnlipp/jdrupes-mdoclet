@@ -166,13 +166,18 @@ dependencies {
     markdownDoclet "org.jdrupes.mdoclet:doclet:4.0.0"
 }
 
-task apidocs(type: JavaExec) {
+task testJavadoc(type: Javadoc) {
     enabled = JavaVersion.current() == JavaVersion.VERSION_21
 
-    dependsOn classes
-    inputs.file "overview.md"
+    source = fileTree(dir: 'testfiles', include: '**/*.java')
+    destinationDir = project.file("build/testfiles-gradle")
+    options.docletpath = configurations.markdownDoclet.files.asType(List)
+    options.doclet = 'org.jdrupes.mdoclet.MDoclet'
+    options.overview = 'testfiles/overview.md'
+    options.addStringOption('Xdoclint:-html', '-quiet')
 
-    jvmArgs = ['--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+    options.setJFlags([
+        '--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
@@ -183,31 +188,7 @@ task apidocs(type: JavaExec) {
         '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED']
-    classpath sourceSets.main.compileClasspath
-    main = 'jdk.javadoc.internal.tool.Main'
-    args = ['-doctitle', "My Code",
-        '-overview', "overview.md",
-        '-use',
-        '-linksource',
-        '-link', 'https://docs.oracle.com/en/java/javase/21/docs/api/',
-        '--add-exports', 'jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
-        '--add-exports', 'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-        '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
-        '-doclet', 'org.jdrupes.mdoclet.MDoclet',
-        '-docletpath', configurations.markdownDoclet.files.asType(List).join(":"),
-        '-d', file("${project.buildDir}/javadoc"),
-        // Specify sources to be processed
-        ]
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED'])
 }
 </code></pre>
 
