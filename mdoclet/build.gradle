@@ -129,7 +129,9 @@ task apidocs(type: JavaExec) {
         '-subpackages', 'org.jdrupes.mdoclet',
         '-bottom', file("misc/javadoc.bottom.txt").text,
         '--allow-script-in-comments',
-        '-Xdoclint:-html'
+        '-Xdoclint:-html',
+        '--add-stylesheet', 'javadoc-resources/tabs.css',
+        '--add-script', 'javadoc-resources/tabs.js'
         ]
     
     ignoreExitValue true

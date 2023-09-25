@@ -1,0 +1,39 @@
+/* Style the tab */
+.tab-nav {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: var(--subnav-background-color);
+  padding: 0.5em;
+  border-top: 1px solid var(--subnav-background-color);
+  border-left: 1px solid var(--subnav-background-color);
+  border-right: 1px solid var(--subnav-background-color);
+}
+
+/* Style the buttons inside the tab */
+.tab-nav button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0.25em 0.25em;
+  margin-right: 1em;
+}
+
+/* Create an active/current tablink class */
+.tab-nav button.selected {
+  background-color: var(--selected-background-color);
+}
+
+/* Style the tab content */
+.tab-content {
+  display: none;
+  padding: 0.2em;
+  border: 1px solid var(--subnav-background-color);
+  border-top: none;
+}
+
+/* Special case: PRE without enclosing DIV */
+pre.tab-content {
+  margin-top: 0;
+}

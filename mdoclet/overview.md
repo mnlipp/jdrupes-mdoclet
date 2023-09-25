@@ -57,11 +57,33 @@ Invoking
 
 Specify the Doclet on JavaDoc's command line:
 
-```sh
-javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
+<div class="tab-nav" data-tab-group="usage">
+  <button class="selected" data-tab-name="v3" 
+    onclick="openTab(event)">v3.x / Java-17</button>
+  <button data-tab-name="v4" 
+    onclick="openTab(event)">v4.x / Java-21</button>
+</div>
+
+<div class="tab-content" style="display: block;" data-tab-group="usage" data-tab-name="v3">
+  <pre><code class="language-sh hljs bash">javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
-    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
-```
+    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar</code></pre>
+</div>
+
+<div class="tab-content" style="display: none;" data-tab-group="usage" data-tab-name="v4">
+  <pre><code class="language-sh hljs bash">javadoc -J--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED \
+    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar</code></pre>
+</div>
 
 A prebuilt version can be downloaded from Maven Central
 (use the JAR with the suffix "-all" for a JAR file that includes all dependencies).
@@ -95,18 +117,24 @@ gradle JavaDoc task (see the
 this is fixed, the only way to run the doclet is by using a JavaExec
 task.
 
-```gradle
-configurations {
+<div class="tab-nav" data-tab-group="usage">
+  <button class="selected" data-tab-name="v3" 
+    onclick="openTab(event)">v3.x / Java-17</button>
+  <button data-tab-name="v4" 
+    onclick="openTab(event)">v4.x / Java-21</button>
+</div>
+
+<pre class="tab-content" style="display: block;" data-tab-group="usage" data-tab-name="v3"><code class="language-gradle">configurations {
     markdownDoclet
 }
- 
+
 dependencies {
     markdownDoclet "org.jdrupes.mdoclet:doclet:3.0.0"
 }
- 
-task java11doc(type: JavaExec) {
+
+task apidocs(type: JavaExec) {
     enabled = JavaVersion.current() == JavaVersion.VERSION_17
-    
+
     dependsOn classes
     inputs.file "overview.md"
 
@@ -118,7 +146,7 @@ task java11doc(type: JavaExec) {
         '-overview', "overview.md",
         '-use',
         '-linksource',
-        '-link', 'https://docs.oracle.com/en/java/javase/11/docs/api/',
+        '-link', 'https://docs.oracle.com/en/java/javase/17/docs/api/',
         '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
         '--add-exports', 'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '-doclet', 'org.jdrupes.mdoclet.MDoclet',
@@ -127,7 +155,59 @@ task java11doc(type: JavaExec) {
         // Specify sources to be processed
         ]
 }
-```
+</code></pre>
+
+<pre class="tab-content" style="display: none;" data-tab-group="usage" data-tab-name="v4"><code class="language-gradle">configurations {
+    markdownDoclet
+}
+
+dependencies {
+    markdownDoclet "org.jdrupes.mdoclet:doclet:4.0.0"
+}
+
+task apidocs(type: JavaExec) {
+    enabled = JavaVersion.current() == JavaVersion.VERSION_21
+
+    dependsOn classes
+    inputs.file "overview.md"
+
+    jvmArgs = ['--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED']
+    classpath sourceSets.main.compileClasspath
+    main = 'jdk.javadoc.internal.tool.Main'
+    args = ['-doctitle', "My Code",
+        '-overview', "overview.md",
+        '-use',
+        '-linksource',
+        '-link', 'https://docs.oracle.com/en/java/javase/21/docs/api/',
+        '--add-exports', 'jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports', 'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-exports', 'jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '-doclet', 'org.jdrupes.mdoclet.MDoclet',
+        '-docletpath', configurations.markdownDoclet.files.asType(List).join(":"),
+        '-d', file("${project.buildDir}/javadoc"),
+        // Specify sources to be processed
+        ]
+}
+</code></pre>
 
 The latest version available on maven central is shown in the badge on the 
 [project page](https://github.com/mnlipp/jdrupes-mdoclet).
