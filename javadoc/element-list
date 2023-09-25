@@ -11,6 +11,5 @@ org.jdrupes.mdoclet.internal.doclets.toolkit.taglets
 org.jdrupes.mdoclet.internal.doclets.toolkit.taglets.snippet
 org.jdrupes.mdoclet.internal.doclets.toolkit.util
 org.jdrupes.mdoclet.internal.doclint
-org.jdrupes.mdoclet.internal.tool
 org.jdrupes.mdoclet.processors
 org.jdrupes.mdoclet.processors.flexmark

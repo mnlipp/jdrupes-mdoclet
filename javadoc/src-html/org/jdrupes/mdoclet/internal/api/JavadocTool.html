@@ -58,7 +58,7 @@
 <span class="source-line-no">044</span><span id="line-44">import javax.tools.JavaFileObject;</span>
 <span class="source-line-no">045</span><span id="line-45">import javax.tools.StandardJavaFileManager;</span>
 <span class="source-line-no">046</span><span id="line-46"></span>
-<span class="source-line-no">047</span><span id="line-47">import org.jdrupes.mdoclet.internal.tool.ToolOptions;</span>
+<span class="source-line-no">047</span><span id="line-47">import jdk.javadoc.internal.tool.ToolOptions;</span>
 <span class="source-line-no">048</span><span id="line-48"></span>
 <span class="source-line-no">049</span><span id="line-49">import com.sun.tools.javac.api.ClientCodeWrapper;</span>
 <span class="source-line-no">050</span><span id="line-50">import com.sun.tools.javac.file.JavacFileManager;</span>
@@ -175,7 +175,7 @@
 <span class="source-line-no">161</span><span id="line-161">            = new PrintWriter(err == null ? System.err : err, true);</span>
 <span class="source-line-no">162</span><span id="line-162">        PrintWriter out_pw = new PrintWriter(out == null ? System.out : out);</span>
 <span class="source-line-no">163</span><span id="line-163">        try {</span>
-<span class="source-line-no">164</span><span id="line-164">            return org.jdrupes.mdoclet.internal.tool.Main.execute(arguments,</span>
+<span class="source-line-no">164</span><span id="line-164">            return jdk.javadoc.internal.tool.Main.execute(arguments,</span>
 <span class="source-line-no">165</span><span id="line-165">                err_pw);</span>
 <span class="source-line-no">166</span><span id="line-166">        } finally {</span>
 <span class="source-line-no">167</span><span id="line-167">            err_pw.flush();</span>

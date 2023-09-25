@@ -47,7 +47,7 @@
 <span class="source-line-no">033</span><span id="line-33"></span>
 <span class="source-line-no">034</span><span id="line-34">import javax.tools.DocumentationTool.DocumentationTask;</span>
 <span class="source-line-no">035</span><span id="line-35"></span>
-<span class="source-line-no">036</span><span id="line-36">import org.jdrupes.mdoclet.internal.tool.Start;</span>
+<span class="source-line-no">036</span><span id="line-36">import jdk.javadoc.internal.tool.Start;</span>
 <span class="source-line-no">037</span><span id="line-37"></span>
 <span class="source-line-no">038</span><span id="line-38">import javax.tools.JavaFileObject;</span>
 <span class="source-line-no">039</span><span id="line-39"></span>
@@ -71,61 +71,61 @@
 <span class="source-line-no">057</span><span id="line-57">    private final List&lt;String&gt; addModules = new ArrayList&lt;&gt;();</span>
 <span class="source-line-no">058</span><span id="line-58"></span>
 <span class="source-line-no">059</span><span id="line-59">    public JavadocTaskImpl(Context context,</span>
-<span class="source-line-no">060</span><span id="line-60">                           Class&lt;?&gt; docletClass,</span>
-<span class="source-line-no">061</span><span id="line-61">                           Iterable&lt;String&gt; options,</span>
-<span class="source-line-no">062</span><span id="line-62">                           Iterable&lt;? extends JavaFileObject&gt; fileObjects)</span>
-<span class="source-line-no">063</span><span id="line-63">    {</span>
-<span class="source-line-no">064</span><span id="line-64">        this.context = context;</span>
-<span class="source-line-no">065</span><span id="line-65">        this.docletClass = docletClass;</span>
-<span class="source-line-no">066</span><span id="line-66"></span>
-<span class="source-line-no">067</span><span id="line-67">        this.options = (options == null) ? Set.of()</span>
-<span class="source-line-no">068</span><span id="line-68">                : nullCheck(options);</span>
-<span class="source-line-no">069</span><span id="line-69">        this.fileObjects = (fileObjects == null) ? Set.of()</span>
-<span class="source-line-no">070</span><span id="line-70">                : nullCheck(fileObjects);</span>
-<span class="source-line-no">071</span><span id="line-71">        setLocale(Locale.getDefault());</span>
-<span class="source-line-no">072</span><span id="line-72">    }</span>
-<span class="source-line-no">073</span><span id="line-73"></span>
-<span class="source-line-no">074</span><span id="line-74">    @Override</span>
-<span class="source-line-no">075</span><span id="line-75">    public void setLocale(Locale locale) {</span>
-<span class="source-line-no">076</span><span id="line-76">        if (used.get()) {</span>
-<span class="source-line-no">077</span><span id="line-77">            throw new IllegalStateException();</span>
-<span class="source-line-no">078</span><span id="line-78">        }</span>
-<span class="source-line-no">079</span><span id="line-79">        this.locale = locale;</span>
-<span class="source-line-no">080</span><span id="line-80">    }</span>
-<span class="source-line-no">081</span><span id="line-81"></span>
-<span class="source-line-no">082</span><span id="line-82">    @Override</span>
-<span class="source-line-no">083</span><span id="line-83">    public void addModules(Iterable&lt;String&gt; moduleNames) {</span>
-<span class="source-line-no">084</span><span id="line-84">        nullCheck(moduleNames);</span>
-<span class="source-line-no">085</span><span id="line-85">        if (used.get()) {</span>
-<span class="source-line-no">086</span><span id="line-86">            throw new IllegalStateException();</span>
-<span class="source-line-no">087</span><span id="line-87">        }</span>
-<span class="source-line-no">088</span><span id="line-88">        for (String name : moduleNames) {</span>
-<span class="source-line-no">089</span><span id="line-89">            addModules.add(name);</span>
-<span class="source-line-no">090</span><span id="line-90">        }</span>
-<span class="source-line-no">091</span><span id="line-91">    }</span>
-<span class="source-line-no">092</span><span id="line-92"></span>
-<span class="source-line-no">093</span><span id="line-93">    @Override</span>
-<span class="source-line-no">094</span><span id="line-94">    public Boolean call() {</span>
-<span class="source-line-no">095</span><span id="line-95">        if (used.getAndSet(true)) {</span>
-<span class="source-line-no">096</span><span id="line-96">            throw new IllegalStateException("multiple calls to method 'call'");</span>
-<span class="source-line-no">097</span><span id="line-97">        }</span>
-<span class="source-line-no">098</span><span id="line-98">        initContext();</span>
-<span class="source-line-no">099</span><span id="line-99">        Start jdoc = new Start(context);</span>
-<span class="source-line-no">100</span><span id="line-100">        try {</span>
-<span class="source-line-no">101</span><span id="line-101">            return jdoc.begin(docletClass, options, fileObjects);</span>
-<span class="source-line-no">102</span><span id="line-102">        } catch (ClientCodeException e) {</span>
-<span class="source-line-no">103</span><span id="line-103">            throw new RuntimeException(e.getCause());</span>
-<span class="source-line-no">104</span><span id="line-104">        }</span>
-<span class="source-line-no">105</span><span id="line-105">    }</span>
-<span class="source-line-no">106</span><span id="line-106"></span>
-<span class="source-line-no">107</span><span id="line-107">    private void initContext() {</span>
-<span class="source-line-no">108</span><span id="line-108">        //initialize compiler's default locale</span>
-<span class="source-line-no">109</span><span id="line-109">        context.put(Locale.class, locale);</span>
-<span class="source-line-no">110</span><span id="line-110">        if (!addModules.isEmpty()) {</span>
-<span class="source-line-no">111</span><span id="line-111">            String names = String.join(",", addModules);</span>
-<span class="source-line-no">112</span><span id="line-112">            Options opts = Options.instance(context);</span>
-<span class="source-line-no">113</span><span id="line-113">            String prev = opts.get(Option.ADD_MODULES);</span>
-<span class="source-line-no">114</span><span id="line-114">            opts.put(Option.ADD_MODULES, (prev == null) ? names : prev + "," + names);</span>
+<span class="source-line-no">060</span><span id="line-60">            Class&lt;?&gt; docletClass,</span>
+<span class="source-line-no">061</span><span id="line-61">            Iterable&lt;String&gt; options,</span>
+<span class="source-line-no">062</span><span id="line-62">            Iterable&lt;? extends JavaFileObject&gt; fileObjects) {</span>
+<span class="source-line-no">063</span><span id="line-63">        this.context = context;</span>
+<span class="source-line-no">064</span><span id="line-64">        this.docletClass = docletClass;</span>
+<span class="source-line-no">065</span><span id="line-65"></span>
+<span class="source-line-no">066</span><span id="line-66">        this.options = (options == null) ? Set.of()</span>
+<span class="source-line-no">067</span><span id="line-67">            : nullCheck(options);</span>
+<span class="source-line-no">068</span><span id="line-68">        this.fileObjects = (fileObjects == null) ? Set.of()</span>
+<span class="source-line-no">069</span><span id="line-69">            : nullCheck(fileObjects);</span>
+<span class="source-line-no">070</span><span id="line-70">        setLocale(Locale.getDefault());</span>
+<span class="source-line-no">071</span><span id="line-71">    }</span>
+<span class="source-line-no">072</span><span id="line-72"></span>
+<span class="source-line-no">073</span><span id="line-73">    @Override</span>
+<span class="source-line-no">074</span><span id="line-74">    public void setLocale(Locale locale) {</span>
+<span class="source-line-no">075</span><span id="line-75">        if (used.get()) {</span>
+<span class="source-line-no">076</span><span id="line-76">            throw new IllegalStateException();</span>
+<span class="source-line-no">077</span><span id="line-77">        }</span>
+<span class="source-line-no">078</span><span id="line-78">        this.locale = locale;</span>
+<span class="source-line-no">079</span><span id="line-79">    }</span>
+<span class="source-line-no">080</span><span id="line-80"></span>
+<span class="source-line-no">081</span><span id="line-81">    @Override</span>
+<span class="source-line-no">082</span><span id="line-82">    public void addModules(Iterable&lt;String&gt; moduleNames) {</span>
+<span class="source-line-no">083</span><span id="line-83">        nullCheck(moduleNames);</span>
+<span class="source-line-no">084</span><span id="line-84">        if (used.get()) {</span>
+<span class="source-line-no">085</span><span id="line-85">            throw new IllegalStateException();</span>
+<span class="source-line-no">086</span><span id="line-86">        }</span>
+<span class="source-line-no">087</span><span id="line-87">        for (String name : moduleNames) {</span>
+<span class="source-line-no">088</span><span id="line-88">            addModules.add(name);</span>
+<span class="source-line-no">089</span><span id="line-89">        }</span>
+<span class="source-line-no">090</span><span id="line-90">    }</span>
+<span class="source-line-no">091</span><span id="line-91"></span>
+<span class="source-line-no">092</span><span id="line-92">    @Override</span>
+<span class="source-line-no">093</span><span id="line-93">    public Boolean call() {</span>
+<span class="source-line-no">094</span><span id="line-94">        if (used.getAndSet(true)) {</span>
+<span class="source-line-no">095</span><span id="line-95">            throw new IllegalStateException("multiple calls to method 'call'");</span>
+<span class="source-line-no">096</span><span id="line-96">        }</span>
+<span class="source-line-no">097</span><span id="line-97">        initContext();</span>
+<span class="source-line-no">098</span><span id="line-98">        Start jdoc = new Start(context);</span>
+<span class="source-line-no">099</span><span id="line-99">        try {</span>
+<span class="source-line-no">100</span><span id="line-100">            return jdoc.begin(docletClass, options, fileObjects);</span>
+<span class="source-line-no">101</span><span id="line-101">        } catch (ClientCodeException e) {</span>
+<span class="source-line-no">102</span><span id="line-102">            throw new RuntimeException(e.getCause());</span>
+<span class="source-line-no">103</span><span id="line-103">        }</span>
+<span class="source-line-no">104</span><span id="line-104">    }</span>
+<span class="source-line-no">105</span><span id="line-105"></span>
+<span class="source-line-no">106</span><span id="line-106">    private void initContext() {</span>
+<span class="source-line-no">107</span><span id="line-107">        // initialize compiler's default locale</span>
+<span class="source-line-no">108</span><span id="line-108">        context.put(Locale.class, locale);</span>
+<span class="source-line-no">109</span><span id="line-109">        if (!addModules.isEmpty()) {</span>
+<span class="source-line-no">110</span><span id="line-110">            String names = String.join(",", addModules);</span>
+<span class="source-line-no">111</span><span id="line-111">            Options opts = Options.instance(context);</span>
+<span class="source-line-no">112</span><span id="line-112">            String prev = opts.get(Option.ADD_MODULES);</span>
+<span class="source-line-no">113</span><span id="line-113">            opts.put(Option.ADD_MODULES,</span>
+<span class="source-line-no">114</span><span id="line-114">                (prev == null) ? names : prev + "," + names);</span>
 <span class="source-line-no">115</span><span id="line-115">        }</span>
 <span class="source-line-no">116</span><span id="line-116">    }</span>
 <span class="source-line-no">117</span><span id="line-117"></span>
