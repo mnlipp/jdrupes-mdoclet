@@ -26,7 +26,7 @@ apply plugin: 'mdoclet.java-library-conventions'
 allprojects {
 	
     group = 'org.jdrupes.mdoclet'
-    version = '4.0.0'
+    version = '4.1.0'
 
     description = 'A doclet for processing javadoc comments written with Markup'
 

@@ -77,18 +77,13 @@ javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
 <div class="tab-content" style="display: none;" data-tab-group="usage" data-tab-name="v4">
 
 ```sh
-javadoc -J--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED \
-    -J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+javadoc -J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
-    -J--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED \
-    -J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED \
-    -J--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED \
-    -J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED \
-    -J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
-    -J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED \
     -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
+    -J--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED \
+    -J--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.resources.releases=ALL-UNNAMED \
     -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
 ```
 
@@ -179,7 +174,7 @@ configurations {
 }
 
 dependencies {
-    markdownDoclet "org.jdrupes.mdoclet:doclet:4.0.0"
+    markdownDoclet "org.jdrupes.mdoclet:doclet:4.1.0"
 }
 
 task testJavadoc(type: Javadoc) {
@@ -193,18 +188,13 @@ task testJavadoc(type: Javadoc) {
     options.addStringOption('Xdoclint:-html', '-quiet')
 
     options.setJFlags([
-        '--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-        '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED'])
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
+        '--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.resources.releases=ALL-UNNAMED'])
 }
 ```
 

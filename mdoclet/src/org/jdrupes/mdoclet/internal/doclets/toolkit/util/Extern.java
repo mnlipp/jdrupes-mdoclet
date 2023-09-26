@@ -270,7 +270,8 @@ public class Extern {
             }
             DocPath elementListPath = getPlatformElementList(versionNumber);
             URL elementListUrl
-                = AbstractDoclet.class.getResource(elementListPath.getPath());
+                = jdk.javadoc.internal.doclets.toolkit.AbstractDoclet.class
+                    .getResource(elementListPath.getPath());
             if (elementListUrl == null) {
                 reporter.print(Kind.WARNING, resources.getText(
                     "doclet.Resource_error", elementListPath.getPath()));
