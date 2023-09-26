@@ -2,7 +2,6 @@ MDoclet
 =======
 
 [![Java CI](https://github.com/mnlipp/jdrupes-mdoclet/actions/workflows/main.yml/badge.svg)](https://github.com/mnlipp/jdrupes-mdoclet/actions/workflows/main.yml)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/36484e621eb243d793df9bccfbb502e3)](https://www.codacy.com/app/mnlipp/jdrupes-mdoclet?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mnlipp/jdrupes-mdoclet&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://img.shields.io/maven-central/v/org.jdrupes.mdoclet/doclet.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.jdrupes.mdoclet%22%20AND%20a%3A%22doclet%22)
 
 **Please note that starting with version 2.0.0 the doclet works with the API 
