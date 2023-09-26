@@ -65,13 +65,19 @@ Specify the Doclet on JavaDoc's command line:
 </div>
 
 <div class="tab-content" style="display: block;" data-tab-group="usage" data-tab-name="v3">
-  <pre><code class="language-sh hljs bash">javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
+
+```sh
+javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
-    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar</code></pre>
+    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
+```
+
 </div>
 
 <div class="tab-content" style="display: none;" data-tab-group="usage" data-tab-name="v4">
-  <pre><code class="language-sh hljs bash">javadoc -J--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED \
+
+```sh
+javadoc -J--add-exports=jdk.internal.opt/jdk.internal.opt=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED \
@@ -83,7 +89,9 @@ Specify the Doclet on JavaDoc's command line:
     -J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED \
     -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
-    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar</code></pre>
+    -doclet org.jdrupes.mdoclet.MDoclet -docletpath /path/to/org.jdrupes.mdoclet.jar:another.jar
+```
+
 </div>
 
 A prebuilt version can be downloaded from Maven Central
@@ -125,7 +133,10 @@ task.
     onclick="openTab(event)">v4.x / Java-21</button>
 </div>
 
-<pre class="tab-content" style="display: block;" data-tab-group="usage" data-tab-name="v3"><code class="language-gradle">configurations {
+<div class="tab-content" style="display: block;" data-tab-group="usage" data-tab-name="v3">
+
+```gradle
+configurations {
     markdownDoclet
 }
 
@@ -156,9 +167,14 @@ task apidocs(type: JavaExec) {
         // Specify sources to be processed
         ]
 }
-</code></pre>
+```
 
-<pre class="tab-content" style="display: none;" data-tab-group="usage" data-tab-name="v4"><code class="language-gradle">configurations {
+</div>
+
+<div class="tab-content" style="display: none;" data-tab-group="usage" data-tab-name="v4"><code class="language-gradle">
+
+```gradle
+configurations {
     markdownDoclet
 }
 
@@ -190,7 +206,9 @@ task testJavadoc(type: Javadoc) {
         '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED'])
 }
-</code></pre>
+```
+
+</div>
 
 The latest version available on maven central is shown in the badge on the 
 [project page](https://github.com/mnlipp/jdrupes-mdoclet).
@@ -201,7 +219,16 @@ I don't use maven, but according to
 [this contribution](https://github.com/mnlipp/jdrupes-mdoclet/issues/11#issuecomment-1446857303) (and updates provided by others)
 it should be sufficient to add the following to your pom:
 
-```maven
+<div class="tab-nav" data-tab-group="usage">
+  <button class="selected" data-tab-name="v3" 
+    onclick="openTab(event)">v3.x / Java-17</button>
+  <button data-tab-name="v4" 
+    onclick="openTab(event)">v4.x / Java-21</button>
+</div>
+
+<div class="tab-content" style="display: block;" data-tab-group="usage" data-tab-name="v3">
+
+```xml
   <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
@@ -243,6 +270,58 @@ it should be sufficient to add the following to your pom:
     </configuration>
   </plugin>
 ```
+
+</div>
+
+<div class="tab-content" style="display: none;" data-tab-group="usage" data-tab-name="v4">
+
+```xml
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    &lt;!-- do not use 3.5.1: transitive dependencies of docletArtifact are not added to 
+         docletpath, version 3.5.1 resolves this issue. https://issues.apache.org/jira/browse/MJAVADOC-742 --&gt;
+    <version>3.4.1</version>
+    <executions>
+      <execution>
+        <id>attach-sources</id>
+        <goals>
+            <goal>jar</goal>
+            <goal>test-jar</goal>
+        </goals>
+      </execution>
+    </executions>
+    <configuration>
+      <useStandardDocletOptions>true</useStandardDocletOptions>
+      <doclet>org.jdrupes.mdoclet.MDoclet</doclet>
+      <docletArtifacts>
+        <docletArtifact>
+          <groupId>org.jdrupes.mdoclet</groupId>
+          <artifactId>doclet</artifactId>
+          &lt;!-- version 2.2.0 for java 11 and version 1.0.10 for java 8 --&gt;
+          <version>3.1.0</version>
+        </docletArtifact>
+        <docletArtifact>
+          <groupId>com.vladsch.flexmark</groupId>
+          <artifactId>flexmark-all</artifactId>
+          <version>0.64.0</version>   
+        </docletArtifact>   
+      </docletArtifacts>      
+      &lt;!--  Note: additionalDependencies are added to the -classpath, not the docletpath --&gt;
+      <additionalDependencies>
+      </additionalDependencies>
+      <additionalJOptions>
+        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</additionalJOption>
+      </additionalJOptions>
+    </configuration>
+  </plugin>
+```
+
+</div>
 
 Selecting a Markdown processor
 ------------------------------
