@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.vladsch.flexmark:flexmark-ext-typographic:0.64.8'
     implementation 'com.vladsch.flexmark:flexmark-ext-wikilink:0.64.8'
     implementation 'com.vladsch.flexmark:flexmark-util:0.64.8'
-    implementation "org.jsoup:jsoup:[1.15.3,2]"
+    implementation "org.jsoup:jsoup:[1.15.3,2)"
 
 //    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
 }
