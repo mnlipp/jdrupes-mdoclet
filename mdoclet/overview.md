@@ -302,6 +302,8 @@ it should be sufficient to add the following to your pom:
       </additionalDependencies>
       <additionalJOptions>
         <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.resources.releases=ALL-UNNAMED</additionalJOption>            
         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED</additionalJOption>
         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</additionalJOption>
