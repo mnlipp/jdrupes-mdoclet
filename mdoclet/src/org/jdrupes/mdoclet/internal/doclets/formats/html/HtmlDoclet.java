@@ -108,7 +108,7 @@ public class HtmlDoclet extends AbstractDoclet {
      * Base path for resources for this doclet.
      */
     private static final DocPath DOCLET_RESOURCES = DocPath
-        .create("/jdk/javadoc/internal/doclets/formats/html/resources");
+        .create("/org/jdrupes/mdoclet/internal/doclets/formats/html/resources");
 
     @Override // defined by Doclet
     public void init(Locale locale, Reporter reporter) {
