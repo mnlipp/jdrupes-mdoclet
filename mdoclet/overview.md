@@ -79,6 +79,7 @@ javadoc -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
 ```sh
 javadoc -J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
+    -J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
     -J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
     -J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED \
@@ -190,6 +191,7 @@ task testJavadoc(type: Javadoc) {
     options.setJFlags([
         '--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
         '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
@@ -301,13 +303,14 @@ it should be sufficient to add the following to your pom:
       <additionalDependencies>
       </additionalDependencies>
       <additionalJOptions>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</additionalJOption>
         <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
         <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED</additionalJOption>
         <additionalJOption>-J--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.resources.releases=ALL-UNNAMED</additionalJOption>            
-        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
-        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED</additionalJOption>
-        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</additionalJOption>
-        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</additionalJOption>
       </additionalJOptions>
     </configuration>
   </plugin>
