@@ -4,6 +4,11 @@ MDoclet
 [![Java CI](https://github.com/mnlipp/jdrupes-mdoclet/actions/workflows/main.yml/badge.svg)](https://github.com/mnlipp/jdrupes-mdoclet/actions/workflows/main.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/org.jdrupes.mdoclet/doclet.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.jdrupes.mdoclet%22%20AND%20a%3A%22doclet%22)
 
+**With Java 23 having "native" support for Markdown comments, there will
+be no future versions of this doclet. The way to go is to start adapting your
+comments now and use Java 23 for Javadoc generation in your build, even if you
+use some older version of Java for compilation.**
+
 **Please note that starting with version 2.0.0 the doclet works with the API 
 introduced in Java 9. It has been tested with Java 11.**
 
